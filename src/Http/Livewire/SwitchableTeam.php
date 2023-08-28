@@ -30,6 +30,7 @@ class SwitchableTeam extends Component
 
         if ($user === null) {
             throw new Exception('wip');
+
             return; //persa sessione
         }
         if (! $user instanceof UserContract) {
@@ -77,6 +78,7 @@ class SwitchableTeam extends Component
     {
 
         $view = view('filament-jet::components.switchable-team');
+
         return $view;
     }
 }
