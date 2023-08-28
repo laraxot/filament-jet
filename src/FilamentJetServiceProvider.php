@@ -250,7 +250,8 @@ class FilamentJetServiceProvider extends PluginServiceProvider
             FilamentJet::deleteTeamsUsing(DeleteTeam::class);
             FilamentJet::deleteUsersUsing(DeleteUser::class);
 
-            if (config('filament-jet.user_menu.switchable_team', true)) {
+            if (config('filament-jet.user_menu.switchable_team.show', true)) {
+
                 Livewire::component('switchable-team', SwitchableTeam::class);
 
                 Filament::registerRenderHook(
