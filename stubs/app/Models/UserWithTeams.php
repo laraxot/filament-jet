@@ -14,15 +14,15 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\PersonalDataExport\ExportsPersonalData;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar, ExportsPersonalData
+class User extends Authenticatable implements ExportsPersonalData, FilamentUser, HasAvatar
 {
+    use CanExportPersonalData;
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
     use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
-    use CanExportPersonalData;
 
     /**
      * The attributes that are mass assignable.

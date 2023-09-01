@@ -27,8 +27,8 @@ use Phpsa\FilamentPasswordReveal\Password;
  */
 class Register extends CardPage
 {
-    use WithRateLimiting;
     use RedirectsActions;
+    use WithRateLimiting;
 
     protected static string $view = 'filament-jet::filament.pages.auth.register';
 

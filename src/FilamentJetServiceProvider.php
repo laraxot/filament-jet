@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet;
 
 use ArtMin96\FilamentJet\Actions\AddTeamMember;
@@ -45,10 +47,12 @@ use Illuminate\View\Compilers\BladeCompiler;
 use Livewire\Livewire;
 use PragmaRX\Google2FA\Google2FA;
 use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 include 'helpers.php';
 
-class FilamentJetServiceProvider extends PluginServiceProvider
+// class FilamentJetServiceProvider extends PluginServiceProvider
+class FilamentJetServiceProvider extends PackageServiceProvider
 {
     public static string $name = 'filament-jet';
 
@@ -100,7 +104,7 @@ class FilamentJetServiceProvider extends PluginServiceProvider
         $this->ensureApplicationIsTeamCompatible();
         $this->configureComponents();
         $this->configurePublishing();
-
+        /*
         Livewire::component(Login::getName(), Login::class);
         Livewire::component(TwoFactorLogin::getName(), TwoFactorLogin::class);
         Livewire::component(EmailVerificationPrompt::getName(), EmailVerificationPrompt::class);
@@ -122,16 +126,16 @@ class FilamentJetServiceProvider extends PluginServiceProvider
         FilamentJet::updateUserPasswordsUsing(UpdateUserPassword::class);
         FilamentJet::resetUserPasswordsUsing(ResetUserPassword::class);
         FilamentJet::deleteUsersUsing(DeleteUser::class);
-
+        */
         if (config('filament-jet.user_menu.account') || config('filament-jet.user_menu.api_tokens.show')) {
             Filament::serving(function () {
                 $userMenuItems = [];
-
+                /*
                 if (config('filament-jet.user_menu.account')) {
                     $userMenuItems['account'] = UserMenuItem::make()
                         ->url(Account::getUrl());
                 }
-
+                */
                 if (Features::hasApiFeatures() && config('filament-jet.user_menu.api_tokens.show')) {
                     /**
                      * @var string|null $icon
@@ -250,8 +254,7 @@ class FilamentJetServiceProvider extends PluginServiceProvider
             FilamentJet::deleteTeamsUsing(DeleteTeam::class);
             FilamentJet::deleteUsersUsing(DeleteUser::class);
 
-            if (config('filament-jet.user_menu.switchable_team.show', true)) {
-
+            if (config('filament-jet.user_menu.switchable_team', true)) {
                 Livewire::component('switchable-team', SwitchableTeam::class);
 
                 Filament::registerRenderHook(
@@ -261,8 +264,8 @@ class FilamentJetServiceProvider extends PluginServiceProvider
             }
 
             if (
-                config('filament-jet.user_menu.team_settings.show') ||
-                config('filament-jet.user_menu.create_team.show')
+                config('filament-jet.user_menu.team_settings.show')
+                || config('filament-jet.user_menu.create_team.show')
             ) {
                 Filament::serving(function () {
                     $userMenuItems = [];
@@ -277,12 +280,13 @@ class FilamentJetServiceProvider extends PluginServiceProvider
                          * @var int|null $sort
                          */
                         $sort = config('filament-jet.user_menu.team_settings.sort');
-
+                        /*
                         $userMenuItems['team-settings'] = UserMenuItem::make()
                             ->label(__('filament-jet::jet.user_menu.team_settings'))
                             ->icon($icon)
                             ->sort($sort)
                             ->url(TeamSettings::getUrl());
+                        */
                     }
 
                     if (config('filament-jet.user_menu.create_team.show')) {
@@ -295,12 +299,13 @@ class FilamentJetServiceProvider extends PluginServiceProvider
                          * @var int|null $sort
                          */
                         $sort = config('filament-jet.user_menu.create_team.sort');
-
+                        /*
                         $userMenuItems['create-team'] = UserMenuItem::make()
                             ->label(__('filament-jet::jet.user_menu.create_team'))
                             ->icon($icon)
                             ->sort($sort)
                             ->url(CreateTeamPage::getUrl());
+                        */
                     }
 
                     Filament::registerUserMenuItems($userMenuItems);

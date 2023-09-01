@@ -22,7 +22,6 @@ use ArtMin96\FilamentJet\FilamentJet;
 use ArtMin96\FilamentJet\Http\Livewire\Traits\Properties\HasUserProperty;
 use ArtMin96\FilamentJet\Role;
 use ArtMin96\FilamentJet\Traits\RedirectsActions;
-use Closure;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -46,8 +45,8 @@ use Suleymanozev\FilamentRadioButtonField\Forms\Components\RadioButton;
 class TeamSettings extends Page
 {
     use HasCachedAction;
-    use RedirectsActions;
     use HasUserProperty;
+    use RedirectsActions;
 
     protected static string $view = 'filament-jet::filament.pages.team-settings';
 
@@ -72,12 +71,12 @@ class TeamSettings extends Page
      */
     public string $currentRole;
 
-    protected static function shouldRegisterNavigation(): bool
+    public static function shouldRegisterNavigation(): bool
     {
         $filamentJetData = FilamentJetData::make();
 
         return $filamentJetData->should_register_navigation->team_settings;
-        //return config('filament-jet.should_register_navigation.team_settings');
+        // return config('filament-jet.should_register_navigation.team_settings');
     }
 
     /**
@@ -312,7 +311,7 @@ class TeamSettings extends Page
                                 Features::sendsTeamInvitations()
                                     ? '' : Rule::exists(table: FilamentJet::userModel(), column: 'email'),
                                 function () {
-                                    return function (string $attribute, $value, Closure $fail) {
+                                    return function (string $attribute, $value, \Closure $fail) {
                                         if ($this->team->hasUserWithEmail($value)) {
                                             $fail(__('filament-jet::teams/add-member.messages.already_belongs_to_team'));
                                         }
@@ -335,7 +334,7 @@ class TeamSettings extends Page
                             ->columns(1)
                             ->rules(
                                 FilamentJet::hasRoles()
-                                ? ['required', 'string', new \ArtMin96\FilamentJet\Rules\Role]
+                                ? ['required', 'string', new \ArtMin96\FilamentJet\Rules\Role()]
                                 : []
                             ),
                     ]),
@@ -378,7 +377,7 @@ class TeamSettings extends Page
                         ->columns(1)
                         ->rules(
                             FilamentJet::hasRoles()
-                            ? ['required', 'string', new \ArtMin96\FilamentJet\Rules\Role]
+                            ? ['required', 'string', new \ArtMin96\FilamentJet\Rules\Role()]
                             : []
                         ),
                 ]),

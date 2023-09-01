@@ -105,7 +105,7 @@ trait HasTeams
         $pivotTable = $pivot->getTable();
         $pivotDbName = $pivot->getConnection()->getDatabaseName();
         $pivotTableFull = $pivotDbName.'.'.$pivotTable;
-        //$this->setConnection('mysql');
+
         return $this->belongsToMany(FilamentJet::teamModel(), $pivotTableFull, null, 'team_id')
             ->using($pivotClass)
             ->withPivot('role')

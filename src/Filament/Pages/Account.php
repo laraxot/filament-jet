@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Filament\Pages;
 
 use ArtMin96\FilamentJet\Actions\DisableTwoFactorAuthentication;
@@ -16,7 +18,6 @@ use ArtMin96\FilamentJet\Filament\Traits\HasTwoFactorAuthentication;
 use ArtMin96\FilamentJet\FilamentJet;
 use ArtMin96\FilamentJet\Http\Livewire\Traits\Properties\HasUserProperty;
 use ArtMin96\FilamentJet\Traits\ProcessesExport;
-use Exception;
 use Filament\Facades\Filament;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Actions\Action;
@@ -31,22 +32,22 @@ use Phpsa\FilamentPasswordReveal\Password;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
- * Undocumented class
+ * Undocumented class.
  *
- * @property UserContract $user
+ * @property UserContract       $user
  * @property ComponentContainer $form
  * @property ComponentContainer $updateProfileInformationForm
  * @property ComponentContainer $updatePasswordForm
- * @property ?Batch $exportBatch
+ * @property ?Batch             $exportBatch
  */
 class Account extends Page
 {
-    use HasHiddenAction;
-    use HasCachedAction;
-    use HasUserProperty;
-    use HasTwoFactorAuthentication;
-    use CanLogoutOtherBrowserSessions;
     use CanDeleteAccount;
+    use CanLogoutOtherBrowserSessions;
+    use HasCachedAction;
+    use HasHiddenAction;
+    use HasTwoFactorAuthentication;
+    use HasUserProperty;
     use ProcessesExport;
 
     protected static string $view = 'filament-jet::filament.pages.account';
@@ -59,7 +60,7 @@ class Account extends Page
 
     public ?string $passwordConfirmation;
 
-    protected static function shouldRegisterNavigation(): bool
+    public static function shouldRegisterNavigation(): bool
     {
         $filamentJetData = FilamentJetData::make();
 
@@ -70,8 +71,8 @@ class Account extends Page
     {
         $this->updateProfileInformationForm->fill($this->user->withoutRelations()->toArray());
 
-        if (Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm') &&
-            is_null($this->user->two_factor_confirmed_at)) {
+        if (Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm')
+            && is_null($this->user->two_factor_confirmed_at)) {
             app(DisableTwoFactorAuthentication::class)($this->user);
         }
     }
@@ -113,7 +114,7 @@ class Account extends Page
 
         session()->forget('password_hash_'.config('filament.auth.guard'));
         if (! $this->user instanceof \Illuminate\Contracts\Auth\Authenticatable) {
-            throw new Exception('strange things');
+            throw new \Exception('strange things');
         }
         Filament::auth()->login($this->user);
 
@@ -147,7 +148,7 @@ class Account extends Page
     protected function updateProfileFormSchema(): array
     {
         if (! $this->user instanceof \Illuminate\Database\Eloquent\Model) {
-            throw new Exception('strange things');
+            throw new \Exception('strange things');
         }
 
         return array_filter([
@@ -173,7 +174,7 @@ class Account extends Page
                             ->icon(config('filament-jet.profile.login_field.hint_action.icon'))
                         : null
                 )
-                ->email(fn (): bool => FilamentJet::username() === 'email')
+                ->email(fn (): bool => 'email' === FilamentJet::username())
                 ->unique(
                     table: FilamentJet::userModel(),
                     column: FilamentJet::username(),

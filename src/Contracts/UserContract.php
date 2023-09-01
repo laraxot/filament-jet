@@ -54,8 +54,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
  *
  * @mixin \Eloquent
  */
-interface UserContract extends
+interface UserContract extends CanResetPassword, HasProfilePhotoContract,
     //HasApiTokens, //no sanctum ma passport
-    HasTeamsContract, PassportHasApiTokensContract, HasProfilePhotoContract, TwoFactorAuthenticatableContract, MustVerifyEmail, CanResetPassword, ModelContract
+    HasTeamsContract, ModelContract, MustVerifyEmail, PassportHasApiTokensContract, TwoFactorAuthenticatableContract
 {
 }
