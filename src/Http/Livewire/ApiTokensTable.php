@@ -48,18 +48,18 @@ class ApiTokensTable extends Component implements HasTable
         return view('filament-jet::livewire.api-tokens-table');
     }
 
-    public function edit(Model $record, array $data): void
+    public function edit(Model $model, array $data): void
     {
-        $record->forceFill([
+        $model->forceFill([
             'abilities' => FilamentJet::validPermissions($data['abilities']),
         ])->save();
 
         Filament::notify('success', __('filament-jet::api.update.notify'));
     }
 
-    public function delete(Model $record): void
+    public function delete(Model $model): void
     {
-        $record->delete();
+        $model->delete();
 
         Filament::notify('success', __('filament-jet::api.delete.notify'));
     }
@@ -110,7 +110,7 @@ class ApiTokensTable extends Component implements HasTable
                 ->icon('heroicon-o-pencil-alt')
                 ->modalWidth('sm')
                 ->mountUsing(
-                    fn (ComponentContainer $form, Model $record) => $form->fill($record->toArray())
+                    fn (ComponentContainer $componentContainer, Model $model): ComponentContainer => $componentContainer->fill($model->toArray())
                 )
                 ->form([
                     CheckboxList::make('abilities')
@@ -118,13 +118,11 @@ class ApiTokensTable extends Component implements HasTable
                         ->options($this->sanctumPermissions)
                         ->columns(2)
                         ->required()
-                        ->afterStateHydrated(function ($component, $state) {
+                        ->afterStateHydrated(function ($component, $state): void {
                             $permissions = FilamentJet::$permissions;
 
                             $tokenPermissions = collect($permissions)
-                                ->filter(function ($permission) use ($state) {
-                                    return in_array($permission, $state);
-                                })
+                                ->filter(fn($permission): bool => in_array($permission, $state))
                                 ->values()
                                 ->toArray();
 

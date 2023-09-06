@@ -15,19 +15,19 @@ class AddTeamMember implements AddsTeamMembers
     /**
      * Add a new team member to the given team.
      */
-    public function add(UserContract $user, TeamContract $team, string $email, string $role = null): void
+    public function add(UserContract $userContract, TeamContract $teamContract, string $email, string $role = null): void
     {
-        Gate::forUser($user)->authorize('addTeamMember', $team);
+        Gate::forUser($userContract)->authorize('addTeamMember', $teamContract);
 
         $newTeamMember = FilamentJet::findUserByEmailOrFail($email);
 
-        AddingTeamMember::dispatch($team, $newTeamMember);
+        AddingTeamMember::dispatch($teamContract, $newTeamMember);
 
-        $team->users()->attach(
+        $teamContract->users()->attach(
             $newTeamMember,
             ['role' => $role]
         );
 
-        TeamMemberAdded::dispatch($team, $newTeamMember);
+        TeamMemberAdded::dispatch($teamContract, $newTeamMember);
     }
 }

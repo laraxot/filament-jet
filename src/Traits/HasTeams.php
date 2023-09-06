@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ArtMin96\FilamentJet\Traits;
 
+use ArtMin96\FilamentJet\Role;
 use ArtMin96\FilamentJet\Contracts\TeamContract;
 use ArtMin96\FilamentJet\FilamentJet;
 use ArtMin96\FilamentJet\Models\Team;
@@ -26,13 +27,13 @@ trait HasTeams
     /**
      * Determine if the given team is the current team.
      */
-    public function isCurrentTeam(TeamContract $team): bool
+    public function isCurrentTeam(TeamContract $teamContract): bool
     {
-        if ($team === null || $this->currentTeam === null) {
+        if (!$teamContract instanceof TeamContract || $this->currentTeam === null) {
             return false;
         }
 
-        return $team->id ===
+        return $teamContract->id ===
             $this->currentTeam->id;
     }
 
@@ -56,20 +57,20 @@ trait HasTeams
     /**
      * Switch the user's context to the given team.
      */
-    public function switchTeam(?TeamContract $team): bool
+    public function switchTeam(?TeamContract $teamContract): bool
     {
-        if ($team === null) {
+        if (!$teamContract instanceof TeamContract) {
             return false;
         }
-        if (! $this->belongsToTeam($team)) {
+        if (! $this->belongsToTeam($teamContract)) {
             return false;
         }
 
         $this->forceFill([
-            'current_team_id' => $team->id,
+            'current_team_id' => $teamContract->id,
         ])->save();
 
-        $this->setRelation('currentTeam', $team);
+        $this->setRelation('currentTeam', $teamContract);
 
         return true;
     }
@@ -132,45 +133,43 @@ trait HasTeams
     /**
      * Determine if the user owns the given team.
      */
-    public function ownsTeam(?TeamContract $team): bool
+    public function ownsTeam(?TeamContract $teamContract): bool
     {
-        if (is_null($team)) {
+        if (is_null($teamContract)) {
             return false;
         }
 
-        return $this->id === $team->{$this->getForeignKey()};
+        return $this->id === $teamContract->{$this->getForeignKey()};
     }
 
     /**
      * Determine if the user belongs to the given team.
      */
-    public function belongsToTeam(?TeamContract $team): bool
+    public function belongsToTeam(?TeamContract $teamContract): bool
     {
-        if (is_null($team)) {
+        if (is_null($teamContract)) {
             return false;
         }
 
-        return $this->ownsTeam($team) || $this->teams->contains(function ($t) use ($team) {
-            return $t->getKey() === $team->getKey();
-        });
+        return $this->ownsTeam($teamContract) || $this->teams->contains(fn($t): bool => $t->getKey() === $teamContract->getKey());
     }
 
     /**
      * Get the role that the user has on the team.
      *
-     * @return \ArtMin96\FilamentJet\Role|null
+     * @return Role|null
      */
-    public function teamRole(TeamContract $team)
+    public function teamRole(TeamContract $teamContract)
     {
-        if ($this->ownsTeam($team)) {
+        if ($this->ownsTeam($teamContract)) {
             return new OwnerRole;
         }
 
-        if (! $this->belongsToTeam($team)) {
+        if (! $this->belongsToTeam($teamContract)) {
             return null;
         }
 
-        $role = $team->users
+        $role = $teamContract->users
             ->where('id', $this->id)
             ->first()
             ->membership
@@ -182,13 +181,13 @@ trait HasTeams
     /**
      * Determine if the user has the given role on the given team.
      */
-    public function hasTeamRole(TeamContract $team, string $role): bool
+    public function hasTeamRole(TeamContract $teamContract, string $role): bool
     {
-        if ($this->ownsTeam($team)) {
+        if ($this->ownsTeam($teamContract)) {
             return true;
         }
 
-        return $this->belongsToTeam($team) && optional(FilamentJet::findRole($team->users->where(
+        return $this->belongsToTeam($teamContract) && optional(FilamentJet::findRole($teamContract->users->where(
             'id',
             $this->id
         )->first()?->membership?->role))->key === $role;
@@ -197,29 +196,29 @@ trait HasTeams
     /**
      * Get the user's permissions for the given team.
      */
-    public function teamPermissions(TeamContract $team): array
+    public function teamPermissions(TeamContract $teamContract): array
     {
-        if ($this->ownsTeam($team)) {
+        if ($this->ownsTeam($teamContract)) {
             return ['*'];
         }
 
-        if (! $this->belongsToTeam($team)) {
+        if (! $this->belongsToTeam($teamContract)) {
             return [];
         }
 
-        return (array) optional($this->teamRole($team))->permissions;
+        return (array) optional($this->teamRole($teamContract))->permissions;
     }
 
     /**
      * Determine if the user has the given permission on the given team.
      */
-    public function hasTeamPermission(TeamContract $team, string $permission): bool
+    public function hasTeamPermission(TeamContract $teamContract, string $permission): bool
     {
-        if ($this->ownsTeam($team)) {
+        if ($this->ownsTeam($teamContract)) {
             return true;
         }
 
-        if (! $this->belongsToTeam($team)) {
+        if (! $this->belongsToTeam($teamContract)) {
             return false;
         }
 
@@ -231,7 +230,7 @@ trait HasTeams
             return false;
         }
 
-        $permissions = $this->teamPermissions($team);
+        $permissions = $this->teamPermissions($teamContract);
 
         return in_array($permission, $permissions)
             || in_array('*', $permissions)

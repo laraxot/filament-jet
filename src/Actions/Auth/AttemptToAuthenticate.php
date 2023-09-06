@@ -12,16 +12,15 @@ use Illuminate\Validation\ValidationException;
 class AttemptToAuthenticate
 {
     /**
-     * The guard implementation.
-     */
-    protected StatefulGuard $guard;
-
-    /**
      * Create a new controller instance.
      */
-    public function __construct(StatefulGuard $guard)
+    public function __construct(
+        /**
+         * The guard implementation.
+         */
+        protected StatefulGuard $statefulGuard
+    )
     {
-        $this->guard = $guard;
     }
 
     /**
@@ -30,10 +29,10 @@ class AttemptToAuthenticate
      */
     public function handle(array $data, Closure $next)
     {
-        if ($this->guard->attempt([
+        if ($this->statefulGuard->attempt([
             FilamentJet::username() => $data[FilamentJet::username()],
             'password' => $data['password'],
-        ], boolval($data['remember']))) {
+        ], (bool) $data['remember'])) {
             return $next($data);
         }
 
@@ -43,7 +42,7 @@ class AttemptToAuthenticate
     /**
      * Throw a failed authentication validation exception.
      */
-    protected function throwFailedAuthenticationException(): void
+    protected function throwFailedAuthenticationException(): never
     {
         throw ValidationException::withMessages([
             FilamentJet::username() => [trans('auth.failed')],

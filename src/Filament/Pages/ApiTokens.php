@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ArtMin96\FilamentJet\Filament\Pages;
 
+use Laravel\Passport\PersonalAccessTokenResult;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Datas\FilamentJetData;
 use ArtMin96\FilamentJet\Filament\Traits\HasCachedAction;
@@ -100,11 +101,11 @@ class ApiTokens extends Page
     /**
      * Undocumented function.
      *
-     * @param  \Laravel\Passport\PersonalAccessTokenResult  $token
+     * @param PersonalAccessTokenResult $token
      */
     protected function displayTokenValue($token): void
     {
-        $this->plainTextToken = explode('|', $token->plainTextToken, 2)[1];
+        $this->plainTextToken = explode('|', (string) $token->plainTextToken, 2)[1];
 
         $this->dispatchBrowserEvent('open-modal', ['id' => 'showing-token-modal']);
     }

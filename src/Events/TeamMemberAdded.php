@@ -11,23 +11,20 @@ class TeamMemberAdded
     use Dispatchable;
 
     /**
-     * The team instance.
-     */
-    public TeamContract $team;
-
-    /**
-     * The team member being added.
-     */
-    public UserContract $user;
-
-    /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(TeamContract $team, UserContract $user)
+    public function __construct(
+        /**
+         * The team instance.
+         */
+        public TeamContract $teamContract,
+        /**
+         * The team member being added.
+         */
+        public UserContract $userContract
+    )
     {
-        $this->team = $team;
-        $this->user = $user;
     }
 }

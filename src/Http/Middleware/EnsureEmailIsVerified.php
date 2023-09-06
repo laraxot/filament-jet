@@ -2,6 +2,9 @@
 
 namespace ArtMin96\FilamentJet\Http\Middleware;
 
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Http\RedirectResponse;
 use Closure;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Redirect;
@@ -12,9 +15,9 @@ class EnsureEmailIsVerified
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  string|null  $redirectToRoute
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse|null
+     * @return Response|RedirectResponse|null
      */
     public function handle($request, Closure $next, $redirectToRoute = null)
     {
@@ -23,7 +26,7 @@ class EnsureEmailIsVerified
                 ! $request->user()->hasVerifiedEmail())) {
             return $request->expectsJson()
                 ? abort(403, 'Your email address is not verified.')
-                : Redirect::guest(URL::route($redirectToRoute ? $redirectToRoute : jetRouteActions()->emailVerificationPromptRoute()));
+                : Redirect::guest(URL::route($redirectToRoute ?: jetRouteActions()->emailVerificationPromptRoute()));
         }
 
         return $next($request);

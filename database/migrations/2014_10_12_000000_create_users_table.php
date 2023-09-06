@@ -8,16 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->foreignId('current_team_id')->nullable();
-            $table->string('profile_photo_path', 2048)->nullable();
-            $table->timestamps();
+        Schema::create('users', function (Blueprint $blueprint): void {
+            $blueprint->id();
+            $blueprint->string('name');
+            $blueprint->string('email')->unique();
+            $blueprint->timestamp('email_verified_at')->nullable();
+            $blueprint->string('password');
+            $blueprint->rememberToken();
+            $blueprint->foreignId('current_team_id')->nullable();
+            $blueprint->string('profile_photo_path', 2048)->nullable();
+            $blueprint->timestamps();
         });
     }
 

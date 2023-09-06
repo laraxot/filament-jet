@@ -12,17 +12,16 @@ class RecoveryCodesGenerated
     use Dispatchable;
 
     /**
-     * The user instance.
-     */
-    public UserContract $user;
-
-    /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(UserContract $user)
+    public function __construct(
+        /**
+         * The user instance.
+         */
+        public UserContract $userContract
+    )
     {
-        $this->user = $user;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace ArtMin96\FilamentJet\Actions;
 
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use ArtMin96\FilamentJet\Contracts\UpdatesUserProfileInformation;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Features;
@@ -16,20 +17,20 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      *
      * @param  array<string, string>  $input
      */
-    public function update(UserContract $user, array $input): void
+    public function update(UserContract $userContract, array $input): void
     {
         if (Features::managesProfilePhotos()) {
-            if (! method_exists($user, 'updateProfilePhoto')) {
+            if (! method_exists($userContract, 'updateProfilePhoto')) {
                 throw new Exception('method updateProfilePhoto not exists in user');
             }
-            $user->updateProfilePhoto($input['profile_photo_path']);
+            $userContract->updateProfilePhoto($input['profile_photo_path']);
         }
 
-        if ($input[FilamentJet::email()] !== $user->{FilamentJet::email()} &&
-            $user instanceof MustVerifyEmail) {
-            $this->updateVerifiedUser($user, $input);
+        if ($input[FilamentJet::email()] !== $userContract->{FilamentJet::email()} &&
+            $userContract instanceof MustVerifyEmail) {
+            $this->updateVerifiedUser($userContract, $input);
         } else {
-            $user->forceFill([
+            $userContract->forceFill([
                 'name' => $input['name'],
                 FilamentJet::username() => $input[FilamentJet::username()],
             ])->save();
@@ -41,16 +42,16 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      *
      * @param  array<string, string>  $input
      */
-    protected function updateVerifiedUser(UserContract $user, array $input): void
+    protected function updateVerifiedUser(UserContract $userContract, array $input): void
     {
-        $user->forceFill([
+        $userContract->forceFill([
             'name' => $input['name'],
             FilamentJet::email() => $input[FilamentJet::email()],
             FilamentJet::email().'_verified_at' => null,
         ])->save();
 
         app()->bind(
-            \Illuminate\Auth\Listeners\SendEmailVerificationNotification::class,
+            SendEmailVerificationNotification::class,
             \ArtMin96\FilamentJet\Listeners\Auth\SendEmailVerificationNotification::class,
         );
     }

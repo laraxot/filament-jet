@@ -34,7 +34,7 @@ class InstallCommand extends Command
      *
      * @return int|null
      */
-    public function handle()
+    public function handle(): void
     {
         // Publish...
         $this->callSilent('vendor:publish', ['--tag' => 'filament-jet-config', '--force' => true]);
@@ -91,7 +91,7 @@ class InstallCommand extends Command
         if (! class_exists('CreateSessionsTable')) {
             try {
                 $this->call('session:table');
-            } catch (Exception $e) {
+            } catch (Exception) {
             }
         }
 
@@ -110,7 +110,7 @@ class InstallCommand extends Command
         // Sanctum...
         (new Process([$this->phpBinary(), 'artisan', 'vendor:publish', '--provider=Laravel\Sanctum\SanctumServiceProvider', '--force'], base_path()))
             ->setTimeout(null)
-            ->run(function ($type, $output) {
+            ->run(function ($type, $output): void {
                 $this->output->write($output);
             });
 
@@ -249,10 +249,8 @@ class InstallCommand extends Command
 
     /**
      * Get the route definition(s) that should be installed for Livewire.
-     *
-     * @return string
      */
-    protected function routeDefinition()
+    protected function routeDefinition(): string
     {
         return <<<'EOF'
 Route::domain(config("filament.domain"))
@@ -271,11 +269,9 @@ EOF;
     /**
      * Install the service provider in the application configuration file.
      *
-     * @param  string  $after
-     * @param  string  $name
      * @return void
      */
-    protected function installServiceProviderAfter($after, $name)
+    protected function installServiceProviderAfter(string $after, string $name)
     {
         /**
          * @var string $app
@@ -316,10 +312,8 @@ EOF;
 
     /**
      * Get the path to the appropriate PHP binary.
-     *
-     * @return string
      */
-    protected function phpBinary()
+    protected function phpBinary(): string
     {
         return (new PhpExecutableFinder)->find(false) ?: 'php';
     }
@@ -343,7 +337,7 @@ EOF;
             }
         }
 
-        $process->run(function ($type, $line) {
+        $process->run(function ($type, string $line): void {
             $this->output->write('    '.$line);
         });
     }

@@ -2,6 +2,7 @@
 
 namespace ArtMin96\FilamentJet\Actions;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Contracts\ResetsUserPasswords;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use Exception;
@@ -16,19 +17,19 @@ class ResetUserPassword implements ResetsUserPasswords
      *
      * @param  array<string, string>  $input
      */
-    public function reset(UserContract $user, array $input): void
+    public function reset(UserContract $userContract, array $input): void
     {
-        if (! method_exists($user, 'forceFill')) {
+        if (! method_exists($userContract, 'forceFill')) {
             throw new Exception('forceFill method not exists in user');
         }
-        $user->forceFill([
+        $userContract->forceFill([
             'password' => Hash::make($input['password']),
             'remember_token' => Str::random(60),
         ])->save();
-        if (! $user instanceof \Illuminate\Contracts\Auth\Authenticatable) {
+        if (! $userContract instanceof Authenticatable) {
             throw new Exception('user must implements Authenticatable');
         }
 
-        event(new PasswordReset($user));
+        event(new PasswordReset($userContract));
     }
 }

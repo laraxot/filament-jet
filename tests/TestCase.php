@@ -15,11 +15,11 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'ArtMin96\\FilamentJet\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName): string => 'ArtMin96\\FilamentJet\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
-    public function getEnvironmentSetUp($app)
+    public function getEnvironmentSetUp($app): void
     {
         config()->set('database.default', 'testing');
 
@@ -29,7 +29,7 @@ class TestCase extends Orchestra
         */
     }
 
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [
             LivewireServiceProvider::class,

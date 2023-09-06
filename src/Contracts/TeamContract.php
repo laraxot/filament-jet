@@ -58,7 +58,7 @@ interface TeamContract extends ModelContract
     /**
      * Determine if the given user belongs to the team.
      */
-    public function hasUser(UserContract $user): bool;
+    public function hasUser(UserContract $userContract): bool;
 
     /**
      * Determine if the given email address belongs to a user on the team.
@@ -68,7 +68,7 @@ interface TeamContract extends ModelContract
     /**
      * Determine if the given user has the given permission on the team.
      */
-    public function userHasPermission(UserContract $user, string $permission): bool;
+    public function userHasPermission(UserContract $userContract, string $permission): bool;
 
     /**
      * Get all of the pending user invitations for the team.
@@ -78,7 +78,7 @@ interface TeamContract extends ModelContract
     /**
      * Remove the given user from the team.
      */
-    public function removeUser(UserContract $user): void;
+    public function removeUser(UserContract $userContract): void;
 
     /**
      * Purge all of the team's resources.

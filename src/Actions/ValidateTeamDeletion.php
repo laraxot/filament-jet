@@ -14,11 +14,11 @@ class ValidateTeamDeletion
     /**
      * Validate that the team can be deleted by the given user.
      */
-    public function validate(UserContract $user, TeamContract $team): void
+    public function validate(UserContract $userContract, TeamContract $teamContract): void
     {
-        Gate::forUser($user)->authorize('delete', $team);
+        Gate::forUser($userContract)->authorize('delete', $teamContract);
 
-        if ($team->personal_team) {
+        if ($teamContract->personal_team) {
             Notification::make()
                 ->title(__('filament-jet::teams/delete.messages.cannot_delete_personal_team'))
                 ->warning()

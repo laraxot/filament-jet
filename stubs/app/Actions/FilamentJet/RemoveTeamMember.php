@@ -18,23 +18,23 @@ class RemoveTeamMember implements RemovesTeamMembers
     /**
      * Remove the team member from the given team.
      */
-    public function remove(UserContract $user, TeamContract $team, UserContract $teamMember): void
+    public function remove(UserContract $user, TeamContract $teamContract, UserContract $teamMember): void
     {
-        $this->authorize($user, $team, $teamMember);
+        $this->authorize($user, $teamContract, $teamMember);
 
-        $this->ensureUserDoesNotOwnTeam($teamMember, $team);
+        $this->ensureUserDoesNotOwnTeam($teamMember, $teamContract);
 
-        $team->removeUser($teamMember);
+        $teamContract->removeUser($teamMember);
 
-        TeamMemberRemoved::dispatch($team, $teamMember);
+        TeamMemberRemoved::dispatch($teamContract, $teamMember);
     }
 
     /**
      * Authorize that the user can remove the team member.
      */
-    protected function authorize(UserContract $user, TeamContract $team, UserContract $teamMember): void
+    protected function authorize(UserContract $user, TeamContract $teamContract, UserContract $teamMember): void
     {
-        if (! Gate::forUser($user)->check('removeTeamMember', $team)
+        if (! Gate::forUser($user)->check('removeTeamMember', $teamContract)
             && $user->id !== $teamMember->id) {
             throw new AuthorizationException;
         }
@@ -43,9 +43,9 @@ class RemoveTeamMember implements RemovesTeamMembers
     /**
      * Ensure that the currently authenticated user does not own the team.
      */
-    protected function ensureUserDoesNotOwnTeam(UserContract $teamMember, TeamContract $team): void
+    protected function ensureUserDoesNotOwnTeam(UserContract $userContract, TeamContract $teamContract): void
     {
-        if ($teamMember->id === $team->owner?->id) {
+        if ($userContract->id === $teamContract->owner?->id) {
             throw ValidationException::withMessages(['team' => [__('filament-jet::teams/members.messages.cannot_leave_own_team')]])->errorBag('removeTeamMember');
         }
     }

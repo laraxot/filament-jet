@@ -10,5 +10,5 @@ interface DeletesTeams
     /**
      * ---
      */
-    public function delete(TeamContract $team): void;
+    public function delete(TeamContract $teamContract): void;
 }

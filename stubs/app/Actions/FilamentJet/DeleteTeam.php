@@ -12,8 +12,8 @@ class DeleteTeam implements DeletesTeams
     /**
      * Delete the given team.
      */
-    public function delete(TeamContract $team): void
+    public function delete(TeamContract $teamContract): void
     {
-        $team->purge();
+        $teamContract->purge();
     }
 }

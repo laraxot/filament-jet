@@ -15,12 +15,12 @@ class UpdateUserPassword implements UpdatesUserPasswords
     /**
      * Update the user's password.
      */
-    public function update(UserContract $user, array $input): void
+    public function update(UserContract $userContract, array $input): void
     {
-        if (! method_exists($user, 'forceFill')) {
+        if (! method_exists($userContract, 'forceFill')) {
             throw new Exception('forceFill method not exists in user');
         }
-        $user->forceFill([
+        $userContract->forceFill([
             'password' => Hash::make($input['password']),
         ])->save();
     }

@@ -14,11 +14,11 @@ class UpdateTeamName implements UpdatesTeamNames
      *
      * @param  array<string, string>  $input
      */
-    public function update(UserContract $user, TeamContract $team, array $input): void
+    public function update(UserContract $userContract, TeamContract $teamContract, array $input): void
     {
-        Gate::forUser($user)->authorize('update', $team);
+        Gate::forUser($userContract)->authorize('update', $teamContract);
 
-        $team->forceFill([
+        $teamContract->forceFill([
             'name' => $input['name'],
         ])->save();
     }

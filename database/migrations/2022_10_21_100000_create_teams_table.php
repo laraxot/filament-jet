@@ -8,12 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('teams', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->index();
-            $table->string('name');
-            $table->boolean('personal_team');
-            $table->timestamps();
+        Schema::create('teams', function (Blueprint $blueprint): void {
+            $blueprint->id();
+            $blueprint->foreignId('user_id')->index();
+            $blueprint->string('name');
+            $blueprint->boolean('personal_team');
+            $blueprint->timestamps();
         });
     }
 

@@ -2,6 +2,7 @@
 
 namespace ArtMin96\FilamentJet\Traits;
 
+use Spatie\PersonalDataExport\ExportsPersonalData;
 use ArtMin96\FilamentJet\Jobs\CreatePersonalDataExportJob;
 use Exception;
 use Illuminate\Bus\Batch;
@@ -24,7 +25,7 @@ trait ProcessesExport
      */
     public function export(): void
     {
-        if (! $this->user instanceof \Spatie\PersonalDataExport\ExportsPersonalData) {
+        if (! $this->user instanceof ExportsPersonalData) {
             throw new Exception('user must implemtents Spatie\PersonalDataExport\ExportsPersonalData');
         }
         $batch = Bus::batch(new CreatePersonalDataExportJob($this->user))
@@ -32,9 +33,6 @@ trait ProcessesExport
             ->allowFailures()
             ->dispatch();
 
-        /**
-         * @var int|null
-         */
         $batch_id = (int) $batch->id;
 
         $this->exportBatchId = $batch_id;

@@ -16,17 +16,16 @@ abstract class TeamEvent
     use SerializesModels;
 
     /**
-     * The team instance.
-     */
-    public TeamContract $team;
-
-    /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(TeamContract $team)
+    public function __construct(
+        /**
+         * The team instance.
+         */
+        public TeamContract $teamContract
+    )
     {
-        $this->team = $team;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace ArtMin96\FilamentJet\Filament\Traits;
 
+use Illuminate\Validation\ValidationException;
 use ArtMin96\FilamentJet\Actions\ConfirmTwoFactorAuthentication;
 use ArtMin96\FilamentJet\Actions\DisableTwoFactorAuthentication;
 use ArtMin96\FilamentJet\Actions\EnableTwoFactorAuthentication;
@@ -48,12 +49,10 @@ trait HasTwoFactorAuthentication
 
     /**
      * Enable two factor authentication for the user.
-     *
-     * @return void
      */
-    public function enableTwoFactorAuthentication(EnableTwoFactorAuthentication $enable)
+    public function enableTwoFactorAuthentication(EnableTwoFactorAuthentication $enableTwoFactorAuthentication): void
     {
-        $enable($this->user);
+        $enableTwoFactorAuthentication($this->user);
 
         $this->showingQrCode = true;
 
@@ -69,15 +68,15 @@ trait HasTwoFactorAuthentication
      *
      * @return void
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
-    public function confirmTwoFactorAuthentication(ConfirmTwoFactorAuthentication $confirm)
+    public function confirmTwoFactorAuthentication(ConfirmTwoFactorAuthentication $confirmTwoFactorAuthentication)
     {
         if ($this->two_factor_code === null) {
             throw new Exception('['.__LINE__.']['.class_basename(self::class).']');
         }
 
-        $confirm($this->user, $this->two_factor_code);
+        $confirmTwoFactorAuthentication($this->user, $this->two_factor_code);
 
         Notification::make()
             ->title(__('filament-jet::account/two-factor.messages.verified'))
@@ -93,12 +92,10 @@ trait HasTwoFactorAuthentication
 
     /**
      * Generate new recovery codes for the user.
-     *
-     * @return void
      */
-    public function regenerateRecoveryCodes(GenerateNewRecoveryCodes $generate)
+    public function regenerateRecoveryCodes(GenerateNewRecoveryCodes $generateNewRecoveryCodes): void
     {
-        $generate($this->user);
+        $generateNewRecoveryCodes($this->user);
 
         $this->showingRecoveryCodes = true;
 
@@ -110,12 +107,10 @@ trait HasTwoFactorAuthentication
 
     /**
      * Disable two factor authentication for the user.
-     *
-     * @return void
      */
-    public function disableTwoFactorAuthentication(DisableTwoFactorAuthentication $disable)
+    public function disableTwoFactorAuthentication(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
     {
-        $disable($this->user);
+        $disableTwoFactorAuthentication($this->user);
 
         $this->showingQrCode = false;
         $this->showingConfirmation = false;
@@ -129,40 +124,32 @@ trait HasTwoFactorAuthentication
 
     /**
      * Undocumented function
-     *
-     * @return void
      */
-    public function exportPersonalData()
+    public function exportPersonalData(): void
     {
         $this->export();
     }
 
     /**
      * Display the user's recovery codes.
-     *
-     * @return void
      */
-    public function showRecoveryCodes()
+    public function showRecoveryCodes(): void
     {
         $this->showingRecoveryCodes = true;
     }
 
     /**
      * Hide the user's recovery codes.
-     *
-     * @return void
      */
-    public function hideRecoveryCodes()
+    public function hideRecoveryCodes(): void
     {
         $this->showingRecoveryCodes = false;
     }
 
     /**
      * Determine if two factor authentication is enabled.
-     *
-     * @return bool
      */
-    public function getEnabledProperty()
+    public function getEnabledProperty(): bool
     {
         return ! empty($this->user->two_factor_secret);
     }

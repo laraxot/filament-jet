@@ -49,7 +49,7 @@ use PragmaRX\Google2FA\Google2FA;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-include 'helpers.php';
+include __DIR__ . '/helpers.php';
 
 // class FilamentJetServiceProvider extends PluginServiceProvider
 class FilamentJetServiceProvider extends PackageServiceProvider
@@ -128,7 +128,7 @@ class FilamentJetServiceProvider extends PackageServiceProvider
         FilamentJet::deleteUsersUsing(DeleteUser::class);
         */
         if (config('filament-jet.user_menu.account') || config('filament-jet.user_menu.api_tokens.show')) {
-            Filament::serving(function () {
+            Filament::serving(function (): void {
                 $userMenuItems = [];
                 /*
                 if (config('filament-jet.user_menu.account')) {
@@ -159,20 +159,16 @@ class FilamentJetServiceProvider extends PackageServiceProvider
         }
     }
 
-    public function register()
+    public function register(): void
     {
         parent::register();
 
-        $this->app->singleton(TwoFactorAuthenticationProviderContract::class, function ($app) {
-            return new TwoFactorAuthenticationProvider(
-                $app->make(Google2FA::class),
-                $app->make(Repository::class)
-            );
-        });
+        $this->app->singleton(TwoFactorAuthenticationProviderContract::class, fn($app): \ArtMin96\FilamentJet\TwoFactorAuthenticationProvider => new TwoFactorAuthenticationProvider(
+            $app->make(Google2FA::class),
+            $app->make(Repository::class)
+        ));
 
-        $this->app->bind(StatefulGuard::class, function () {
-            return Filament::auth();
-        });
+        $this->app->bind(StatefulGuard::class, fn() => Filament::auth());
     }
 
     /**
@@ -180,7 +176,7 @@ class FilamentJetServiceProvider extends PackageServiceProvider
      */
     protected function configureComponents(): void
     {
-        $this->callAfterResolving(BladeCompiler::class, function () {
+        $this->callAfterResolving(BladeCompiler::class, function (): void {
             $this->registerComponent('auth-card');
             $this->registerComponent('action-section');
             $this->registerComponent('form-section');
@@ -267,7 +263,7 @@ class FilamentJetServiceProvider extends PackageServiceProvider
                 config('filament-jet.user_menu.team_settings.show')
                 || config('filament-jet.user_menu.create_team.show')
             ) {
-                Filament::serving(function () {
+                Filament::serving(function (): void {
                     $userMenuItems = [];
 
                     if (config('filament-jet.user_menu.team_settings.show')) {

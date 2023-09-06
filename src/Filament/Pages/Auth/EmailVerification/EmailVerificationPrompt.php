@@ -2,6 +2,7 @@
 
 namespace ArtMin96\FilamentJet\Filament\Pages\Auth\EmailVerification;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Features;
 use ArtMin96\FilamentJet\Filament\Pages\CardPage;
@@ -67,7 +68,7 @@ class EmailVerificationPrompt extends CardPage
         }
 
         $user = Filament::auth()->user();
-        if ($user === null) {
+        if (!$user instanceof Authenticatable) {
             throw new Exception('strange things');
         }
 
@@ -80,10 +81,10 @@ class EmailVerificationPrompt extends CardPage
             throw new Exception('strange things');
         }
 
-        $notification = new VerifyEmail;
-        $notification->url = FilamentJet::getVerifyEmailUrl($user);
+        $verifyEmail = new VerifyEmail;
+        $verifyEmail->url = FilamentJet::getVerifyEmailUrl($user);
 
-        $user->notify($notification);
+        $user->notify($verifyEmail);
 
         Notification::make()
             ->title(__('filament-jet::auth/email-verification/email-verification-prompt.messages.notification_resent'))

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Illuminate\Database\Eloquent\Model;
 use ArtMin96\FilamentJet\Features;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -13,7 +14,7 @@ class UserFactory extends Factory
     /**
      * The name of the factory's corresponding model.
      *
-     * @var class-string<\Illuminate\Database\Eloquent\Model>
+     * @var class-string<Model>
      */
     protected $model = User::class;
 
@@ -40,11 +41,9 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'email_verified_at' => null,
-            ];
-        });
+        return $this->state(fn(array $attributes): array => [
+            'email_verified_at' => null,
+        ]);
     }
 
     /**
@@ -60,9 +59,7 @@ class UserFactory extends Factory
 
         return $this->has(
             Team::factory()
-                ->state(function (array $attributes, User $user) {
-                    return ['name' => $user->name.'\'s Team', 'user_id' => $user->id, 'personal_team' => true];
-                }),
+                ->state(fn(array $attributes, User $user): array => ['name' => $user->name.'\'s Team', 'user_id' => $user->id, 'personal_team' => true]),
             'ownedTeams'
         );
     }

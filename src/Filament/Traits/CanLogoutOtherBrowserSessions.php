@@ -9,10 +9,8 @@ trait CanLogoutOtherBrowserSessions
 {
     /**
      * Log out from other browser sessions.
-     *
-     * @return void
      */
-    public function logoutOtherBrowserSessions()
+    public function logoutOtherBrowserSessions(): void
     {
         if (config('session.driver') !== 'database') {
             return;

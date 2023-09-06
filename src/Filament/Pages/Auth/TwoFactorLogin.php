@@ -2,6 +2,7 @@
 
 namespace ArtMin96\FilamentJet\Filament\Pages\Auth;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Contracts\TwoFactorAuthenticationProvider;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Events\RecoveryCodeReplaced;
@@ -64,7 +65,7 @@ class TwoFactorLogin extends CardPage
         return $code && tap(app(TwoFactorAuthenticationProvider::class)->verify(
             (string) decrypt($this->challengedUser()->two_factor_secret),
             $code
-        ), function ($result) {
+        ), function ($result): void {
             if ($result) {
                 session()->forget("{$this->sessionPrefix}login.id");
             }
@@ -80,9 +81,7 @@ class TwoFactorLogin extends CardPage
             return null;
         }
 
-        return tap(collect($this->challengedUser()->recoveryCodes())->first(function ($code) use ($recoveryCode) {
-            return hash_equals($code, $recoveryCode) ? $code : null;
-        }), function ($code) {
+        return tap(collect($this->challengedUser()->recoveryCodes())->first(fn($code) => hash_equals($code, $recoveryCode) ? $code : null), function ($code): void {
             if ($code) {
                 session()->forget("{$this->sessionPrefix}login.id");
             }
@@ -94,7 +93,7 @@ class TwoFactorLogin extends CardPage
      */
     public function hasChallengedUser(): bool
     {
-        if ($this->challengedUser) {
+        if ($this->challengedUser instanceof UserContract) {
             return true;
         }
         $userProvider = Filament::auth()->getProvider();
@@ -116,7 +115,7 @@ class TwoFactorLogin extends CardPage
      */
     public function challengedUser()
     {
-        if ($this->challengedUser) {
+        if ($this->challengedUser instanceof UserContract) {
             return $this->challengedUser;
         }
 
@@ -170,12 +169,12 @@ class TwoFactorLogin extends CardPage
 
         $data = $this->form->getState();
 
-        $user = $this->challengedUser();
+        $userContract = $this->challengedUser();
 
         if ($code = $this->validRecoveryCode($data['recoveryCode'] ?? '')) {
-            $user->replaceRecoveryCode($code);
+            $userContract->replaceRecoveryCode($code);
 
-            event(new RecoveryCodeReplaced($user, $code));
+            event(new RecoveryCodeReplaced($userContract, $code));
         } elseif (! $this->hasValidCode($data['code'] ?? '')) {
             [$key, $message] = isset($data['recoveryCode'])
                 ? ['recoveryCode', __('filament-jet::auth/two-factor-login.messages.failed.recoveryCode')]
@@ -186,11 +185,11 @@ class TwoFactorLogin extends CardPage
             return null;
         }
 
-        if (! $user instanceof \Illuminate\Contracts\Auth\Authenticatable) {
+        if (! $userContract instanceof Authenticatable) {
             throw new Exception('strange things');
         }
 
-        Filament::auth()->login($user, $this->remember());
+        Filament::auth()->login($userContract, $this->remember());
 
         session()->regenerate();
 

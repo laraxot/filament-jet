@@ -10,23 +10,20 @@ class RecoveryCodeReplaced
     use SerializesModels;
 
     /**
-     * The authenticated user.
-     */
-    public UserContract $user;
-
-    /**
-     * The recovery code.
-     */
-    public string $code;
-
-    /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(UserContract $user, string $code)
+    public function __construct(
+        /**
+         * The authenticated user.
+         */
+        public UserContract $userContract,
+        /**
+         * The recovery code.
+         */
+        public string $code
+    )
     {
-        $this->user = $user;
-        $this->code = $code;
     }
 }

@@ -10,20 +10,17 @@ use Illuminate\Validation\ValidationException;
 class ConfirmTwoFactorAuthentication
 {
     /**
-     * The two factor authentication provider.
-     *
-     * @var \ArtMin96\FilamentJet\Contracts\TwoFactorAuthenticationProvider
-     */
-    protected $provider;
-
-    /**
      * Create a new action instance.
      *
      * @return void
      */
-    public function __construct(TwoFactorAuthenticationProvider $provider)
+    public function __construct(
+        /**
+         * The two factor authentication provider.
+         */
+        protected TwoFactorAuthenticationProvider $twoFactorAuthenticationProvider
+    )
     {
-        $this->provider = $provider;
     }
 
     /**
@@ -39,7 +36,7 @@ class ConfirmTwoFactorAuthentication
     {
         if (empty($user->two_factor_secret) ||
             empty($code) ||
-            ! $this->provider->verify(decrypt($user->two_factor_secret), $code)) {
+            ! $this->twoFactorAuthenticationProvider->verify(decrypt($user->two_factor_secret), $code)) {
             throw ValidationException::withMessages([
                 'two_factor_code' => [__('filament-jet::account/two-factor.messages.invalid_confirmation_code')],
             ])->errorBag('confirmTwoFactorAuthentication');

@@ -7,5 +7,5 @@ namespace ArtMin96\FilamentJet\Contracts;
  */
 interface UpdatesTeamNames
 {
-    public function update(UserContract $user, TeamContract $team, array $input): void;
+    public function update(UserContract $userContract, TeamContract $teamContract, array $input): void;
 }
