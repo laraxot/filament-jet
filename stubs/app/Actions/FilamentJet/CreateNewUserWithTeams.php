@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace ArtMin96\FilamentJet\Actions;
 
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
-use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Contracts\CreatesNewUsers;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Features;
 use ArtMin96\FilamentJet\FilamentJet;
 use Exception;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -24,7 +24,7 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): UserContract
     {
-        return DB::transaction(fn() => tap(FilamentJet::userModel()::create([
+        return DB::transaction(fn () => tap(FilamentJet::userModel()::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),

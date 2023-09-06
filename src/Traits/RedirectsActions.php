@@ -3,8 +3,8 @@
 namespace ArtMin96\FilamentJet\Traits;
 
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Routing\Redirector;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 
 trait RedirectsActions
 {

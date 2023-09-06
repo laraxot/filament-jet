@@ -24,7 +24,6 @@ class TeamSwitched
          * The team member that was updated.
          */
         public UserContract $userContract
-    )
-    {
+    ) {
     }
 }

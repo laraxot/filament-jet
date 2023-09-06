@@ -2,12 +2,12 @@
 
 namespace ArtMin96\FilamentJet\Models;
 
-use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use ArtMin96\FilamentJet\Contracts\TeamContract;
 use ArtMin96\FilamentJet\FilamentJet;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * ArtMin96\FilamentJet\Models\TeamInvitation

@@ -21,7 +21,6 @@ class InvitingTeamMember
         public TeamContract $teamContract,
         public mixed $email,
         public mixed $role
-    )
-    {
+    ) {
     }
 }

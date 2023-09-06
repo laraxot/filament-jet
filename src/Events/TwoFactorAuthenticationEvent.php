@@ -21,7 +21,6 @@ abstract class TwoFactorAuthenticationEvent
          * The user instance.
          */
         public UserContract $userContract
-    )
-    {
+    ) {
     }
 }

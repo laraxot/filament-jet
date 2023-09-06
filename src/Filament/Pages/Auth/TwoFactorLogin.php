@@ -2,7 +2,6 @@
 
 namespace ArtMin96\FilamentJet\Filament\Pages\Auth;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Contracts\TwoFactorAuthenticationProvider;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Events\RecoveryCodeReplaced;
@@ -16,6 +15,7 @@ use Filament\Facades\Filament;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 
@@ -81,7 +81,7 @@ class TwoFactorLogin extends CardPage
             return null;
         }
 
-        return tap(collect($this->challengedUser()->recoveryCodes())->first(fn($code) => hash_equals($code, $recoveryCode) ? $code : null), function ($code): void {
+        return tap(collect($this->challengedUser()->recoveryCodes())->first(fn ($code) => hash_equals($code, $recoveryCode) ? $code : null), function ($code): void {
             if ($code) {
                 session()->forget("{$this->sessionPrefix}login.id");
             }

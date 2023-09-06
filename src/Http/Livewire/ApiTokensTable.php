@@ -122,7 +122,7 @@ class ApiTokensTable extends Component implements HasTable
                             $permissions = FilamentJet::$permissions;
 
                             $tokenPermissions = collect($permissions)
-                                ->filter(fn($permission): bool => in_array($permission, $state))
+                                ->filter(fn ($permission): bool => in_array($permission, $state))
                                 ->values()
                                 ->toArray();
 

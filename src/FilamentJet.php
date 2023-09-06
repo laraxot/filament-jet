@@ -2,10 +2,6 @@
 
 namespace ArtMin96\FilamentJet;
 
-use Modules\User\Models\User;
-use Modules\User\Models\Team;
-use Modules\User\Models\Membership;
-use Modules\User\Models\TeamInvitation;
 use ArtMin96\FilamentJet\Contracts\AddsTeamMembers;
 use ArtMin96\FilamentJet\Contracts\CreatesNewUsers;
 use ArtMin96\FilamentJet\Contracts\CreatesTeams;
@@ -24,6 +20,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rules\Password;
+use Modules\User\Models\Membership;
+use Modules\User\Models\Team;
+use Modules\User\Models\TeamInvitation;
+use Modules\User\Models\User;
 
 final class FilamentJet
 {
@@ -639,6 +639,6 @@ final class FilamentJet
         return Arr::first([
             resource_path('markdown/'.$localName),
             resource_path('markdown/'.$name),
-        ], fn($path): bool => file_exists($path));
+        ], fn ($path): bool => file_exists($path));
     }
 }

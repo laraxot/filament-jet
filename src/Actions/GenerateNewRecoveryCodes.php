@@ -16,7 +16,7 @@ class GenerateNewRecoveryCodes
     public function __invoke(mixed $user)
     {
         $user->forceFill([
-            'two_factor_recovery_codes' => encrypt(json_encode(Collection::times(8, fn() => RecoveryCode::generate())->all(), JSON_THROW_ON_ERROR)),
+            'two_factor_recovery_codes' => encrypt(json_encode(Collection::times(8, fn () => RecoveryCode::generate())->all(), JSON_THROW_ON_ERROR)),
         ])->save();
 
         RecoveryCodesGenerated::dispatch($user);

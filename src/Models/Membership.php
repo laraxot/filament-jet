@@ -2,9 +2,9 @@
 
 namespace ArtMin96\FilamentJet\Models;
 
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Support\Carbon;
 
 /**
  * ArtMin96\FilamentJet\Models\Membership

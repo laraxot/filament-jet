@@ -2,12 +2,12 @@
 
 namespace ArtMin96\FilamentJet\Datas;
 
-use Jenssegers\Agent\Agent;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Jenssegers\Agent\Agent;
 use Spatie\LaravelData\Data;
 
 class SessionData extends Data
@@ -46,7 +46,7 @@ class SessionData extends Data
 
         return $this->getUserActivities()
             ->map(
-                fn($session) => (object) [
+                fn ($session) => (object) [
                     'agent' => $this->createAgent($session),
                     'ip_address' => $session->ip_address,
                     'is_current_device' => $session->id === request()->session()->getId(),

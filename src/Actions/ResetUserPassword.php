@@ -2,11 +2,11 @@
 
 namespace ArtMin96\FilamentJet\Actions;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Contracts\ResetsUserPasswords;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use Exception;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 

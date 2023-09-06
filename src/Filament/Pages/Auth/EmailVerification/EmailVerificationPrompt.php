@@ -2,7 +2,6 @@
 
 namespace ArtMin96\FilamentJet\Filament\Pages\Auth\EmailVerification;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Features;
 use ArtMin96\FilamentJet\Filament\Pages\CardPage;
@@ -14,6 +13,7 @@ use Exception;
 use Filament\Facades\Filament;
 use Filament\Forms\ComponentContainer;
 use Filament\Notifications\Notification;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 /**
@@ -68,7 +68,7 @@ class EmailVerificationPrompt extends CardPage
         }
 
         $user = Filament::auth()->user();
-        if (!$user instanceof Authenticatable) {
+        if (! $user instanceof Authenticatable) {
             throw new Exception('strange things');
         }
 

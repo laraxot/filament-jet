@@ -19,8 +19,7 @@ class EnableTwoFactorAuthentication
          * The two factor authentication provider.
          */
         protected TwoFactorAuthenticationProvider $twoFactorAuthenticationProvider
-    )
-    {
+    ) {
     }
 
     /**
@@ -32,7 +31,7 @@ class EnableTwoFactorAuthentication
     {
         $user->forceFill([
             'two_factor_secret' => encrypt($this->twoFactorAuthenticationProvider->generateSecretKey()),
-            'two_factor_recovery_codes' => encrypt(json_encode(Collection::times(8, fn() => RecoveryCode::generate())->all(), JSON_THROW_ON_ERROR)),
+            'two_factor_recovery_codes' => encrypt(json_encode(Collection::times(8, fn () => RecoveryCode::generate())->all(), JSON_THROW_ON_ERROR)),
         ])->save();
 
         TwoFactorAuthenticationEnabled::dispatch($user);

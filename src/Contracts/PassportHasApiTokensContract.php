@@ -3,9 +3,10 @@
 namespace ArtMin96\FilamentJet\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Laravel\Passport\PersonalAccessTokenResult;
 use Laravel\Passport\Token;
 use Laravel\Passport\TransientToken;
-use Laravel\Passport\PersonalAccessTokenResult;
+
 /**
  * @propery \Laravel\Passport\Token|\Laravel\Passport\TransientToken|null $accessToken;
  */
@@ -51,7 +52,7 @@ interface PassportHasApiTokensContract
     /**
      * Set the current access token for the user.
      *
-     * @param Token|TransientToken $accessToken
+     * @param  Token|TransientToken  $accessToken
      * @return $this
      */
     public function withAccessToken($accessToken);

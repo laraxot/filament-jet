@@ -21,8 +21,7 @@ class DeleteUserWithTeams implements DeletesUsers
          * The team deleter implementation.
          */
         protected DeletesTeams $deletesTeams
-    )
-    {
+    ) {
     }
 
     /**

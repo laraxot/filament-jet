@@ -2,7 +2,6 @@
 
 namespace ArtMin96\FilamentJet\Filament\Traits;
 
-use Illuminate\Validation\ValidationException;
 use ArtMin96\FilamentJet\Actions\ConfirmTwoFactorAuthentication;
 use ArtMin96\FilamentJet\Actions\DisableTwoFactorAuthentication;
 use ArtMin96\FilamentJet\Actions\EnableTwoFactorAuthentication;
@@ -11,6 +10,7 @@ use ArtMin96\FilamentJet\Features;
 use Exception;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Undocumented trait

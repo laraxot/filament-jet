@@ -2,11 +2,11 @@
 
 namespace ArtMin96\FilamentJet;
 
+use ArtMin96\FilamentJet\Contracts\TwoFactorAuthenticationProvider as TwoFactorAuthenticationProviderContract;
+use Illuminate\Cache\Repository;
 use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
 use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
-use ArtMin96\FilamentJet\Contracts\TwoFactorAuthenticationProvider as TwoFactorAuthenticationProviderContract;
-use Illuminate\Cache\Repository;
 use PragmaRX\Google2FA\Google2FA;
 
 class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationProviderContract
@@ -25,8 +25,7 @@ class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationProvider
          * The cache repository implementation.
          */
         protected Repository $cacheRepository
-    )
-    {
+    ) {
     }
 
     /**

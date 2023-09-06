@@ -19,8 +19,7 @@ class AttemptToAuthenticate
          * The guard implementation.
          */
         protected StatefulGuard $statefulGuard
-    )
-    {
+    ) {
     }
 
     /**

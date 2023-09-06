@@ -1,7 +1,7 @@
 <?php
 
-use ArtMin96\FilamentJet\Filament\Pages\Auth\TwoFactorLogin;
 use ArtMin96\FilamentJet\Features;
+use ArtMin96\FilamentJet\Filament\Pages\Auth\TwoFactorLogin;
 use ArtMin96\FilamentJet\FilamentJet;
 use ArtMin96\FilamentJet\Http\Controllers\Auth\EmailVerificationController;
 use Illuminate\Support\Facades\Route;

@@ -10,6 +10,6 @@ trait HasSanctumPermissionsProperty
     public function getSanctumPermissionsProperty(): Collection
     {
         return collect(FilamentJet::$permissions)
-            ->mapWithKeys(fn($permission): array => [$permission => $permission]);
+            ->mapWithKeys(fn ($permission): array => [$permission => $permission]);
     }
 }

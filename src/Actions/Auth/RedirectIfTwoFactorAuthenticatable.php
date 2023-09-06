@@ -2,7 +2,6 @@
 
 namespace ArtMin96\FilamentJet\Actions\Auth;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Events\TwoFactorAuthenticationChallenged;
 use ArtMin96\FilamentJet\FilamentJet;
@@ -10,6 +9,7 @@ use ArtMin96\FilamentJet\Traits\TwoFactorAuthenticatable;
 use Closure;
 use Exception;
 use Illuminate\Auth\Events\Failed;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
@@ -25,8 +25,7 @@ class RedirectIfTwoFactorAuthenticatable
          * Undocumented variable
          */
         protected StatefulGuard $statefulGuard
-    )
-    {
+    ) {
     }
 
     /**

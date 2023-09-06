@@ -52,7 +52,7 @@ class Password implements Rule
     {
         $value = is_scalar($value) ? (string) $value : '';
 
-        if ($this->requireUppercase && Str::lower($value) === $value) {
+        if ($this->requireUppercase && $value === Str::lower($value)) {
             return false;
         }
 
@@ -64,7 +64,7 @@ class Password implements Rule
             return false;
         }
 
-        return Str::length($value) >= $this->length;
+        return $this->length <= Str::length($value);
     }
 
     /**

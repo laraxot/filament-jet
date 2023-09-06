@@ -25,7 +25,6 @@ abstract class TeamEvent
          * The team instance.
          */
         public TeamContract $teamContract
-    )
-    {
+    ) {
     }
 }

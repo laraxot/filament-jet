@@ -24,7 +24,6 @@ class TeamMemberRemoved
          * The team member that was removed.
          */
         public UserContract $userContract
-    )
-    {
+    ) {
     }
 }

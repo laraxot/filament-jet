@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace ArtMin96\FilamentJet\Filament\Pages;
 
-use Laravel\Passport\PersonalAccessTokenResult;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Datas\FilamentJetData;
 use ArtMin96\FilamentJet\Filament\Traits\HasCachedAction;
 use ArtMin96\FilamentJet\FilamentJet;
-// use ArtMin96\FilamentJet\Http\Livewire\Traits\Properties\HasSanctumPermissionsProperty;
 use ArtMin96\FilamentJet\Http\Livewire\Traits\Properties\HasUserProperty;
+// use ArtMin96\FilamentJet\Http\Livewire\Traits\Properties\HasSanctumPermissionsProperty;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
 use Illuminate\Database\Eloquent\Collection;
+use Laravel\Passport\PersonalAccessTokenResult;
 
 /**
  * Undocumented class.
@@ -101,7 +101,7 @@ class ApiTokens extends Page
     /**
      * Undocumented function.
      *
-     * @param PersonalAccessTokenResult $token
+     * @param  PersonalAccessTokenResult  $token
      */
     protected function displayTokenValue($token): void
     {

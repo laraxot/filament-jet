@@ -49,7 +49,7 @@ use PragmaRX\Google2FA\Google2FA;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-include __DIR__ . '/helpers.php';
+include __DIR__.'/helpers.php';
 
 // class FilamentJetServiceProvider extends PluginServiceProvider
 class FilamentJetServiceProvider extends PackageServiceProvider
@@ -163,12 +163,12 @@ class FilamentJetServiceProvider extends PackageServiceProvider
     {
         parent::register();
 
-        $this->app->singleton(TwoFactorAuthenticationProviderContract::class, fn($app): \ArtMin96\FilamentJet\TwoFactorAuthenticationProvider => new TwoFactorAuthenticationProvider(
+        $this->app->singleton(TwoFactorAuthenticationProviderContract::class, fn ($app): \ArtMin96\FilamentJet\TwoFactorAuthenticationProvider => new TwoFactorAuthenticationProvider(
             $app->make(Google2FA::class),
             $app->make(Repository::class)
         ));
 
-        $this->app->bind(StatefulGuard::class, fn() => Filament::auth());
+        $this->app->bind(StatefulGuard::class, fn () => Filament::auth());
     }
 
     /**

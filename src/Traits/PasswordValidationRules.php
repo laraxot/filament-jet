@@ -2,8 +2,8 @@
 
 namespace ArtMin96\FilamentJet\Traits;
 
-use Illuminate\Contracts\Validation\Rule;
 use ArtMin96\FilamentJet\Rules\Password;
+use Illuminate\Contracts\Validation\Rule;
 
 trait PasswordValidationRules
 {

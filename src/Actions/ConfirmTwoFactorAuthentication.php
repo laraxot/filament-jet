@@ -19,8 +19,7 @@ class ConfirmTwoFactorAuthentication
          * The two factor authentication provider.
          */
         protected TwoFactorAuthenticationProvider $twoFactorAuthenticationProvider
-    )
-    {
+    ) {
     }
 
     /**

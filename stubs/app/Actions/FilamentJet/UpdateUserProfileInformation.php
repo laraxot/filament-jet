@@ -2,12 +2,12 @@
 
 namespace ArtMin96\FilamentJet\Actions;
 
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use ArtMin96\FilamentJet\Contracts\UpdatesUserProfileInformation;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Features;
 use ArtMin96\FilamentJet\FilamentJet;
 use Exception;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation

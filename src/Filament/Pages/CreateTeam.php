@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace ArtMin96\FilamentJet\Filament\Pages;
 
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
-use Illuminate\Routing\Redirector;
 use ArtMin96\FilamentJet\Contracts\CreatesTeams;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Http\Livewire\Traits\Properties\HasUserProperty;
@@ -15,6 +12,9 @@ use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 
 /**
  * Undocumented class.

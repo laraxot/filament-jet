@@ -1,14 +1,14 @@
 <?php
 
-use ArtMin96\FilamentJet\Filament\Pages\Auth\Register;
-use ArtMin96\FilamentJet\Http\Livewire\TermsOfService;
-use ArtMin96\FilamentJet\Http\Livewire\PrivacyPolicy;
-use ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\RequestPasswordReset;
-use ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\ResetPassword;
 use App\Models\Membership;
 use App\Models\Team;
 use App\Models\TeamInvitation;
 use ArtMin96\FilamentJet\Features;
+use ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\RequestPasswordReset;
+use ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\ResetPassword;
+use ArtMin96\FilamentJet\Filament\Pages\Auth\Register;
+use ArtMin96\FilamentJet\Http\Livewire\PrivacyPolicy;
+use ArtMin96\FilamentJet\Http\Livewire\TermsOfService;
 
 return [
 

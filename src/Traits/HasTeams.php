@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace ArtMin96\FilamentJet\Traits;
 
-use ArtMin96\FilamentJet\Role;
 use ArtMin96\FilamentJet\Contracts\TeamContract;
 use ArtMin96\FilamentJet\FilamentJet;
 use ArtMin96\FilamentJet\Models\Team;
 use ArtMin96\FilamentJet\OwnerRole;
+use ArtMin96\FilamentJet\Role;
 use Exception;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -29,7 +29,7 @@ trait HasTeams
      */
     public function isCurrentTeam(TeamContract $teamContract): bool
     {
-        if (!$teamContract instanceof TeamContract || $this->currentTeam === null) {
+        if (! $teamContract instanceof TeamContract || $this->currentTeam === null) {
             return false;
         }
 
@@ -59,7 +59,7 @@ trait HasTeams
      */
     public function switchTeam(?TeamContract $teamContract): bool
     {
-        if (!$teamContract instanceof TeamContract) {
+        if (! $teamContract instanceof TeamContract) {
             return false;
         }
         if (! $this->belongsToTeam($teamContract)) {
@@ -151,7 +151,7 @@ trait HasTeams
             return false;
         }
 
-        return $this->ownsTeam($teamContract) || $this->teams->contains(fn($t): bool => $t->getKey() === $teamContract->getKey());
+        return $this->ownsTeam($teamContract) || $this->teams->contains(fn ($t): bool => $t->getKey() === $teamContract->getKey());
     }
 
     /**
@@ -187,10 +187,10 @@ trait HasTeams
             return true;
         }
 
-        return $this->belongsToTeam($teamContract) && optional(FilamentJet::findRole($teamContract->users->where(
+        return $this->belongsToTeam($teamContract) && $role === optional(FilamentJet::findRole($teamContract->users->where(
             'id',
             $this->id
-        )->first()?->membership?->role))->key === $role;
+        )->first()?->membership?->role))->key;
     }
 
     /**

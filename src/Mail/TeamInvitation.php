@@ -17,8 +17,7 @@ class TeamInvitation extends Mailable
          * The team invitation instance.
          */
         public TeamInvitationContract $teamInvitationContract
-    )
-    {
+    ) {
     }
 
     /**
