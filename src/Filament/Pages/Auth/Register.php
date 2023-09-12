@@ -33,7 +33,7 @@ use Phpsa\FilamentPasswordReveal\Password;
  * @property UserContract $user
  * @property ComponentContainer $form
  */
-final class Register extends CardPage
+class Register extends CardPage
 {
     use RedirectsActions;
     use WithRateLimiting;

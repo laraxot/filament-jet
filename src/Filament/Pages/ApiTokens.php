@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace ArtMin96\FilamentJet\Filament\Pages;
 
-use Laravel\Passport\PersonalAccessTokenResult;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Datas\FilamentJetData;
 use ArtMin96\FilamentJet\Filament\Traits\HasCachedAction;
 use ArtMin96\FilamentJet\FilamentJet;
 use ArtMin96\FilamentJet\Http\Livewire\Traits\Properties\HasUserProperty;
-// use ArtMin96\FilamentJet\Http\Livewire\Traits\Properties\HasSanctumPermissionsProperty;
 use Filament\Forms\ComponentContainer;
+// use ArtMin96\FilamentJet\Http\Livewire\Traits\Properties\HasSanctumPermissionsProperty;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
 use Illuminate\Database\Eloquent\Collection;
+use Laravel\Passport\PersonalAccessTokenResult;
 use Laravel\Passport\PersonalAccessTokenResult;
 
 /**
@@ -27,13 +27,12 @@ use Laravel\Passport\PersonalAccessTokenResult;
  *
  * @method array getHiddenActions()
  */
-final class ApiTokens extends Page
-{
+class ApiTokens extends Page {
     use HasCachedAction;
     use HasUserProperty;
 
     protected static string $view = 'filament-jet::filament.pages.api-tokens';
-    
+
     // ////use HasSanctumPermissionsProperty;
 
     /**
@@ -53,24 +52,21 @@ final class ApiTokens extends Page
      */
     public ?string $plainTextToken = '';
 
-    protected static function shouldRegisterNavigation(): bool
-    {
+    protected static function shouldRegisterNavigation(): bool {
         $filamentJetData = FilamentJetData::make();
 
         // return config('filament-jet.should_register_navigation.api_tokens');
         return $filamentJetData->should_register_navigation->api_tokens;
     }
 
-    public function mount(): void
-    {
+    public function mount(): void {
         $this->permissions = FilamentJet::$defaultPermissions;
     }
 
     /**
      * Create a new API token.
      */
-    public function createApiToken(): void
-    {
+    public function createApiToken(): void {
         $state = $this->form->getState();
 
         $this->displayTokenValue($this->user->createToken(
@@ -84,8 +80,7 @@ final class ApiTokens extends Page
         $this->emit('tokenCreated');
     }
 
-    protected function getFormSchema(): array
-    {
+    protected function getFormSchema(): array {
         return [
             TextInput::make('name')
                 ->label(__('filament-jet::api.fields.token_name'))
@@ -103,14 +98,9 @@ final class ApiTokens extends Page
     /**
      * Undocumented function.
      *
-<<<<<<< HEAD
      * @param PersonalAccessTokenResult $token
-=======
-     * @param  PersonalAccessTokenResult  $token
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
      */
-    private function displayTokenValue($token): void
-    {
+    private function displayTokenValue($token): void {
         $this->plainTextToken = explode('|', (string) $token->plainTextToken, 2)[1];
 
         $this->dispatchBrowserEvent('open-modal', ['id' => 'showing-token-modal']);

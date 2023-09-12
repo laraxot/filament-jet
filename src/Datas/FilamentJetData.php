@@ -5,7 +5,7 @@ namespace ArtMin96\FilamentJet\Datas;
 use Exception;
 use Spatie\LaravelData\Data;
 
-final class FilamentJetData extends Data
+class FilamentJetData extends Data
 {
     public ShouldRegisterNavigationData $should_register_navigation;
 

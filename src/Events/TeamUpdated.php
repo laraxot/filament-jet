@@ -2,6 +2,6 @@
 
 namespace ArtMin96\FilamentJet\Events;
 
-final class TeamUpdated extends TeamEvent
+class TeamUpdated extends TeamEvent
 {
 }

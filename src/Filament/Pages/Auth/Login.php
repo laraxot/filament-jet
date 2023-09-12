@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Filament\Pages\Auth;
 
 use ArtMin96\FilamentJet\Actions\Auth\AttemptToAuthenticate;
@@ -11,7 +13,6 @@ use ArtMin96\FilamentJet\Filament\Pages\CardPage;
 use ArtMin96\FilamentJet\FilamentJet;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
-use Exception;
 use Filament\Facades\Filament;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Checkbox;
@@ -25,13 +26,12 @@ use Livewire\Redirector;
 use Phpsa\FilamentPasswordReveal\Password;
 
 /**
- * Undocumented class
+ * Undocumented class.
  *
- * @property UserContract $user
+ * @property UserContract       $user
  * @property ComponentContainer $form
  */
-final class Login extends CardPage
-{
+class Login extends CardPage {
     use WithRateLimiting;
 
     protected static string $view = 'filament-jet::filament.pages.auth.login';
@@ -44,8 +44,7 @@ final class Login extends CardPage
 
     public ?UserContract $user = null;
 
-    public function mount(): void
-    {
+    public function mount(): void {
         if (Filament::auth()->check()) {
             redirect()->intended(Filament::getUrl());
         }
@@ -53,8 +52,7 @@ final class Login extends CardPage
         $this->form->fill();
     }
 
-    public function authenticate(): null|LoginResponse|Redirector
-    {
+    public function authenticate(): null|LoginResponse|Redirector {
         $rateLimitingOptionEnabled = Features::getOption(Features::login(), 'rate_limiting.enabled');
 
         if ($rateLimitingOptionEnabled) {
@@ -75,36 +73,29 @@ final class Login extends CardPage
 
         $data = $this->form->getState();
 
-<<<<<<< HEAD
-        return $this->loginPipeline($data)->then(static fn($data) => app(LoginResponse::class));
-=======
         return $this->loginPipeline($data)->then(fn ($data) => app(LoginResponse::class));
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 
-    protected function getCardWidth(): string
-    {
+    protected function getCardWidth(): string {
         $res = Features::getOption(Features::login(), 'card_width');
         if (! is_string($res)) {
-            throw new Exception('wip');
+            throw new \Exception('wip');
         }
 
         return $res;
     }
 
-    protected function hasBrand(): bool
-    {
+    protected function hasBrand(): bool {
         $res = Features::optionEnabled(Features::login(), 'has_brand');
         if (! is_bool($res)) {
-            throw new Exception('wip');
+            throw new \Exception('wip');
         }
 
         return $res;
     }
 
-    private function loginPipeline(array $data): Pipeline
-    {
-        if (FilamentJet::$authenticateThroughCallback !== null) {
+    private function loginPipeline(array $data): Pipeline {
+        if (null !== FilamentJet::$authenticateThroughCallback) {
             return (new Pipeline(app()))->send($data)->through(array_filter(
                 call_user_func(FilamentJet::$authenticateThroughCallback, $data)
             ));
@@ -125,8 +116,7 @@ final class Login extends CardPage
         ]));
     }
 
-    protected function getFormSchema(): array
-    {
+    protected function getFormSchema(): array {
         return [
             TextInput::make('email')
                 ->label(__('filament-jet::auth/login.fields.email.label'))

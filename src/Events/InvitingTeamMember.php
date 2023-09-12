@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Events;
 
 use ArtMin96\FilamentJet\Contracts\TeamContract;
 use Illuminate\Foundation\Events\Dispatchable;
 
-final class InvitingTeamMember
-{
+class InvitingTeamMember {
     use Dispatchable;
 
     /**
@@ -21,11 +22,6 @@ final class InvitingTeamMember
         public TeamContract $teamContract,
         public mixed $email,
         public mixed $role
-<<<<<<< HEAD
-    )
-    {
-=======
     ) {
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 }

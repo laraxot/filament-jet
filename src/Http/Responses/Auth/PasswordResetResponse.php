@@ -7,7 +7,7 @@ use Filament\Facades\Filament;
 use Illuminate\Http\RedirectResponse;
 use Livewire\Redirector;
 
-final class PasswordResetResponse implements Responsable
+class PasswordResetResponse implements Responsable
 {
     public function toResponse($request): RedirectResponse|Redirector
     {

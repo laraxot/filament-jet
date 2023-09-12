@@ -2,7 +2,7 @@
 
 namespace ArtMin96\FilamentJet;
 
-final class Features
+class Features
 {
     /**
      * Determine if the given feature is enabled.

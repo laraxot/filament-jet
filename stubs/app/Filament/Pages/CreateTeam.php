@@ -4,6 +4,6 @@ namespace App\Filament\Pages;
 
 use ArtMin96\FilamentJet\Filament\Pages\CreateTeam as BaseCreateTeamPage;
 
-final class CreateTeam extends BaseCreateTeamPage
+class CreateTeam extends BaseCreateTeamPage
 {
 }

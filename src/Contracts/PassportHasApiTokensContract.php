@@ -1,23 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
-<<<<<<< HEAD
-use Laravel\Passport\Token;
-use Laravel\Passport\TransientToken;
-use Laravel\Passport\PersonalAccessTokenResult;
-=======
 use Laravel\Passport\PersonalAccessTokenResult;
 use Laravel\Passport\Token;
 use Laravel\Passport\TransientToken;
 
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
 /**
  * @propery \Laravel\Passport\Token|\Laravel\Passport\TransientToken|null $accessToken;
  */
-interface PassportHasApiTokensContract
-{
+interface PassportHasApiTokensContract {
     /**
      * Get all of the user's registered OAuth clients.
      *
@@ -42,7 +37,8 @@ interface PassportHasApiTokensContract
     /**
      * Determine if the current API token has a given scope.
      *
-     * @param  string  $scope
+     * @param string $scope
+     *
      * @return bool
      */
     public function tokenCan($scope);
@@ -50,7 +46,8 @@ interface PassportHasApiTokensContract
     /**
      * Create a new personal access token for the user.
      *
-     * @param  string  $name
+     * @param string $name
+     *
      * @return PersonalAccessTokenResult
      */
     public function createToken($name, array $scopes = []);
@@ -58,11 +55,8 @@ interface PassportHasApiTokensContract
     /**
      * Set the current access token for the user.
      *
-<<<<<<< HEAD
      * @param Token|TransientToken $accessToken
-=======
-     * @param  Token|TransientToken  $accessToken
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
+     *
      * @return $this
      */
     public function withAccessToken($accessToken);

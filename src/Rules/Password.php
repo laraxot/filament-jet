@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Str;
 
-final class Password implements Rule
-{
+class Password implements Rule {
     /**
      * The minimum length of the password.
      */
@@ -35,11 +36,10 @@ final class Password implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed  $value
      */
-    public function passes($attribute, $value): bool
-    {
+    public function passes($attribute, $value): bool {
         $value = is_scalar($value) ? (string) $value : '';
 
         if ($this->requireUppercase && $value === Str::lower($value)) {
@@ -49,18 +49,11 @@ final class Password implements Rule
         if ($this->requireNumeric && ! preg_match('/\d/', $value)) {
             return false;
         }
-        if (!$this->requireSpecialCharacter) {
+        if (! $this->requireSpecialCharacter) {
             return Str::length($value) >= $this->length;
         }
-<<<<<<< HEAD
-        if (preg_match('/[\W_]/', $value)) {
-            return Str::length($value) >= $this->length;
-        }
-        return false;
-=======
 
         return $this->length <= Str::length($value);
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 
     /**
@@ -68,9 +61,8 @@ final class Password implements Rule
      *
      * @return string
      */
-    public function message()
-    {
-        if ($this->message !== '' && $this->message !== '0') {
+    public function message() {
+        if ('' !== $this->message && '0' !== $this->message) {
             return $this->message;
         }
 
@@ -121,8 +113,7 @@ final class Password implements Rule
      *
      * @return $this
      */
-    public function length(int $length): static
-    {
+    public function length(int $length): static {
         $this->length = $length;
 
         return $this;
@@ -133,8 +124,7 @@ final class Password implements Rule
      *
      * @return $this
      */
-    public function requireUppercase(): static
-    {
+    public function requireUppercase(): static {
         $this->requireUppercase = true;
 
         return $this;
@@ -145,8 +135,7 @@ final class Password implements Rule
      *
      * @return $this
      */
-    public function requireNumeric(): static
-    {
+    public function requireNumeric(): static {
         $this->requireNumeric = true;
 
         return $this;
@@ -157,8 +146,7 @@ final class Password implements Rule
      *
      * @return $this
      */
-    public function requireSpecialCharacter(): static
-    {
+    public function requireSpecialCharacter(): static {
         $this->requireSpecialCharacter = true;
 
         return $this;
@@ -169,8 +157,7 @@ final class Password implements Rule
      *
      * @return $this
      */
-    public function withMessage(string $message): static
-    {
+    public function withMessage(string $message): static {
         $this->message = $message;
 
         return $this;

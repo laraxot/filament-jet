@@ -1,13 +1,7 @@
 <?php
 
-<<<<<<< HEAD
-use ArtMin96\FilamentJet\Filament\Pages\Auth\Register;
-use ArtMin96\FilamentJet\Http\Livewire\TermsOfService;
-use ArtMin96\FilamentJet\Http\Livewire\PrivacyPolicy;
-use ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\RequestPasswordReset;
-use ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\ResetPassword;
-=======
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
+declare(strict_types=1);
+
 use App\Models\Membership;
 use App\Models\Team;
 use App\Models\TeamInvitation;
@@ -19,7 +13,6 @@ use ArtMin96\FilamentJet\Http\Livewire\PrivacyPolicy;
 use ArtMin96\FilamentJet\Http\Livewire\TermsOfService;
 
 return [
-
     'auth_middleware' => 'auth',
 
     /*
@@ -217,11 +210,10 @@ return [
         Features::logoutOtherBrowserSessions(),
         Features::accountDeletion(),
 
-        /**
+        /*
          * @see https://github.com/spatie/laravel-personal-data-export
          */
         Features::personalDataExport([
-
             /*
             | The name of the export itself can be set using the personalDataExportName on the user.
             | This will only affect the name of the download that will be sent as a response to the user,

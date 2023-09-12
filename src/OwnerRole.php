@@ -2,7 +2,7 @@
 
 namespace ArtMin96\FilamentJet;
 
-final class OwnerRole extends Role
+class OwnerRole extends Role
 {
     /**
      * Create a new role instance.

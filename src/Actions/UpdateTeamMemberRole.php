@@ -12,7 +12,7 @@ use ArtMin96\FilamentJet\Rules\Role;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
-final class UpdateTeamMemberRole
+class UpdateTeamMemberRole
 {
     /**
      * Update the role for the given team member.

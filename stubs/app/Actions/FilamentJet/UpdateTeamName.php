@@ -9,7 +9,7 @@ use ArtMin96\FilamentJet\Contracts\UpdatesTeamNames;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use Illuminate\Support\Facades\Gate;
 
-final class UpdateTeamName implements UpdatesTeamNames
+class UpdateTeamName implements UpdatesTeamNames
 {
     /**
      * Validate and update the given team's name.

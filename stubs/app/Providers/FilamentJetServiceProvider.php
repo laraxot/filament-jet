@@ -5,7 +5,7 @@ namespace App\Providers;
 use ArtMin96\FilamentJet\FilamentJet;
 use ArtMin96\FilamentJet\FilamentJetServiceProvider as BaseFilamentJetServiceProvider;
 
-final class FilamentJetServiceProvider extends BaseFilamentJetServiceProvider
+class FilamentJetServiceProvider extends BaseFilamentJetServiceProvider
 {
     /**
      * Bootstrap any application services.

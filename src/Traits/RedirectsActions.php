@@ -1,25 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Traits;
 
 use Illuminate\Http\RedirectResponse;
-<<<<<<< HEAD
-use Illuminate\Routing\Redirector;
-=======
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 
-trait RedirectsActions
-{
+trait RedirectsActions {
     /**
      * Get the redirect response for the given action.
      *
-     * @param  object  $action
+     * @param object $action
+     *
      * @return RedirectResponse|Response|Redirector
      */
-    public function redirectPath($action)
-    {
+    public function redirectPath($action) {
         if (method_exists($action, 'redirectTo')) {
             $response = $action->redirectTo();
         } else {

@@ -7,8 +7,7 @@ namespace ArtMin96\FilamentJet\Events;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use Illuminate\Foundation\Events\Dispatchable;
 
-final class RecoveryCodesGenerated
-{
+class RecoveryCodesGenerated {
     use Dispatchable;
 
     /**
@@ -21,11 +20,6 @@ final class RecoveryCodesGenerated
          * The user instance.
          */
         public UserContract $userContract
-<<<<<<< HEAD
-    )
-    {
-=======
     ) {
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 }

@@ -12,7 +12,7 @@ use Exception;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 
-final class InviteTeamMember implements InvitesTeamMembers
+class InviteTeamMember implements InvitesTeamMembers
 {
     /**
      * Invite a new team member to the given team.

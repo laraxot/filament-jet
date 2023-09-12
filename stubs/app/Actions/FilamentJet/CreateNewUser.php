@@ -9,7 +9,7 @@ use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\FilamentJet;
 use Illuminate\Support\Facades\Hash;
 
-final class CreateNewUser implements CreatesNewUsers
+class CreateNewUser implements CreatesNewUsers
 {
     /**
      * Create a newly registered user.

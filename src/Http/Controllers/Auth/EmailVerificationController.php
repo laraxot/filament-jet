@@ -8,7 +8,7 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Routing\Controller;
 
-final class EmailVerificationController extends Controller
+class EmailVerificationController extends Controller
 {
     public function __invoke(): EmailVerificationResponse
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use ArtMin96\FilamentJet\Traits\CanExportPersonalData;
@@ -13,12 +15,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\PersonalDataExport\ExportsPersonalData;
 
-<<<<<<< HEAD
-final class User extends Authenticatable implements FilamentUser, HasAvatar, ExportsPersonalData
-=======
-class User extends Authenticatable implements ExportsPersonalData, FilamentUser, HasAvatar
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
-{
+class User extends Authenticatable implements ExportsPersonalData, FilamentUser, HasAvatar {
     use CanExportPersonalData;
     use HasApiTokens;
     use HasFactory;
@@ -67,8 +64,7 @@ class User extends Authenticatable implements ExportsPersonalData, FilamentUser,
         'profile_photo_url',
     ];
 
-    public function canAccessFilament(): bool
-    {
+    public function canAccessFilament(): bool {
         return true;
     }
 }

@@ -1,25 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Contracts;
 
-<<<<<<< HEAD
-use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Builder;
-=======
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
 /**
- * ArtMin96\FilamentJet\Contracts\TeamInvitationContract
+ * ArtMin96\FilamentJet\Contracts\TeamInvitationContract.
  *
- * @property int $id
- * @property int $team_id
- * @property string $email
- * @property string|null $role
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read TeamContract $team
+ * @property int          $id
+ * @property int          $team_id
+ * @property string       $email
+ * @property string|null  $role
+ * @property Carbon|null  $created_at
+ * @property Carbon|null  $updated_at
+ * @property TeamContract $team
  *
  * @method static Builder|TeamInvitation newModelQuery()
  * @method static Builder|TeamInvitation newQuery()
@@ -33,7 +30,6 @@ use Illuminate\Support\Carbon;
  *
  * @mixin \Eloquent
  */
-interface TeamInvitationContract
-{
+interface TeamInvitationContract {
     public function delete(): void;
 }

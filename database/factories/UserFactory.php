@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Model;
 use ArtMin96\FilamentJet\Features;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Modules\User\Models\Team;
 use Modules\User\Models\User;
 
-final class UserFactory extends Factory
-{
+class UserFactory extends Factory {
     /**
      * The name of the factory's corresponding model.
      *
@@ -24,8 +25,7 @@ final class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
-    {
+    public function definition(): array {
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
@@ -40,13 +40,8 @@ final class UserFactory extends Factory
      *
      * @return $this
      */
-    public function unverified(): static
-    {
-<<<<<<< HEAD
-        return $this->state(static fn(array $attributes): array => [
-=======
+    public function unverified(): static {
         return $this->state(fn (array $attributes): array => [
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             'email_verified_at' => null,
         ]);
     }
@@ -56,19 +51,14 @@ final class UserFactory extends Factory
      *
      * @return $this
      */
-    public function withPersonalTeam(): static
-    {
+    public function withPersonalTeam(): static {
         if (! Features::hasTeamFeatures()) {
             return $this->state([]);
         }
 
         return $this->has(
             Team::factory()
-<<<<<<< HEAD
-                ->state(static fn(array $attributes, User $user): array => ['name' => $user->name."'s Team", 'user_id' => $user->id, 'personal_team' => true]),
-=======
                 ->state(fn (array $attributes, User $user): array => ['name' => $user->name.'\'s Team', 'user_id' => $user->id, 'personal_team' => true]),
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             'ownedTeams'
         );
     }

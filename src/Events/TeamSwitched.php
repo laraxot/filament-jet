@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Events;
 
 use ArtMin96\FilamentJet\Contracts\TeamContract;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use Illuminate\Foundation\Events\Dispatchable;
 
-final class TeamSwitched
-{
+class TeamSwitched {
     use Dispatchable;
 
     /**
@@ -24,11 +25,6 @@ final class TeamSwitched
          * The team member that was updated.
          */
         public UserContract $userContract
-<<<<<<< HEAD
-    )
-    {
-=======
     ) {
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 }

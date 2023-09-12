@@ -9,7 +9,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-final class TermsOfService extends Component
+class TermsOfService extends Component
 {
     /**
      * Show the terms of service for the application.

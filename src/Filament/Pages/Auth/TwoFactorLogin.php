@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Filament\Pages\Auth;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Contracts\TwoFactorAuthenticationProvider;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Events\RecoveryCodeReplaced;
@@ -11,7 +12,6 @@ use ArtMin96\FilamentJet\Filament\Pages\CardPage;
 use ArtMin96\FilamentJet\Http\Responses\Auth\Contracts\TwoFactorLoginResponse;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
-use Exception;
 use Filament\Facades\Filament;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\TextInput;
@@ -21,14 +21,13 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 
 /**
- * Undocumented class
+ * Undocumented class.
  *
- * @property UserContract $user
+ * @property UserContract       $user
  * @property ComponentContainer $form
- * @property string $sessionPrefix
+ * @property string             $sessionPrefix
  */
-final class TwoFactorLogin extends CardPage
-{
+class TwoFactorLogin extends CardPage {
     use WithRateLimiting;
 
     protected static string $view = 'filament-jet::filament.pages.auth.two-factor-login';
@@ -42,33 +41,30 @@ final class TwoFactorLogin extends CardPage
     public ?UserContract $challengedUser = null;
 
     /**
-     * Undocumented function
+     * Undocumented function.
      *
      * @return mixed
      */
-    public function mount()
-    {
+    public function mount() {
         if (! $this->hasChallengedUser()) {
             return redirect()->to(jetRouteActions()->loginRoute());
         }
     }
 
-    public function getSessionPrefixProperty(): string
-    {
+    public function getSessionPrefixProperty(): string {
         return jet()->getTwoFactorLoginSessionPrefix();
     }
 
     /**
      * Determine if the request has a valid two factor code.
      */
-    public function hasValidCode(?string $code): bool
-    {
+    public function hasValidCode(?string $code): bool {
         return $code && tap(app(TwoFactorAuthenticationProvider::class)->verify(
             (string) decrypt($this->challengedUser()->two_factor_secret),
             $code
         ), function ($result): void {
             if ($result) {
-                session()->forget($this->sessionPrefix . 'login.id');
+                session()->forget($this->sessionPrefix.'login.id');
             }
         });
     }
@@ -76,19 +72,14 @@ final class TwoFactorLogin extends CardPage
     /**
      * Get the valid recovery code if one exists on the request.
      */
-    public function validRecoveryCode(?string $recoveryCode): ?string
-    {
+    public function validRecoveryCode(?string $recoveryCode): ?string {
         if (! $recoveryCode) {
             return null;
         }
 
-<<<<<<< HEAD
-        return tap(collect($this->challengedUser()->recoveryCodes())->first(static fn($code) => hash_equals($code, $recoveryCode) ? $code : null), function ($code): void {
-=======
         return tap(collect($this->challengedUser()->recoveryCodes())->first(fn ($code) => hash_equals($code, $recoveryCode) ? $code : null), function ($code): void {
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             if ($code) {
-                session()->forget($this->sessionPrefix . 'login.id');
+                session()->forget($this->sessionPrefix.'login.id');
             }
         });
     }
@@ -96,21 +87,20 @@ final class TwoFactorLogin extends CardPage
     /**
      * Determine if there is a challenged user in the current session.
      */
-    public function hasChallengedUser(): bool
-    {
+    public function hasChallengedUser(): bool {
         if ($this->challengedUser instanceof UserContract) {
             return true;
         }
-        
+
         $userProvider = Filament::auth()->getProvider();
         if (! method_exists($userProvider, 'getModel')) {
-            throw new Exception('getModel not exists in userProvider');
+            throw new \Exception('getModel not exists in userProvider');
         }
-        
+
         $userModel = $userProvider->getModel();
 
-        return session()->has($this->sessionPrefix . 'login.id') &&
-            $userModel::find(session()->get($this->sessionPrefix . 'login.id'));
+        return session()->has($this->sessionPrefix.'login.id') &&
+            $userModel::find(session()->get($this->sessionPrefix.'login.id'));
     }
 
     /**
@@ -120,23 +110,22 @@ final class TwoFactorLogin extends CardPage
      *
      * @return UserContract
      */
-    public function challengedUser()
-    {
+    public function challengedUser() {
         if ($this->challengedUser instanceof UserContract) {
             return $this->challengedUser;
         }
 
         $userProvider = Filament::auth()->getProvider();
         if (! method_exists($userProvider, 'getModel')) {
-            throw new Exception('getModel not exists in userProvider');
+            throw new \Exception('getModel not exists in userProvider');
         }
-        
+
         $userModel = $userProvider->getModel();
 
-        if (! session()->has($this->sessionPrefix . 'login.id') ||
-            ! $user = $userModel::find(session()->get($this->sessionPrefix . 'login.id'))) {
-            //return redirect()->to(jetRouteActions()->loginRoute());
-            throw new Exception('wip');
+        if (! session()->has($this->sessionPrefix.'login.id') ||
+            ! $user = $userModel::find(session()->get($this->sessionPrefix.'login.id'))) {
+            // return redirect()->to(jetRouteActions()->loginRoute());
+            throw new \Exception('wip');
         }
 
         return $this->challengedUser = $user;
@@ -145,18 +134,16 @@ final class TwoFactorLogin extends CardPage
     /**
      * Determine if the user wanted to be remembered after login.
      */
-    public function remember(): bool
-    {
-        $res = session()->pull($this->sessionPrefix . 'login.remember', false);
+    public function remember(): bool {
+        $res = session()->pull($this->sessionPrefix.'login.remember', false);
         if (! is_bool($res)) {
-            throw new Exception('wip');
+            throw new \Exception('wip');
         }
 
         return $res;
     }
 
-    public function authenticate(): ?TwoFactorLoginResponse
-    {
+    public function authenticate(): ?TwoFactorLoginResponse {
         $rateLimitingOptionEnabled = Features::getOption(Features::twoFactorAuthentication(), 'authentication.rate_limiting.enabled');
 
         if ($rateLimitingOptionEnabled) {
@@ -194,7 +181,7 @@ final class TwoFactorLogin extends CardPage
         }
 
         if (! $userContract instanceof Authenticatable) {
-            throw new Exception('strange things');
+            throw new \Exception('strange things');
         }
 
         Filament::auth()->login($userContract, $this->remember());
@@ -204,38 +191,33 @@ final class TwoFactorLogin extends CardPage
         return app(TwoFactorLoginResponse::class);
     }
 
-    protected function getTitle(): string
-    {
+    protected function getTitle(): string {
         return __('filament-jet::auth/two-factor-login.title');
     }
 
-    protected function getHeading(): string
-    {
+    protected function getHeading(): string {
         return __('filament-jet::auth/two-factor-login.heading');
     }
 
-    protected function getCardWidth(): string
-    {
+    protected function getCardWidth(): string {
         $res = Features::getOption(Features::twoFactorAuthentication(), 'authentication.card_width');
         if (! is_string($res)) {
-            throw new Exception('wip');
+            throw new \Exception('wip');
         }
 
         return $res;
     }
 
-    protected function hasBrand(): bool
-    {
+    protected function hasBrand(): bool {
         $res = Features::optionEnabled(Features::twoFactorAuthentication(), 'authentication.has_brand');
         if (! is_bool($res)) {
-            throw new Exception('wip');
+            throw new \Exception('wip');
         }
 
         return $res;
     }
 
-    protected function getFormSchema(): array
-    {
+    protected function getFormSchema(): array {
         return [
             TextInput::make('code')
                 ->label(__('filament-jet::auth/two-factor-login.fields.code.label'))

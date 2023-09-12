@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset;
 
 use ArtMin96\FilamentJet\Contracts\UserContract;
@@ -9,7 +11,6 @@ use ArtMin96\FilamentJet\FilamentJet;
 use ArtMin96\FilamentJet\Notifications\Auth\ResetPassword as ResetPasswordNotification;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
-use Exception;
 use Filament\Facades\Filament;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\TextInput;
@@ -17,21 +18,19 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Password;
 
 /**
- * Undocumented class
+ * Undocumented class.
  *
- * @property UserContract $user
+ * @property UserContract       $user
  * @property ComponentContainer $form
  */
-final class RequestPasswordReset extends CardPage
-{
+class RequestPasswordReset extends CardPage {
     use WithRateLimiting;
 
     protected static string $view = 'filament-jet::filament.pages.auth.password-reset.request-password-reset';
 
     public ?string $email = null;
 
-    public function mount(): void
-    {
+    public function mount(): void {
         if (Filament::auth()->check()) {
             redirect()->intended(Filament::getUrl());
         }
@@ -39,8 +38,7 @@ final class RequestPasswordReset extends CardPage
         $this->form->fill();
     }
 
-    public function request(): void
-    {
+    public function request(): void {
         $rateLimitingOptionEnabled = Features::getOption(Features::resetPasswords(), 'request.rate_limiting.enabled');
 
         if ($rateLimitingOptionEnabled) {
@@ -63,30 +61,21 @@ final class RequestPasswordReset extends CardPage
 
         $status = Password::sendResetLink(
             $data,
-<<<<<<< HEAD
-            static function (UserContract $userContract, string $token) : void {
-=======
             function (UserContract $userContract, string $token): void {
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
                 if (! method_exists($userContract, 'notify')) {
                     $userClass = $userContract::class;
 
-                    throw new Exception(sprintf('Model [%s] does not have a [notify()] method.', $userClass));
+                    throw new \Exception(sprintf('Model [%s] does not have a [notify()] method.', $userClass));
                 }
-<<<<<<< HEAD
-                $resetPassword = new ResetPasswordNotification($token);
-                $resetPassword->url = FilamentJet::getResetPasswordUrl($token, $userContract);
-=======
 
                 $resetPassword = new ResetPasswordNotification($token);
                 $resetPassword->url = FilamentJet::getResetPasswordUrl($token, $userContract);
 
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
                 $userContract->notify($resetPassword);
             },
         );
 
-        if ($status === Password::RESET_THROTTLED) {
+        if (Password::RESET_THROTTLED === $status) {
             Notification::make()
                 ->title(__($status))
                 ->danger()
@@ -103,38 +92,33 @@ final class RequestPasswordReset extends CardPage
             ->send();
     }
 
-    protected function getTitle(): string
-    {
+    protected function getTitle(): string {
         return __('filament-jet::auth/password-reset/request-password-reset.title');
     }
 
-    protected function getHeading(): string
-    {
+    protected function getHeading(): string {
         return __('filament-jet::auth/password-reset/request-password-reset.heading');
     }
 
-    protected function getCardWidth(): string
-    {
+    protected function getCardWidth(): string {
         $res = Features::getOption(Features::resetPasswords(), 'request.card_width');
         if (! is_string($res)) {
-            throw new Exception('wip');
+            throw new \Exception('wip');
         }
 
         return $res;
     }
 
-    protected function hasBrand(): bool
-    {
+    protected function hasBrand(): bool {
         $res = Features::optionEnabled(Features::resetPasswords(), 'request.has_brand');
         if (! is_bool($res)) {
-            throw new Exception('wip');
+            throw new \Exception('wip');
         }
 
         return $res;
     }
 
-    protected function getFormSchema(): array
-    {
+    protected function getFormSchema(): array {
         return [
             TextInput::make('email')
                 ->label(__('filament-jet::auth/password-reset/request-password-reset.fields.email.label'))

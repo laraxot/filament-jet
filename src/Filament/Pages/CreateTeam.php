@@ -25,7 +25,7 @@ use Illuminate\Routing\Redirector;
  * @property UserContract       $user
  * @property ComponentContainer $form
  */
-final class CreateTeam extends Page
+class CreateTeam extends Page
 {
     use HasUserProperty;
     use RedirectsActions;

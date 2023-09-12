@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Console;
 
 use ArtMin96\FilamentJet\Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
@@ -9,12 +11,10 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
-use RuntimeException;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 
-final class InstallCommand extends Command
-{
+class InstallCommand extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -37,8 +37,7 @@ final class InstallCommand extends Command
      *
      * @return int|null
      */
-    public function handle(): void
-    {
+    public function handle(): void {
         // Publish...
         $this->callSilent('vendor:publish', ['--tag' => 'filament-jet-config', '--force' => true]);
         $this->callSilent('vendor:publish', ['--tag' => 'filament-jet-migrations', '--force' => true]);
@@ -58,8 +57,8 @@ final class InstallCommand extends Command
         if ($this->option('verification')) {
             $this->replaceInFile(
                 '// Features::emailVerification([
-        //     \'page\' => ' . EmailVerificationPrompt::class . '::class,
-        //     \'controller\' => ' . EmailVerificationController::class . '::class,
+        //     \'page\' => '.EmailVerificationPrompt::class.'::class,
+        //     \'controller\' => '.EmailVerificationController::class.'::class,
         //     \'card_width\' => \'md\',
         //     \'has_brand\' => true,
         //     \'rate_limiting\' => [
@@ -68,8 +67,8 @@ final class InstallCommand extends Command
         //     ],
         // ]),',
                 'Features::emailVerification([
-            \'page\' => ' . EmailVerificationPrompt::class . '::class,
-            \'controller\' => ' . EmailVerificationController::class . '::class,
+            \'page\' => '.EmailVerificationPrompt::class.'::class,
+            \'controller\' => '.EmailVerificationController::class.'::class,
             \'card_width\' => \'md\',
             \'has_brand\' => true,
             \'rate_limiting\' => [
@@ -87,8 +86,7 @@ final class InstallCommand extends Command
     /**
      * Configure the session driver for Jetstream.
      */
-    private function configureSession(): void
-    {
+    private function configureSession(): void {
         if (! class_exists('CreateSessionsTable')) {
             try {
                 $this->call('session:table');
@@ -104,8 +102,7 @@ final class InstallCommand extends Command
     /**
      * Install the Livewire stack into the application.
      */
-    private function installStack(): void
-    {
+    private function installStack(): void {
         // Sanctum...
         (new Process([$this->phpBinary(), 'artisan', 'vendor:publish', '--provider=Laravel\Sanctum\SanctumServiceProvider', '--force'], base_path()))
             ->setTimeout(null)
@@ -114,8 +111,8 @@ final class InstallCommand extends Command
             });
 
         // Directories...
-        (new Filesystem)->ensureDirectoryExists(app_path('Actions/FilamentJet'));
-        (new Filesystem)->ensureDirectoryExists(resource_path('markdown'));
+        (new Filesystem())->ensureDirectoryExists(app_path('Actions/FilamentJet'));
+        (new Filesystem())->ensureDirectoryExists(resource_path('markdown'));
 
         // Terms Of Service / Privacy Policy...
         copy(__DIR__.'/../../stubs/resources/markdown/terms.md', resource_path('markdown/terms.md'));
@@ -152,7 +149,7 @@ final class InstallCommand extends Command
         $routes_web_content = file_get_contents($routes_web);
 
         if (! Str::contains($routes_web_content, "'/register'")) {
-            (new Filesystem)->append($routes_web, $this->routeDefinition());
+            (new Filesystem())->append($routes_web, $this->routeDefinition());
         }
 
         // Teams...
@@ -165,10 +162,9 @@ final class InstallCommand extends Command
     }
 
     /**
-     * Undocumented function
+     * Undocumented function.
      */
-    private function installTeamStack(): void
-    {
+    private function installTeamStack(): void {
         // ...
 
         $this->ensureApplicationIsTeamCompatible();
@@ -177,8 +173,7 @@ final class InstallCommand extends Command
     /**
      * Ensure the installed user model is ready for team usage.
      */
-    private function ensureApplicationIsTeamCompatible(): void
-    {
+    private function ensureApplicationIsTeamCompatible(): void {
         // Publish Team Migrations...
         $this->callSilent('vendor:publish', ['--tag' => 'filament-jet-team-migrations', '--force' => true]);
 
@@ -188,7 +183,7 @@ final class InstallCommand extends Command
         //     \'invitations\' => true,
         //     \'middleware\' => [\'verified\'],
         //     \'invitation\' => [
-        //         \'controller\' => ' . TeamInvitationController::class . '::class,
+        //         \'controller\' => '.TeamInvitationController::class.'::class,
         //         \'actions\' => [
         //             \'accept\' => \'accept\',
         //             \'destroy\' => \'destroy\',
@@ -199,7 +194,7 @@ final class InstallCommand extends Command
             \'invitations\' => true,
             \'middleware\' => [\'verified\'],
             \'invitation\' => [
-                \'controller\' => ' . TeamInvitationController::class . '::class,
+                \'controller\' => '.TeamInvitationController::class.'::class,
                 \'actions\' => [
                     \'accept\' => \'accept\',
                     \'destroy\' => \'destroy\',
@@ -210,9 +205,9 @@ final class InstallCommand extends Command
         );
 
         // Directories...
-        (new Filesystem)->ensureDirectoryExists(app_path('Actions/FilamentJet'));
-        (new Filesystem)->ensureDirectoryExists(app_path('Events'));
-        (new Filesystem)->ensureDirectoryExists(app_path('Policies'));
+        (new Filesystem())->ensureDirectoryExists(app_path('Actions/FilamentJet'));
+        (new Filesystem())->ensureDirectoryExists(app_path('Events'));
+        (new Filesystem())->ensureDirectoryExists(app_path('Policies'));
 
         // Service Providers...
         copy(__DIR__.'/../../stubs/app/Providers/AuthServiceProvider.php', app_path('Providers/AuthServiceProvider.php'));
@@ -235,7 +230,7 @@ final class InstallCommand extends Command
         copy(__DIR__.'/../../stubs/app/Actions/FilamentJet/CreateNewUserWithTeams.php', app_path('Actions/FilamentJet/CreateNewUser.php'));
 
         // Policies...
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/app/Policies', app_path('Policies'));
+        (new Filesystem())->copyDirectory(__DIR__.'/../../stubs/app/Policies', app_path('Policies'));
 
         // Factories...
         copy(__DIR__.'/../../database/factories/UserFactory.php', base_path('database/factories/UserFactory.php'));
@@ -245,12 +240,7 @@ final class InstallCommand extends Command
     /**
      * Get the route definition(s) that should be installed for Livewire.
      */
-<<<<<<< HEAD
-    private function routeDefinition(): string
-=======
-    protected function routeDefinition(): string
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
-    {
+    protected function routeDefinition(): string {
         return <<<'EOF'
 Route::domain(config("filament.domain"))
     ->middleware(config("filament.middleware.base"))
@@ -267,16 +257,10 @@ EOF;
 
     /**
      * Install the service provider in the application configuration file.
-<<<<<<< HEAD
-     */
-    private function installServiceProviderAfter(string $after, string $name): void
-=======
      *
      * @return void
      */
-    protected function installServiceProviderAfter(string $after, string $name)
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
-    {
+    protected function installServiceProviderAfter(string $after, string $name) {
         /**
          * @var string $app
          */
@@ -299,10 +283,9 @@ EOF;
     /**
      * Replace a given string within a given file.
      *
-     * @param  string  $path
+     * @param string $path
      */
-    private function replaceInFile(string $search, string $replace, $path): void
-    {
+    private function replaceInFile(string $search, string $replace, $path): void {
         /**
          * @var string $path_content
          */
@@ -314,29 +297,23 @@ EOF;
     /**
      * Get the path to the appropriate PHP binary.
      */
-<<<<<<< HEAD
-    private function phpBinary(): string
-=======
-    protected function phpBinary(): string
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
-    {
-        return (new PhpExecutableFinder)->find(false) ?: 'php';
+    protected function phpBinary(): string {
+        return (new PhpExecutableFinder())->find(false) ?: 'php';
     }
 
     /**
      * Run the given commands.
      *
-     * @param  array  $commands
+     * @param array $commands
      */
-    private function runCommands($commands): void
-    {
+    private function runCommands($commands): void {
         /** @phpstan-ignore-next-line */
         $process = Process::fromShellCommandline(implode(' && ', $commands), null, null, null, null);
 
         if (DIRECTORY_SEPARATOR !== '\\' && file_exists('/dev/tty') && is_readable('/dev/tty')) {
             try {
                 $process->setTty(true);
-            } catch (RuntimeException $e) {
+            } catch (\RuntimeException $e) {
                 $this->output->writeln('  <bg=yellow;fg=black> WARN </> '.$e->getMessage().PHP_EOL);
             }
         }

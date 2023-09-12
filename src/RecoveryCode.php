@@ -4,7 +4,7 @@ namespace ArtMin96\FilamentJet;
 
 use Illuminate\Support\Str;
 
-final class RecoveryCode
+class RecoveryCode
 {
     /**
      * Generate a new recovery code.

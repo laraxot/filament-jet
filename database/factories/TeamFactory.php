@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\User\Models\Team;
 use Modules\User\Models\User;
 
-final class TeamFactory extends Factory
+class TeamFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.

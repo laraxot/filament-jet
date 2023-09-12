@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Tests;
 
 use ArtMin96\FilamentJet\FilamentJetServiceProvider;
@@ -8,27 +10,16 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
-final class TestCase extends Orchestra
-{
-    protected function setUp(): void
-    {
+class TestCase extends Orchestra {
+    protected function setUp(): void {
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-<<<<<<< HEAD
-            static fn(string $modelName): string => 'ArtMin96\\FilamentJet\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
-    }
-
-    protected function getEnvironmentSetUp($app)
-=======
             fn (string $modelName): string => 'ArtMin96\\FilamentJet\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
-    public function getEnvironmentSetUp($app): void
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
-    {
+    public function getEnvironmentSetUp($app): void {
         config()->set('database.default', 'testing');
 
         /*
@@ -37,8 +28,7 @@ final class TestCase extends Orchestra
         */
     }
 
-    protected function getPackageProviders($app): array
-    {
+    protected function getPackageProviders($app): array {
         return [
             LivewireServiceProvider::class,
             FilamentServiceProvider::class,

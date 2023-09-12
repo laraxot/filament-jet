@@ -4,7 +4,7 @@ namespace ArtMin96\FilamentJet\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 
-final class AddingTeam
+class AddingTeam
 {
     use Dispatchable;
 

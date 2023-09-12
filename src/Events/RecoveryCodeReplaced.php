@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Events;
 
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use Illuminate\Queue\SerializesModels;
 
-final class RecoveryCodeReplaced
-{
+class RecoveryCodeReplaced {
     use SerializesModels;
 
     /**
@@ -23,11 +24,6 @@ final class RecoveryCodeReplaced
          * The recovery code.
          */
         public string $code
-<<<<<<< HEAD
-    )
-    {
-=======
     ) {
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 }

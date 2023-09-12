@@ -1,46 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Contracts;
 
-use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Collection;
-use Laravel\Passport\Client;
-use Illuminate\Notifications\DatabaseNotificationCollection;
-use Illuminate\Notifications\DatabaseNotification;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Laravel\Passport\Token;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
+use Illuminate\Support\Carbon;
+use Laravel\Passport\Client;
+use Laravel\Passport\Token;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 /**
- * ArtMin96\FilamentJet\Contracts\UserContract
+ * ArtMin96\FilamentJet\Contracts\UserContract.
  *
- * @property int $id
- * @property string $name
- * @property string $email
- * @property Carbon|null $email_verified_at
- * @property string $password
- * @property string|null $two_factor_secret
- * @property string|null $two_factor_recovery_codes
- * @property string|null $two_factor_confirmed_at
- * @property string|null $remember_token
- * @property int|null $current_team_id
- * @property string|null $profile_photo_path
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read Collection<int, Client> $clients
- * @property-read int|null $clients_count
- * @property-read string $profile_photo_url
- * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
- * @property-read int|null $notifications_count
- * @property-read Collection<int, Permission> $permissions
- * @property-read int|null $permissions_count
- * @property-read Collection<int, Role> $roles
- * @property-read int|null $roles_count
- * @property-read Collection<int, Token> $tokens
- * @property-read int|null $tokens_count
+ * @property int                                                       $id
+ * @property string                                                    $name
+ * @property string                                                    $email
+ * @property Carbon|null                                               $email_verified_at
+ * @property string                                                    $password
+ * @property string|null                                               $two_factor_secret
+ * @property string|null                                               $two_factor_recovery_codes
+ * @property string|null                                               $two_factor_confirmed_at
+ * @property string|null                                               $remember_token
+ * @property int|null                                                  $current_team_id
+ * @property string|null                                               $profile_photo_path
+ * @property Carbon|null                                               $created_at
+ * @property Carbon|null                                               $updated_at
+ * @property Collection<int, Client>                                   $clients
+ * @property int|null                                                  $clients_count
+ * @property string                                                    $profile_photo_url
+ * @property DatabaseNotificationCollection<int, DatabaseNotification> $notifications
+ * @property int|null                                                  $notifications_count
+ * @property Collection<int, Permission>                               $permissions
+ * @property int|null                                                  $permissions_count
+ * @property Collection<int, Role>                                     $roles
+ * @property int|null                                                  $roles_count
+ * @property Collection<int, Token>                                    $tokens
+ * @property int|null                                                  $tokens_count
  *
  * @method static Builder|User newModelQuery()
  * @method static Builder|User newQuery()
@@ -63,13 +65,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
  *
  * @mixin \Eloquent
  */
-<<<<<<< HEAD
-interface UserContract extends
-    HasTeamsContract, PassportHasApiTokensContract, HasProfilePhotoContract, TwoFactorAuthenticatableContract, MustVerifyEmail, CanResetPassword, ModelContract
-=======
 interface UserContract extends CanResetPassword, HasProfilePhotoContract,
-    //HasApiTokens, //no sanctum ma passport
-    HasTeamsContract, ModelContract, MustVerifyEmail, PassportHasApiTokensContract, TwoFactorAuthenticatableContract
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
-{
+    // HasApiTokens, //no sanctum ma passport
+    HasTeamsContract, ModelContract, MustVerifyEmail, PassportHasApiTokensContract, TwoFactorAuthenticatableContract {
 }

@@ -4,7 +4,7 @@ namespace ArtMin96\FilamentJet;
 
 use Exception;
 
-final class RouteActions
+class RouteActions
 {
     public function routePrefix(): string
     {

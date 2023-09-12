@@ -20,7 +20,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Gate;
 
-final class TeamInvitationController extends Controller
+class TeamInvitationController extends Controller
 {
     /**
      * Accept a team invitation.

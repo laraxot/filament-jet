@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Filament\Pages\Auth\EmailVerification;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Features;
 use ArtMin96\FilamentJet\Filament\Pages\CardPage;
@@ -10,32 +11,30 @@ use ArtMin96\FilamentJet\FilamentJet;
 use ArtMin96\FilamentJet\Notifications\Auth\VerifyEmail;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
-use Exception;
 use Filament\Facades\Filament;
 use Filament\Forms\ComponentContainer;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 /**
- * Undocumented class
+ * Undocumented class.
  *
- * @property UserContract $user
+ * @property UserContract       $user
  * @property ComponentContainer $form
  */
-final class EmailVerificationPrompt extends CardPage
-{
+class EmailVerificationPrompt extends CardPage {
     use WithRateLimiting;
 
     protected static string $view = 'filament-jet::filament.pages.auth.email-verification.email-verification-prompt';
 
     /**
-     * Undocumented function
+     * Undocumented function.
      *
      * @return mixed
      */
-    public function mount()
-    {
+    public function mount() {
         if (! Filament::auth()->check()) {
             return redirect()->to(jetRouteActions()->loginRoute());
         }
@@ -48,8 +47,7 @@ final class EmailVerificationPrompt extends CardPage
         }
     }
 
-    public function resendNotification(): void
-    {
+    public function resendNotification(): void {
         $rateLimitingOptionEnabled = Features::getOption(Features::emailVerification(), 'rate_limiting.enabled');
 
         if ($rateLimitingOptionEnabled) {
@@ -69,25 +67,21 @@ final class EmailVerificationPrompt extends CardPage
         }
 
         $user = Filament::auth()->user();
-<<<<<<< HEAD
-        if (!$user instanceof Authenticatable) {
-=======
         if (! $user instanceof Authenticatable) {
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
-            throw new Exception('strange things');
+            throw new \Exception('strange things');
         }
 
         if (! method_exists($user, 'notify')) {
             $userClass = $user::class;
 
-            throw new Exception(sprintf('Model [%s] does not have a [notify()] method.', $userClass));
-        }
-        
-        if (! $user instanceof UserContract) {
-            throw new Exception('strange things');
+            throw new \Exception(sprintf('Model [%s] does not have a [notify()] method.', $userClass));
         }
 
-        $verifyEmail = new VerifyEmail;
+        if (! $user instanceof UserContract) {
+            throw new \Exception('strange things');
+        }
+
+        $verifyEmail = new VerifyEmail();
         $verifyEmail->url = FilamentJet::getVerifyEmailUrl($user);
 
         $user->notify($verifyEmail);
@@ -98,31 +92,27 @@ final class EmailVerificationPrompt extends CardPage
             ->send();
     }
 
-    protected function getTitle(): string
-    {
+    protected function getTitle(): string {
         return __('filament-jet::auth/email-verification/email-verification-prompt.title');
     }
 
-    protected function getHeading(): string
-    {
+    protected function getHeading(): string {
         return __('filament-jet::auth/email-verification/email-verification-prompt.heading');
     }
 
-    protected function getCardWidth(): string
-    {
+    protected function getCardWidth(): string {
         $res = Features::getOption(Features::emailVerification(), 'card_width');
         if (! is_string($res)) {
-            throw new Exception('wip');
+            throw new \Exception('wip');
         }
 
         return $res;
     }
 
-    protected function hasBrand(): bool
-    {
+    protected function hasBrand(): bool {
         $res = Features::optionEnabled(Features::emailVerification(), 'has_brand');
         if (! is_bool($res)) {
-            throw new Exception('wip');
+            throw new \Exception('wip');
         }
 
         return $res;

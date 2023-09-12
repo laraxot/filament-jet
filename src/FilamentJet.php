@@ -1,11 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet;
 
-use Modules\User\Models\User;
-use Modules\User\Models\Team;
-use Modules\User\Models\Membership;
-use Modules\User\Models\TeamInvitation;
 use ArtMin96\FilamentJet\Contracts\AddsTeamMembers;
 use ArtMin96\FilamentJet\Contracts\CreatesNewUsers;
 use ArtMin96\FilamentJet\Contracts\CreatesTeams;
@@ -19,7 +17,6 @@ use ArtMin96\FilamentJet\Contracts\UpdatesUserPasswords;
 use ArtMin96\FilamentJet\Contracts\UpdatesUserProfileInformation;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Traits\HasTeams;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\URL;
@@ -29,8 +26,7 @@ use Modules\User\Models\Team;
 use Modules\User\Models\TeamInvitation;
 use Modules\User\Models\User;
 
-final class FilamentJet
-{
+class FilamentJet {
     /**
      * The callback that is responsible for building the authentication pipeline array, if applicable.
      *
@@ -95,16 +91,14 @@ final class FilamentJet
     /**
      * Register a callback that is responsible for building the authentication pipeline array.
      */
-    public static function loginThrough(callable $callback): void
-    {
+    public static function loginThrough(callable $callback): void {
         self::authenticateThrough($callback);
     }
 
     /**
      * Register a callback that is responsible for building the authentication pipeline array.
      */
-    public static function authenticateThrough(callable $callback): void
-    {
+    public static function authenticateThrough(callable $callback): void {
         self::$authenticateThroughCallback = $callback;
     }
 
@@ -113,8 +107,7 @@ final class FilamentJet
      *
      * @return string
      */
-    public static function username()
-    {
+    public static function username() {
         return config('filament-jet.username', 'email');
     }
 
@@ -123,17 +116,15 @@ final class FilamentJet
      *
      * @return string
      */
-    public static function email()
-    {
+    public static function email() {
         return config('filament-jet.email', 'email');
     }
 
     /**
      * Determine if FilamentJet has registered roles.
      */
-    public static function hasRoles(): bool
-    {
-        return self::$roles !== [];
+    public static function hasRoles(): bool {
+        return [] !== self::$roles;
     }
 
     /**
@@ -141,8 +132,7 @@ final class FilamentJet
      *
      * @return Role
      */
-    public static function findRole(string $key)
-    {
+    public static function findRole(string $key) {
         return self::$roles[$key] ?? null;
     }
 
@@ -151,19 +141,14 @@ final class FilamentJet
      *
      * @return Role
      */
-    public static function role(string $key, string $name, array $permissions)
-    {
+    public static function role(string $key, string $name, array $permissions) {
         self::$permissions = collect(array_merge(self::$permissions, $permissions))
             ->unique()
             ->sort()
             ->values()
             ->all();
 
-<<<<<<< HEAD
-        return tap(new Role($key, $name, $permissions), static function ($role) use ($key) : void {
-=======
         return tap(new Role($key, $name, $permissions), function ($role) use ($key): void {
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             self::$roles[$key] = $role;
         });
     }
@@ -171,36 +156,32 @@ final class FilamentJet
     /**
      * Determine if any permissions have been registered with FilamentJet.
      */
-    public static function hasPermissions(): bool
-    {
-        return self::$permissions !== [];
+    public static function hasPermissions(): bool {
+        return [] !== self::$permissions;
     }
 
     /**
      * Define the available API token permissions.
      */
-    public static function permissions(array $permissions): self
-    {
+    public static function permissions(array $permissions): self {
         self::$permissions = $permissions;
 
-        return new self;
+        return new self();
     }
 
     /**
      * Define the default permissions that should be available to new API tokens.
      */
-    public static function defaultApiTokenPermissions(array $permissions): self
-    {
+    public static function defaultApiTokenPermissions(array $permissions): self {
         self::$defaultPermissions = $permissions;
 
-        return new self;
+        return new self();
     }
 
     /**
      * Return the permissions in the given list that are actually defined permissions for the application.
      */
-    public static function validPermissions(array $permissions): array
-    {
+    public static function validPermissions(array $permissions): array {
         return array_values(array_intersect($permissions, self::$permissions));
     }
 
@@ -209,8 +190,7 @@ final class FilamentJet
      *
      * @return bool
      */
-    public static function managesProfilePhotos()
-    {
+    public static function managesProfilePhotos() {
         return Features::managesProfilePhotos();
     }
 
@@ -219,24 +199,21 @@ final class FilamentJet
      *
      * @return bool
      */
-    public static function hasApiFeatures()
-    {
+    public static function hasApiFeatures() {
         return Features::hasApiFeatures();
     }
 
     /**
      * Determine if FilamentJet is supporting team features.
      */
-    public static function hasTeamFeatures(): bool
-    {
+    public static function hasTeamFeatures(): bool {
         return Features::hasTeamFeatures();
     }
 
     /**
      * Determine if a given user model utilizes the "HasTeams" trait.
      */
-    public static function userHasTeamFeatures(UserContract $userContract): bool
-    {
+    public static function userHasTeamFeatures(UserContract $userContract): bool {
         return (array_key_exists(HasTeams::class, class_uses_recursive($userContract)) ||
             method_exists($userContract, 'currentTeam')) &&
             self::hasTeamFeatures();
@@ -247,8 +224,7 @@ final class FilamentJet
      *
      * @return bool
      */
-    public static function hasTermsAndPrivacyPolicyFeature()
-    {
+    public static function hasTermsAndPrivacyPolicyFeature() {
         return Features::hasTermsAndPrivacyPolicyFeature();
     }
 
@@ -257,8 +233,7 @@ final class FilamentJet
      *
      * @return bool
      */
-    public static function hasAccountDeletionFeatures()
-    {
+    public static function hasAccountDeletionFeatures() {
         return Features::hasAccountDeletionFeatures();
     }
 
@@ -268,8 +243,7 @@ final class FilamentJet
      *
      * @return mixed
      */
-    public static function registrationPage()
-    {
+    public static function registrationPage() {
         return Features::getOption(Features::registration(), 'page');
     }
 
@@ -279,8 +253,7 @@ final class FilamentJet
      *
      * @return mixed
      */
-    public static function emailVerificationComponent()
-    {
+    public static function emailVerificationComponent() {
         return Features::getOption(Features::emailVerification(), 'page');
     }
 
@@ -290,8 +263,7 @@ final class FilamentJet
      *
      * @return mixed
      */
-    public static function emailVerificationController()
-    {
+    public static function emailVerificationController() {
         return Features::getOption(Features::emailVerification(), 'controller');
     }
 
@@ -301,8 +273,7 @@ final class FilamentJet
      *
      * @return mixed
      */
-    public static function termsOfServiceComponent()
-    {
+    public static function termsOfServiceComponent() {
         return Features::getOption(Features::registration(), 'terms_of_service');
     }
 
@@ -312,8 +283,7 @@ final class FilamentJet
      *
      * @return mixed
      */
-    public static function privacyPolicyComponent()
-    {
+    public static function privacyPolicyComponent() {
         return Features::getOption(Features::registration(), 'privacy_policy');
     }
 
@@ -323,8 +293,7 @@ final class FilamentJet
      *
      * @return mixed
      */
-    public static function resetPasswordPage()
-    {
+    public static function resetPasswordPage() {
         return Features::getOption(Features::resetPasswords(), 'component');
     }
 
@@ -334,8 +303,7 @@ final class FilamentJet
      *
      * @return mixed
      */
-    public static function teamInvitationController()
-    {
+    public static function teamInvitationController() {
         return Features::getOption(Features::teams(), 'invitation.controller');
     }
 
@@ -345,8 +313,7 @@ final class FilamentJet
      *
      * @return mixed
      */
-    public static function teamInvitationAcceptAction()
-    {
+    public static function teamInvitationAcceptAction() {
         return Features::getOption(Features::teams(), 'invitation.actions.accept');
     }
 
@@ -356,8 +323,7 @@ final class FilamentJet
      *
      * @return mixed
      */
-    public static function teamInvitationDestroyAction()
-    {
+    public static function teamInvitationDestroyAction() {
         return Features::getOption(Features::teams(), 'invitation.actions.destroy');
     }
 
@@ -366,11 +332,10 @@ final class FilamentJet
      *
      * @return UserContract
      */
-    public static function findUserByIdOrFail(int $id)
-    {
+    public static function findUserByIdOrFail(int $id) {
         $res = self::newUserModel()->where('id', $id)->firstOrFail();
         if (! $res instanceof UserContract) {
-            throw new Exception('strange things');
+            throw new \Exception('strange things');
         }
 
         return $res;
@@ -379,11 +344,10 @@ final class FilamentJet
     /**
      * Find a user instance by the given email address or fail.
      */
-    public static function findUserByEmailOrFail(string $email): UserContract
-    {
+    public static function findUserByEmailOrFail(string $email): UserContract {
         $res = self::newUserModel()->where('email', $email)->firstOrFail();
         if (! $res instanceof UserContract) {
-            throw new Exception('strange things');
+            throw new \Exception('strange things');
         }
 
         return $res;
@@ -392,8 +356,7 @@ final class FilamentJet
     /**
      * Get the name of the user model used by the application.
      */
-    public static function userModel(): string
-    {
+    public static function userModel(): string {
         return self::$userModel;
     }
 
@@ -404,13 +367,12 @@ final class FilamentJet
      *
      * @return Model
      */
-    public static function newUserModel()
-    {
+    public static function newUserModel() {
         $model = self::userModel();
 
-        $res = new $model;
+        $res = new $model();
         if (! $res instanceof Model) {
-            throw new Exception('wip');
+            throw new \Exception('wip');
         }
 
         return $res;
@@ -419,11 +381,10 @@ final class FilamentJet
     /**
      * Specify the user model that should be used by FilamentJet.
      */
-    public static function useUserModel(string $model): self
-    {
+    public static function useUserModel(string $model): self {
         self::$userModel = $model;
 
-        return new self;
+        return new self();
     }
 
     /**
@@ -431,8 +392,7 @@ final class FilamentJet
      *
      * @return string
      */
-    public static function teamModel()
-    {
+    public static function teamModel() {
         return config('filament-jet.models.team');
     }
 
@@ -441,13 +401,12 @@ final class FilamentJet
      *
      * @return Model
      */
-    public static function newTeamModel()
-    {
+    public static function newTeamModel() {
         $model = self::teamModel();
 
-        $res = new $model;
+        $res = new $model();
         if (! $res instanceof Model) {
-            throw new Exception('wip');
+            throw new \Exception('wip');
         }
 
         return $res;
@@ -456,11 +415,10 @@ final class FilamentJet
     /**
      * Specify the team model that should be used by FilamentJet.
      */
-    public static function useTeamModel(string $model): self
-    {
+    public static function useTeamModel(string $model): self {
         self::$teamModel = $model;
 
-        return new self;
+        return new self();
     }
 
     /**
@@ -468,19 +426,17 @@ final class FilamentJet
      *
      * @return string
      */
-    public static function membershipModel()
-    {
+    public static function membershipModel() {
         return self::$membershipModel;
     }
 
     /**
      * Specify the membership model that should be used by FilamentJet.
      */
-    public static function useMembershipModel(string $model): self
-    {
+    public static function useMembershipModel(string $model): self {
         self::$membershipModel = $model;
 
-        return new self;
+        return new self();
     }
 
     /**
@@ -488,111 +444,97 @@ final class FilamentJet
      *
      * @return string
      */
-    public static function teamInvitationModel()
-    {
+    public static function teamInvitationModel() {
         return config('filament-jet.models.team_invitation');
     }
 
     /**
      * Specify the team invitation model that should be used by FilamentJet.
      */
-    public static function useTeamInvitationModel(string $model): self
-    {
+    public static function useTeamInvitationModel(string $model): self {
         self::$teamInvitationModel = $model;
 
-        return new self;
+        return new self();
     }
 
     /**
      * Register a class / callback that should be used to update user profile information.
      */
-    public static function updateUserProfileInformationUsing(string $class): void
-    {
+    public static function updateUserProfileInformationUsing(string $class): void {
         app()->singleton(UpdatesUserProfileInformation::class, $class);
     }
 
     /**
      * Register a class / callback that should be used to update user passwords.
      */
-    public static function updateUserPasswordsUsing(string $class): void
-    {
+    public static function updateUserPasswordsUsing(string $class): void {
         app()->singleton(UpdatesUserPasswords::class, $class);
     }
 
     /**
      * Register a class / callback that should be used to create users.
      */
-    public static function createUsersUsing(string $class): void
-    {
+    public static function createUsersUsing(string $class): void {
         app()->singleton(CreatesNewUsers::class, $class);
     }
 
     /**
      * Register a class / callback that should be used to create teams.
      */
-    public static function createTeamsUsing(string $class): void
-    {
+    public static function createTeamsUsing(string $class): void {
         app()->singleton(CreatesTeams::class, $class);
     }
 
     /**
      * Register a class / callback that should be used to update team names.
      */
-    public static function updateTeamNamesUsing(string $class): void
-    {
+    public static function updateTeamNamesUsing(string $class): void {
         app()->singleton(UpdatesTeamNames::class, $class);
     }
 
     /**
      * Register a class / callback that should be used to add team members.
      */
-    public static function addTeamMembersUsing(string $class): void
-    {
+    public static function addTeamMembersUsing(string $class): void {
         app()->singleton(AddsTeamMembers::class, $class);
     }
 
     /**
      * Register a class / callback that should be used to add team members.
      */
-    public static function inviteTeamMembersUsing(string $class): void
-    {
+    public static function inviteTeamMembersUsing(string $class): void {
         app()->singleton(InvitesTeamMembers::class, $class);
     }
 
     /**
      * Register a class / callback that should be used to remove team members.
      */
-    public static function removeTeamMembersUsing(string $class): void
-    {
+    public static function removeTeamMembersUsing(string $class): void {
         app()->singleton(RemovesTeamMembers::class, $class);
     }
 
     /**
      * Register a class / callback that should be used to delete teams.
      */
-    public static function deleteTeamsUsing(string $class): void
-    {
+    public static function deleteTeamsUsing(string $class): void {
         app()->singleton(DeletesTeams::class, $class);
     }
 
     /**
      * Register a class / callback that should be used to delete users.
      */
-    public static function deleteUsersUsing(string $class): void
-    {
+    public static function deleteUsersUsing(string $class): void {
         app()->singleton(DeletesUsers::class, $class);
     }
 
     /**
      * Register a class / callback that should be used to reset user passwords.
      */
-    public static function resetUserPasswordsUsing(string $class): void
-    {
+    public static function resetUserPasswordsUsing(string $class): void {
         app()->singleton(ResetsUserPasswords::class, $class);
     }
 
-    public static function getVerifyEmailUrl(UserContract $userContract): string
-    {
+    public static function getVerifyEmailUrl(UserContract $userContract): string {
         /**
          * @var int $expire
          */
@@ -608,33 +550,25 @@ final class FilamentJet
         );
     }
 
-    public static function getResetPasswordUrl(string $token, UserContract $userContract): string
-    {
+    public static function getResetPasswordUrl(string $token, UserContract $userContract): string {
         return URL::signedRoute(config('filament-jet.route_group_prefix').'auth.password-reset.reset', [
             'email' => $userContract->getEmailForPasswordReset(),
             'token' => $token,
         ]);
     }
 
-    public static function setPasswordRules(array $rules): void
-    {
-<<<<<<< HEAD
-        self::$passwordRules = $rules !== [] ? $rules : (array) Password::default();
-=======
+    public static function setPasswordRules(array $rules): void {
         self::$passwordRules = $rules ?: (array) Password::default();
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 
-    public static function getPasswordRules(): array
-    {
+    public static function getPasswordRules(): array {
         return self::$passwordRules;
     }
 
     /**
      * Determine if FilamentJet is confirming two factor authentication configurations.
      */
-    public static function confirmsTwoFactorAuthentication(): bool
-    {
+    public static function confirmsTwoFactorAuthentication(): bool {
         return Features::enabled(Features::twoFactorAuthentication()) &&
             Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm');
     }
@@ -644,17 +578,12 @@ final class FilamentJet
      *
      * @return string|null
      */
-    public static function localizedMarkdownPath(string $name)
-    {
+    public static function localizedMarkdownPath(string $name) {
         $localName = preg_replace('#(\.md)$#i', '.'.app()->getLocale().'$1', $name);
 
         return Arr::first([
             resource_path('markdown/'.$localName),
             resource_path('markdown/'.$name),
-<<<<<<< HEAD
-        ], static fn($path): bool => file_exists($path));
-=======
         ], fn ($path): bool => file_exists($path));
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 }

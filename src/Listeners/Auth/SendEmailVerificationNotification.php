@@ -10,7 +10,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification as BaseListener;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-final class SendEmailVerificationNotification extends BaseListener
+class SendEmailVerificationNotification extends BaseListener
 {
     public function handle(Registered $registered): void
     {

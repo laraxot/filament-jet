@@ -10,7 +10,7 @@ use ArtMin96\FilamentJet\Events\TeamMemberAdded;
 use ArtMin96\FilamentJet\FilamentJet;
 use Illuminate\Support\Facades\Gate;
 
-final class AddTeamMember implements AddsTeamMembers
+class AddTeamMember implements AddsTeamMembers
 {
     /**
      * Add a new team member to the given team.

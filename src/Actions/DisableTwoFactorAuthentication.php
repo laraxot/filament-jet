@@ -5,7 +5,7 @@ namespace ArtMin96\FilamentJet\Actions;
 use ArtMin96\FilamentJet\Events\TwoFactorAuthenticationDisabled;
 use ArtMin96\FilamentJet\FilamentJet;
 
-final class DisableTwoFactorAuthentication
+class DisableTwoFactorAuthentication
 {
     /**
      * Disable two factor authentication for the user.

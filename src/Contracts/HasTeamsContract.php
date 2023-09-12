@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 namespace ArtMin96\FilamentJet\Contracts;
 
-<<<<<<< HEAD
-use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-=======
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
 use ArtMin96\FilamentJet\Role;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,19 +14,18 @@ use Illuminate\Support\Carbon;
 /**
  * ArtMin96\FilamentJet\Contracts\HasTeamsContract.
  *
- * @property int                                                         $id
- * @property string                                                      $name
- * @property string                                                      $two_factor_secret
- * @property TeamContract|null                                           $currentTeam
- * @property Collection                                                  $tokens
- * @property Carbon|null $two_factor_confirmed_at
- * @property int                                                         $current_team_id
+ * @property int                           $id
+ * @property string                        $name
+ * @property string                        $two_factor_secret
+ * @property TeamContract|null             $currentTeam
+ * @property Collection                    $tokens
+ * @property Carbon|null                   $two_factor_confirmed_at
+ * @property int                           $current_team_id
  * @property Collection<int, TeamContract> $ownedTeams
  *
  * @mixin \Eloquent
  */
-interface HasTeamsContract
-{
+interface HasTeamsContract {
     // extends
     // HasApiTokens, //no sanctum ma passport
     // PassportHasApiTokensContract,

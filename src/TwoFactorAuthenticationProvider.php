@@ -1,19 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet;
 
-use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
-use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
-use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use ArtMin96\FilamentJet\Contracts\TwoFactorAuthenticationProvider as TwoFactorAuthenticationProviderContract;
 use Illuminate\Cache\Repository;
 use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
+use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
+use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
+use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use PragmaRX\Google2FA\Google2FA;
 
-final class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationProviderContract
-{
+class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationProviderContract {
     /**
      * Create a new two factor authentication provider instance.
      *
@@ -23,61 +24,48 @@ final class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationPr
         /**
          * The underlying library providing two factor authentication helper services.
          */
-<<<<<<< HEAD
-        private readonly Google2FA $google2FA,
-        /**
-         * The cache repository implementation.
-         */
-        private readonly Repository $cacheRepository
-    )
-    {
-=======
         protected Google2FA $google2FA,
         /**
          * The cache repository implementation.
          */
         protected Repository $cacheRepository
     ) {
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 
     /**
      * Generate a new secret key.
      *
-     * @return string
-     *
      * @throws IncompatibleWithGoogleAuthenticatorException
      * @throws InvalidCharactersException
      * @throws SecretKeyTooShortException
+     *
+     * @return string
      */
-    public function generateSecretKey()
-    {
+    public function generateSecretKey() {
         return $this->google2FA->generateSecretKey();
     }
 
     /**
      * Get the two factor authentication QR code URL.
      *
-     * @param  string  $companyName
-     * @param  string  $companyEmail
-     * @param  string  $secret
+     * @param string $companyName
+     * @param string $companyEmail
+     * @param string $secret
+     *
      * @return string
      */
-    public function qrCodeUrl($companyName, $companyEmail, $secret)
-    {
+    public function qrCodeUrl($companyName, $companyEmail, $secret) {
         return $this->google2FA->getQRCodeUrl($companyName, $companyEmail, $secret);
     }
 
     /**
      * Verify the given code.
      *
-     *
      * @throws IncompatibleWithGoogleAuthenticatorException
      * @throws InvalidCharactersException
      * @throws SecretKeyTooShortException
      */
-    public function verify($secret, $code): bool
-    {
+    public function verify($secret, $code): bool {
         if (is_int($customWindow = config('filament-jet-options.two-factor-authentication.window'))) {
             $this->google2FA->setWindow($customWindow);
         }
@@ -90,8 +78,8 @@ final class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationPr
             $oldTimestamp
         );
 
-        if ($timestamp !== false) {
-            if ($timestamp === true) {
+        if (false !== $timestamp) {
+            if (true === $timestamp) {
                 $timestamp = $this->google2FA->getTimestamp();
             }
 

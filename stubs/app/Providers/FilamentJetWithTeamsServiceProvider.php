@@ -6,7 +6,7 @@ use ArtMin96\FilamentJet\Features;
 use ArtMin96\FilamentJet\FilamentJet;
 use Illuminate\Support\ServiceProvider;
 
-final class FilamentJetServiceProvider extends ServiceProvider
+class FilamentJetServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.

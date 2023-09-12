@@ -29,8 +29,7 @@ use Livewire\Component;
  *
  * @property Collection $sanctumPermissions
  */
-final class ApiTokensTable extends Component implements HasTable
-{
+class ApiTokensTable extends Component implements HasTable {
     use InteractsWithTable;
     // ////use HasSanctumPermissionsProperty;
 
@@ -43,13 +42,11 @@ final class ApiTokensTable extends Component implements HasTable
         'tokenCreated' => '$refresh',
     ];
 
-    public function render(): View
-    {
+    public function render(): View {
         return view('filament-jet::livewire.api-tokens-table');
     }
 
-    public function edit(Model $model, array $data): void
-    {
+    public function edit(Model $model, array $data): void {
         $model->forceFill([
             'abilities' => FilamentJet::validPermissions($data['abilities']),
         ])->save();
@@ -57,23 +54,20 @@ final class ApiTokensTable extends Component implements HasTable
         Filament::notify('success', __('filament-jet::api.update.notify'));
     }
 
-    public function delete(Model $model): void
-    {
+    public function delete(Model $model): void {
         $model->delete();
 
         Filament::notify('success', __('filament-jet::api.delete.notify'));
     }
 
-    protected function getTableQuery(): Builder|Relation
-    {
+    protected function getTableQuery(): Builder|Relation {
         return app(Sanctum::$personalAccessTokenModel)->where([
             ['tokenable_id', '=', Filament::auth()->id()],
             ['tokenable_type', '=', FilamentJet::userModel()],
         ])->orderBy('created_at', 'desc');
     }
 
-    protected function getTableColumns(): array
-    {
+    protected function getTableColumns(): array {
         return [
             TextColumn::make('name')
                 ->label(__('filament-jet::api.fields.token_name'))
@@ -86,35 +80,29 @@ final class ApiTokensTable extends Component implements HasTable
                 ->searchable()
                 ->sortable()
                 ->formatStateUsing(
-                    static fn(?string $state): string => $state ? Carbon::parse($state)->diffForHumans() : __('filament-jet::api.table.never')
+                    static fn (?string $state): string => $state ? Carbon::parse($state)->diffForHumans() : __('filament-jet::api.table.never')
                 ),
         ];
     }
 
-    protected function getTableBulkActions(): array
-    {
+    protected function getTableBulkActions(): array {
         return [
             BulkAction::make('delete')
                 ->label(__('filament-jet::api.table.bulk_actions.delete'))
-                ->action(static fn(Collection $records) => $records->each->delete())
+                ->action(static fn (Collection $records) => $records->each->delete())
                 ->requiresConfirmation()
                 ->deselectRecordsAfterCompletion(),
         ];
     }
 
-    protected function getTableActions(): array
-    {
+    protected function getTableActions(): array {
         return [
             Action::make('permissions')
                 ->action('edit')
                 ->icon('heroicon-o-pencil-alt')
                 ->modalWidth('sm')
                 ->mountUsing(
-<<<<<<< HEAD
-                    static fn(ComponentContainer $componentContainer, Model $model): ComponentContainer => $componentContainer->fill($model->toArray())
-=======
                     fn (ComponentContainer $componentContainer, Model $model): ComponentContainer => $componentContainer->fill($model->toArray())
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
                 )
                 ->form([
                     CheckboxList::make('abilities')
@@ -122,18 +110,10 @@ final class ApiTokensTable extends Component implements HasTable
                         ->options($this->sanctumPermissions)
                         ->columns(2)
                         ->required()
-<<<<<<< HEAD
-                        ->afterStateHydrated(static function ($component, $state) : void {
-=======
                         ->afterStateHydrated(function ($component, $state): void {
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
                             $permissions = FilamentJet::$permissions;
                             $tokenPermissions = collect($permissions)
-<<<<<<< HEAD
-                                ->filter(static fn($permission): bool => in_array($permission, $state))
-=======
                                 ->filter(fn ($permission): bool => in_array($permission, $state))
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
                                 ->values()
                                 ->toArray();
                             $component->state($tokenPermissions);

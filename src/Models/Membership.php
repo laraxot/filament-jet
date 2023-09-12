@@ -1,21 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Models;
 
-<<<<<<< HEAD
-use Illuminate\Support\Carbon;
-=======
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Carbon;
 
 /**
- * ArtMin96\FilamentJet\Models\Membership
+ * ArtMin96\FilamentJet\Models\Membership.
  *
- * @property int $id
- * @property int $team_id
- * @property int $user_id
+ * @property int         $id
+ * @property int         $team_id
+ * @property int         $user_id
  * @property string|null $role
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -32,8 +30,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin \Eloquent
  */
-abstract class Membership extends Pivot
-{
+abstract class Membership extends Pivot {
     /**
      * The table associated with the pivot model.
      *
