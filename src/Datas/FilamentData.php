@@ -5,7 +5,7 @@ namespace ArtMin96\FilamentJet\Datas;
 use Exception;
 use Spatie\LaravelData\Data;
 
-class FilamentData extends Data
+final class FilamentData extends Data
 {
     public string $path;
 

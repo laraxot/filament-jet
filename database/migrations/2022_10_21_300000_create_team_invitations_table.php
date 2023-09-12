@@ -8,14 +8,13 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('team_invitations', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('team_id')->constrained()->cascadeOnDelete();
-            $table->string('email');
-            $table->string('role')->nullable();
-            $table->timestamps();
-
-            $table->unique(['team_id', 'email']);
+        Schema::create('team_invitations', static function (Blueprint $blueprint) : void {
+            $blueprint->id();
+            $blueprint->foreignId('team_id')->constrained()->cascadeOnDelete();
+            $blueprint->string('email');
+            $blueprint->string('role')->nullable();
+            $blueprint->timestamps();
+            $blueprint->unique(['team_id', 'email']);
         });
     }
 

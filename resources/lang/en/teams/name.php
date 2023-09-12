@@ -4,7 +4,7 @@ return [
 
     'title' => 'Team Name',
 
-    'description' => 'The team\'s name and owner information.',
+    'description' => "The team's name and owner information.",
 
     'team_owner' => [
         'label' => 'Team Owner',

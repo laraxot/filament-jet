@@ -2,17 +2,18 @@
 
 namespace ArtMin96\FilamentJet\Http\Livewire;
 
+use Illuminate\Contracts\View\View;
 use ArtMin96\FilamentJet\FilamentJet;
 use Exception;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-class TermsOfService extends Component
+final class TermsOfService extends Component
 {
     /**
      * Show the terms of service for the application.
      *
-     * @return \Illuminate\Contracts\View\View
+     * @return View
      */
     public function render()
     {
@@ -20,6 +21,7 @@ class TermsOfService extends Component
         if (! is_string($termsFile)) {
             throw new Exception('strange things');
         }
+        
         $fileContents = file_get_contents($termsFile);
         if ($fileContents === false) {
             throw new Exception('strange things');

@@ -65,7 +65,7 @@ abstract class Team extends Model implements TeamContract
      */
     public function allUsers(): Collection
     {
-        if (null === $this->owner) {
+        if (!$this->owner instanceof UserContract) {
             return $this->users;
         }
 
@@ -93,9 +93,12 @@ abstract class Team extends Model implements TeamContract
     /**
      * Determine if the given user belongs to the team.
      */
-    public function hasUser(UserContract $user): bool
+    public function hasUser(UserContract $userContract): bool
     {
-        return $this->users->contains($user) || $user->ownsTeam($this);
+        if ($this->users->contains($userContract)) {
+            return true;
+        }
+        return $userContract->ownsTeam($this);
     }
 
     /**
@@ -103,17 +106,15 @@ abstract class Team extends Model implements TeamContract
      */
     public function hasUserWithEmail(string $email): bool
     {
-        return $this->allUsers()->contains(function ($user) use ($email) {
-            return $user->email === $email;
-        });
+        return $this->allUsers()->contains(static fn($user): bool => $user->email === $email);
     }
 
     /**
      * Determine if the given user has the given permission on the team.
      */
-    public function userHasPermission(UserContract $user, string $permission): bool
+    public function userHasPermission(UserContract $userContract, string $permission): bool
     {
-        return $user->hasTeamPermission($this, $permission);
+        return $userContract->hasTeamPermission($this, $permission);
     }
 
     /**
@@ -127,15 +128,15 @@ abstract class Team extends Model implements TeamContract
     /**
      * Remove the given user from the team.
      */
-    public function removeUser(UserContract $user): void
+    public function removeUser(UserContract $userContract): void
     {
-        if ($user->current_team_id === $this->id) {
-            $user->forceFill([
+        if ($userContract->current_team_id === $this->id) {
+            $userContract->forceFill([
                 'current_team_id' => null,
             ])->save();
         }
 
-        $this->users()->detach($user);
+        $this->users()->detach($userContract);
     }
 
     /**

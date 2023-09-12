@@ -26,7 +26,7 @@ use Phpsa\FilamentPasswordReveal\Password as PasswordInput;
  * @property UserContract $user
  * @property ComponentContainer $form
  */
-class ResetPassword extends CardPage
+final class ResetPassword extends CardPage
 {
     use WithRateLimiting;
 
@@ -84,8 +84,8 @@ class ResetPassword extends CardPage
 
         $status = $this->broker()->reset(
             $data,
-            function (UserContract $user) use ($data) {
-                app(ResetsUserPasswords::class)->reset($user, $data);
+            static function (UserContract $userContract) use ($data) : void {
+                app(ResetsUserPasswords::class)->reset($userContract, $data);
             },
         );
 
@@ -97,6 +97,7 @@ class ResetPassword extends CardPage
 
             return app(PasswordResetResponse::class);
         }
+        
         if (! is_string($status)) {
             throw new Exception('wip');
         }
@@ -119,22 +120,24 @@ class ResetPassword extends CardPage
      */
     public function propertyIsPublicAndNotDefinedOnBaseClass($propertyName): bool
     {
-        if ((! app()->runningUnitTests()) && in_array($propertyName, [
+        if (app()->runningUnitTests()) {
+            return parent::propertyIsPublicAndNotDefinedOnBaseClass($propertyName);
+        }
+        if (!in_array($propertyName, [
             'email',
             'token',
         ])) {
-            return false;
+            return parent::propertyIsPublicAndNotDefinedOnBaseClass($propertyName);
         }
-
-        return parent::propertyIsPublicAndNotDefinedOnBaseClass($propertyName);
+        return false;
     }
 
-    public function getTitle(): string
+    protected function getTitle(): string
     {
         return __('filament-jet::auth/password-reset/reset-password.title');
     }
 
-    public function getHeading(): string
+    protected function getHeading(): string
     {
         return __('filament-jet::auth/password-reset/reset-password.heading');
     }
@@ -183,7 +186,7 @@ class ResetPassword extends CardPage
     /**
      * Get the broker to be used during password reset.
      */
-    protected function broker(): PasswordBroker
+    private function broker(): PasswordBroker
     {
         $filamentJetData = FilamentJetData::make();
 

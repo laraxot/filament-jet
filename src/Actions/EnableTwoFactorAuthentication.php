@@ -7,38 +7,32 @@ use ArtMin96\FilamentJet\Events\TwoFactorAuthenticationEnabled;
 use ArtMin96\FilamentJet\RecoveryCode;
 use Illuminate\Support\Collection;
 
-class EnableTwoFactorAuthentication
+final class EnableTwoFactorAuthentication
 {
-    /**
-     * The two factor authentication provider.
-     *
-     * @var \ArtMin96\FilamentJet\Contracts\TwoFactorAuthenticationProvider
-     */
-    protected $provider;
-
     /**
      * Create a new action instance.
      *
      * @return void
      */
-    public function __construct(TwoFactorAuthenticationProvider $provider)
+    public function __construct(
+        /**
+         * The two factor authentication provider.
+         */
+        private readonly TwoFactorAuthenticationProvider $twoFactorAuthenticationProvider
+    )
     {
-        $this->provider = $provider;
     }
 
     /**
      * Enable two factor authentication for the user.
      *
-     * @param  mixed  $user
      * @return void
      */
-    public function __invoke($user)
+    public function __invoke(mixed $user)
     {
         $user->forceFill([
-            'two_factor_secret' => encrypt($this->provider->generateSecretKey()),
-            'two_factor_recovery_codes' => encrypt(json_encode(Collection::times(8, function () {
-                return RecoveryCode::generate();
-            })->all())),
+            'two_factor_secret' => encrypt($this->twoFactorAuthenticationProvider->generateSecretKey()),
+            'two_factor_recovery_codes' => encrypt(json_encode(Collection::times(8, static fn() => RecoveryCode::generate())->all(), JSON_THROW_ON_ERROR)),
         ])->save();
 
         TwoFactorAuthenticationEnabled::dispatch($user);

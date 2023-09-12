@@ -8,7 +8,7 @@ use ArtMin96\FilamentJet\Events\TeamUpdated;
 use ArtMin96\FilamentJet\Models\Team as FilamentJetTeam;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Team extends FilamentJetTeam
+final class Team extends FilamentJetTeam
 {
     use HasFactory;
 

@@ -6,7 +6,7 @@ use ArtMin96\FilamentJet\FilamentJet;
 use ArtMin96\FilamentJet\Models\TeamInvitation as FilamentJetTeamInvitation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class TeamInvitation extends FilamentJetTeamInvitation
+final class TeamInvitation extends FilamentJetTeamInvitation
 {
     /**
      * The attributes that are mass assignable.

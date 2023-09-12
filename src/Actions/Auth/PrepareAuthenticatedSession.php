@@ -4,7 +4,7 @@ namespace ArtMin96\FilamentJet\Actions\Auth;
 
 use Closure;
 
-class PrepareAuthenticatedSession
+final class PrepareAuthenticatedSession
 {
     /**
      * @param  array<string, string>  $data

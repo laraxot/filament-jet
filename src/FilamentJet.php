@@ -2,6 +2,10 @@
 
 namespace ArtMin96\FilamentJet;
 
+use Modules\User\Models\User;
+use Modules\User\Models\Team;
+use Modules\User\Models\Membership;
+use Modules\User\Models\TeamInvitation;
 use ArtMin96\FilamentJet\Contracts\AddsTeamMembers;
 use ArtMin96\FilamentJet\Contracts\CreatesNewUsers;
 use ArtMin96\FilamentJet\Contracts\CreatesTeams;
@@ -56,28 +60,28 @@ final class FilamentJet
      *
      * @var string
      */
-    public static $userModel = 'Modules\\User\\Models\\User';
+    public static $userModel = User::class;
 
     /**
      * The team model that should be used by FilamentJet.
      *
      * @var string
      */
-    public static $teamModel = 'Modules\\User\\Models\\Team';
+    public static $teamModel = Team::class;
 
     /**
      * The membership model that should be used by FilamentJet.
      *
      * @var string
      */
-    public static $membershipModel = 'Modules\\User\\Models\\Membership';
+    public static $membershipModel = Membership::class;
 
     /**
      * The team invitation model that should be used by FilamentJet.
      *
      * @var string
      */
-    public static $teamInvitationModel = 'Modules\\User\\Models\\TeamInvitation';
+    public static $teamInvitationModel = TeamInvitation::class;
 
     /**
      * The password rules that should be used by FilamentJet.
@@ -107,9 +111,6 @@ final class FilamentJet
      */
     public static function username()
     {
-        /**
-         * @var string $username
-         */
         return config('filament-jet.username', 'email');
     }
 
@@ -120,26 +121,21 @@ final class FilamentJet
      */
     public static function email()
     {
-        /**
-         * @var string $email
-         */
         return config('filament-jet.email', 'email');
     }
 
     /**
      * Determine if FilamentJet has registered roles.
-     *
-     * @return bool
      */
-    public static function hasRoles()
+    public static function hasRoles(): bool
     {
-        return count(self::$roles) > 0;
+        return self::$roles !== [];
     }
 
     /**
      * Find the role with the given key.
      *
-     * @return \ArtMin96\FilamentJet\Role
+     * @return Role
      */
     public static function findRole(string $key)
     {
@@ -149,7 +145,7 @@ final class FilamentJet
     /**
      * Define a role.
      *
-     * @return \ArtMin96\FilamentJet\Role
+     * @return Role
      */
     public static function role(string $key, string $name, array $permissions)
     {
@@ -159,27 +155,23 @@ final class FilamentJet
             ->values()
             ->all();
 
-        return tap(new Role($key, $name, $permissions), function ($role) use ($key) {
+        return tap(new Role($key, $name, $permissions), static function ($role) use ($key) : void {
             self::$roles[$key] = $role;
         });
     }
 
     /**
      * Determine if any permissions have been registered with FilamentJet.
-     *
-     * @return bool
      */
-    public static function hasPermissions()
+    public static function hasPermissions(): bool
     {
-        return count(self::$permissions) > 0;
+        return self::$permissions !== [];
     }
 
     /**
      * Define the available API token permissions.
-     *
-     * @return static
      */
-    public static function permissions(array $permissions)
+    public static function permissions(array $permissions): self
     {
         self::$permissions = $permissions;
 
@@ -188,10 +180,8 @@ final class FilamentJet
 
     /**
      * Define the default permissions that should be available to new API tokens.
-     *
-     * @return static
      */
-    public static function defaultApiTokenPermissions(array $permissions)
+    public static function defaultApiTokenPermissions(array $permissions): self
     {
         self::$defaultPermissions = $permissions;
 
@@ -200,10 +190,8 @@ final class FilamentJet
 
     /**
      * Return the permissions in the given list that are actually defined permissions for the application.
-     *
-     * @return array
      */
-    public static function validPermissions(array $permissions)
+    public static function validPermissions(array $permissions): array
     {
         return array_values(array_intersect($permissions, self::$permissions));
     }
@@ -239,10 +227,10 @@ final class FilamentJet
     /**
      * Determine if a given user model utilizes the "HasTeams" trait.
      */
-    public static function userHasTeamFeatures(UserContract $user): bool
+    public static function userHasTeamFeatures(UserContract $userContract): bool
     {
-        return (array_key_exists(HasTeams::class, class_uses_recursive($user)) ||
-            method_exists($user, 'currentTeam')) &&
+        return (array_key_exists(HasTeams::class, class_uses_recursive($userContract)) ||
+            method_exists($userContract, 'currentTeam')) &&
             self::hasTeamFeatures();
     }
 
@@ -422,10 +410,8 @@ final class FilamentJet
 
     /**
      * Specify the user model that should be used by FilamentJet.
-     *
-     * @return static
      */
-    public static function useUserModel(string $model)
+    public static function useUserModel(string $model): self
     {
         self::$userModel = $model;
 
@@ -439,9 +425,6 @@ final class FilamentJet
      */
     public static function teamModel()
     {
-        /**
-         * @var string $team_model
-         */
         return config('filament-jet.models.team');
     }
 
@@ -464,10 +447,8 @@ final class FilamentJet
 
     /**
      * Specify the team model that should be used by FilamentJet.
-     *
-     * @return static
      */
-    public static function useTeamModel(string $model)
+    public static function useTeamModel(string $model): self
     {
         self::$teamModel = $model;
 
@@ -486,10 +467,8 @@ final class FilamentJet
 
     /**
      * Specify the membership model that should be used by FilamentJet.
-     *
-     * @return static
      */
-    public static function useMembershipModel(string $model)
+    public static function useMembershipModel(string $model): self
     {
         self::$membershipModel = $model;
 
@@ -503,18 +482,13 @@ final class FilamentJet
      */
     public static function teamInvitationModel()
     {
-        /**
-         * @var string $team_invitation_model
-         */
         return config('filament-jet.models.team_invitation');
     }
 
     /**
      * Specify the team invitation model that should be used by FilamentJet.
-     *
-     * @return static
      */
-    public static function useTeamInvitationModel(string $model)
+    public static function useTeamInvitationModel(string $model): self
     {
         self::$teamInvitationModel = $model;
 
@@ -523,20 +497,16 @@ final class FilamentJet
 
     /**
      * Register a class / callback that should be used to update user profile information.
-     *
-     * @return void
      */
-    public static function updateUserProfileInformationUsing(string $class)
+    public static function updateUserProfileInformationUsing(string $class): void
     {
         app()->singleton(UpdatesUserProfileInformation::class, $class);
     }
 
     /**
      * Register a class / callback that should be used to update user passwords.
-     *
-     * @return void
      */
-    public static function updateUserPasswordsUsing(string $class)
+    public static function updateUserPasswordsUsing(string $class): void
     {
         app()->singleton(UpdatesUserPasswords::class, $class);
     }
@@ -613,7 +583,7 @@ final class FilamentJet
         app()->singleton(ResetsUserPasswords::class, $class);
     }
 
-    public static function getVerifyEmailUrl(UserContract $user): string
+    public static function getVerifyEmailUrl(UserContract $userContract): string
     {
         /**
          * @var int $expire
@@ -624,23 +594,23 @@ final class FilamentJet
             config('filament-jet.route_group_prefix').'auth.email-verification.verify',
             now()->addMinutes($expire),
             [
-                'id' => $user->getKey(),
-                'hash' => sha1($user->getEmailForVerification()),
+                'id' => $userContract->getKey(),
+                'hash' => sha1($userContract->getEmailForVerification()),
             ],
         );
     }
 
-    public static function getResetPasswordUrl(string $token, UserContract $user): string
+    public static function getResetPasswordUrl(string $token, UserContract $userContract): string
     {
         return URL::signedRoute(config('filament-jet.route_group_prefix').'auth.password-reset.reset', [
-            'email' => $user->getEmailForPasswordReset(),
+            'email' => $userContract->getEmailForPasswordReset(),
             'token' => $token,
         ]);
     }
 
     public static function setPasswordRules(array $rules): void
     {
-        self::$passwordRules = $rules ? $rules : (array) Password::default();
+        self::$passwordRules = $rules !== [] ? $rules : (array) Password::default();
     }
 
     public static function getPasswordRules(): array
@@ -650,10 +620,8 @@ final class FilamentJet
 
     /**
      * Determine if FilamentJet is confirming two factor authentication configurations.
-     *
-     * @return bool
      */
-    public static function confirmsTwoFactorAuthentication()
+    public static function confirmsTwoFactorAuthentication(): bool
     {
         return Features::enabled(Features::twoFactorAuthentication()) &&
             Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm');
@@ -662,21 +630,15 @@ final class FilamentJet
     /**
      * Find the path to a localized Markdown resource.
      *
-     * @param  string  $name
      * @return string|null
      */
-    public static function localizedMarkdownPath($name)
+    public static function localizedMarkdownPath(string $name)
     {
         $localName = preg_replace('#(\.md)$#i', '.'.app()->getLocale().'$1', $name);
 
-        /**
-         * @var string|null $return
-         */
         return Arr::first([
             resource_path('markdown/'.$localName),
             resource_path('markdown/'.$name),
-        ], function ($path) {
-            return file_exists($path);
-        });
+        ], static fn($path): bool => file_exists($path));
     }
 }

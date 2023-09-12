@@ -4,7 +4,7 @@ namespace ArtMin96\FilamentJet;
 
 use Exception;
 
-class Jet
+final class Jet
 {
     /**
      * Undocumented function

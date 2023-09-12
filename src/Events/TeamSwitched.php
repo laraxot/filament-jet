@@ -6,28 +6,25 @@ use ArtMin96\FilamentJet\Contracts\TeamContract;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use Illuminate\Foundation\Events\Dispatchable;
 
-class TeamSwitched
+final class TeamSwitched
 {
     use Dispatchable;
-
-    /**
-     * The team instance.
-     */
-    public TeamContract $team;
-
-    /**
-     * The team member that was updated.
-     */
-    public UserContract $user;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(TeamContract $team, UserContract $user)
+    public function __construct(
+        /**
+         * The team instance.
+         */
+        public TeamContract $teamContract,
+        /**
+         * The team member that was updated.
+         */
+        public UserContract $userContract
+    )
     {
-        $this->team = $team;
-        $this->user = $user;
     }
 }

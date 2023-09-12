@@ -2,6 +2,9 @@
 
 namespace ArtMin96\FilamentJet\Filament\Pages;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use ArtMin96\FilamentJet\Contracts\CreatesTeams;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Http\Livewire\Traits\Properties\HasUserProperty;
@@ -18,7 +21,7 @@ use Filament\Pages\Page;
  * @property UserContract $user
  * @property ComponentContainer $form
  */
-class CreateTeam extends Page
+final class CreateTeam extends Page
 {
     use RedirectsActions;
     use HasUserProperty;
@@ -39,18 +42,18 @@ class CreateTeam extends Page
     /**
      * Create a new team.
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
+     * @return RedirectResponse|Response|Redirector
      */
-    public function createTeam(CreatesTeams $creator)
+    public function createTeam(CreatesTeams $createsTeams)
     {
-        $creator->create($this->user, $this->createTeamState);
+        $createsTeams->create($this->user, $this->createTeamState);
 
         Notification::make()
             ->title(__('filament-jet::teams/create.messages.created'))
             ->success()
             ->send();
 
-        return $this->redirectPath($creator);
+        return $this->redirectPath($createsTeams);
     }
 
     protected function getForms(): array

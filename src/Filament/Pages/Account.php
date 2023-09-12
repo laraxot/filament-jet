@@ -2,6 +2,9 @@
 
 namespace ArtMin96\FilamentJet\Filament\Pages;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use ArtMin96\FilamentJet\Actions\DisableTwoFactorAuthentication;
 use ArtMin96\FilamentJet\Contracts\UpdatesUserPasswords;
 use ArtMin96\FilamentJet\Contracts\UpdatesUserProfileInformation;
@@ -39,7 +42,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  * @property ComponentContainer $updatePasswordForm
  * @property ?Batch $exportBatch
  */
-class Account extends Page
+final class Account extends Page
 {
     use HasHiddenAction;
     use HasCachedAction;
@@ -53,11 +56,11 @@ class Account extends Page
 
     public ?array $updateProfileInformationState = [];
 
-    public ?string $currentPassword;
+    public ?string $currentPassword = null;
 
-    public ?string $password;
+    public ?string $password = null;
 
-    public ?string $passwordConfirmation;
+    public ?string $passwordConfirmation = null;
 
     protected static function shouldRegisterNavigation(): bool
     {
@@ -69,21 +72,23 @@ class Account extends Page
     public function mount(): void
     {
         $this->updateProfileInformationForm->fill($this->user->withoutRelations()->toArray());
-
-        if (Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm') &&
-            is_null($this->user->two_factor_confirmed_at)) {
-            app(DisableTwoFactorAuthentication::class)($this->user);
+        if (!Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm')) {
+            return;
         }
+        if (!is_null($this->user->two_factor_confirmed_at)) {
+            return;
+        }
+        app(DisableTwoFactorAuthentication::class)($this->user);
     }
 
     /**
      * Update the user's profile information.
      *
-     * @return Redirector|\Illuminate\Http\RedirectResponse
+     * @return Redirector|RedirectResponse
      */
-    public function updateProfileInformation(UpdatesUserProfileInformation $updater)
+    public function updateProfileInformation(UpdatesUserProfileInformation $updatesUserProfileInformation)
     {
-        $updater->update(
+        $updatesUserProfileInformation->update(
             $this->user,
             $this->updateProfileInformationForm->getState()
         );
@@ -94,17 +99,17 @@ class Account extends Page
             isAfterRedirect: true
         );
 
-        return redirect()->route('filament.pages.account');
+        return to_route('filament.pages.account');
     }
 
     /**
      * Update the user's password.
      */
-    public function updatePassword(UpdatesUserPasswords $updater): void
+    public function updatePassword(UpdatesUserPasswords $updatesUserPasswords): void
     {
         $state = $this->updatePasswordForm->getState();
 
-        $updater->update($this->user, $state);
+        $updatesUserPasswords->update($this->user, $state);
 
         Notification::make()
             ->title(__('filament-jet::account/update-password.messages.updated'))
@@ -112,9 +117,10 @@ class Account extends Page
             ->send();
 
         session()->forget('password_hash_'.config('filament.auth.guard'));
-        if (! $this->user instanceof \Illuminate\Contracts\Auth\Authenticatable) {
+        if (! $this->user instanceof Authenticatable) {
             throw new Exception('strange things');
         }
+        
         Filament::auth()->login($this->user);
 
         $this->reset(['current_password', 'password', 'password_confirmation']);
@@ -122,7 +128,7 @@ class Account extends Page
 
     public function downloadPersonalData(): BinaryFileResponse
     {
-        $path = glob(Storage::disk(config('personal-data-export.disk'))->path('')."{$this->user->id}_*.zip");
+        $path = glob(Storage::disk(config('personal-data-export.disk'))->path('').($this->user->id . '_*.zip'));
 
         $this->exportProgress = 0;
         $this->exportBatch = null;
@@ -144,9 +150,9 @@ class Account extends Page
         ];
     }
 
-    protected function updateProfileFormSchema(): array
+    private function updateProfileFormSchema(): array
     {
-        if (! $this->user instanceof \Illuminate\Database\Eloquent\Model) {
+        if (! $this->user instanceof Model) {
             throw new Exception('strange things');
         }
 
@@ -173,7 +179,7 @@ class Account extends Page
                             ->icon(config('filament-jet.profile.login_field.hint_action.icon'))
                         : null
                 )
-                ->email(fn (): bool => FilamentJet::username() === 'email')
+                ->email(static fn(): bool => FilamentJet::username() === 'email')
                 ->unique(
                     table: FilamentJet::userModel(),
                     column: FilamentJet::username(),
@@ -184,7 +190,7 @@ class Account extends Page
         ]);
     }
 
-    protected function updatePasswordFormSchema(): array
+    private function updatePasswordFormSchema(): array
     {
         $requireCurrentPasswordOnUpdate = Features::optionEnabled(Features::updatePasswords(), 'askCurrentPassword');
 

@@ -2,6 +2,7 @@
 
 namespace ArtMin96\FilamentJet\Filament\Pages\Auth\EmailVerification;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Features;
 use ArtMin96\FilamentJet\Filament\Pages\CardPage;
@@ -21,7 +22,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
  * @property UserContract $user
  * @property ComponentContainer $form
  */
-class EmailVerificationPrompt extends CardPage
+final class EmailVerificationPrompt extends CardPage
 {
     use WithRateLimiting;
 
@@ -67,23 +68,24 @@ class EmailVerificationPrompt extends CardPage
         }
 
         $user = Filament::auth()->user();
-        if ($user === null) {
+        if (!$user instanceof Authenticatable) {
             throw new Exception('strange things');
         }
 
         if (! method_exists($user, 'notify')) {
             $userClass = $user::class;
 
-            throw new Exception("Model [{$userClass}] does not have a [notify()] method.");
+            throw new Exception(sprintf('Model [%s] does not have a [notify()] method.', $userClass));
         }
+        
         if (! $user instanceof UserContract) {
             throw new Exception('strange things');
         }
 
-        $notification = new VerifyEmail;
-        $notification->url = FilamentJet::getVerifyEmailUrl($user);
+        $verifyEmail = new VerifyEmail;
+        $verifyEmail->url = FilamentJet::getVerifyEmailUrl($user);
 
-        $user->notify($notification);
+        $user->notify($verifyEmail);
 
         Notification::make()
             ->title(__('filament-jet::auth/email-verification/email-verification-prompt.messages.notification_resent'))
@@ -91,12 +93,12 @@ class EmailVerificationPrompt extends CardPage
             ->send();
     }
 
-    public function getTitle(): string
+    protected function getTitle(): string
     {
         return __('filament-jet::auth/email-verification/email-verification-prompt.title');
     }
 
-    public function getHeading(): string
+    protected function getHeading(): string
     {
         return __('filament-jet::auth/email-verification/email-verification-prompt.heading');
     }

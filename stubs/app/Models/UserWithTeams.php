@@ -14,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\PersonalDataExport\ExportsPersonalData;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar, ExportsPersonalData
+final class User extends Authenticatable implements FilamentUser, HasAvatar, ExportsPersonalData
 {
     use HasApiTokens;
     use HasFactory;

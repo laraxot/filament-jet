@@ -46,9 +46,9 @@ use Livewire\Livewire;
 use PragmaRX\Google2FA\Google2FA;
 use Spatie\LaravelPackageTools\Package;
 
-include 'helpers.php';
+include __DIR__ . '/helpers.php';
 
-class FilamentJetServiceProvider extends PluginServiceProvider
+final class FilamentJetServiceProvider extends PluginServiceProvider
 {
     public static string $name = 'filament-jet';
 
@@ -124,14 +124,12 @@ class FilamentJetServiceProvider extends PluginServiceProvider
         FilamentJet::deleteUsersUsing(DeleteUser::class);
 
         if (config('filament-jet.user_menu.account') || config('filament-jet.user_menu.api_tokens.show')) {
-            Filament::serving(function () {
+            Filament::serving(static function () : void {
                 $userMenuItems = [];
-
                 if (config('filament-jet.user_menu.account')) {
                     $userMenuItems['account'] = UserMenuItem::make()
                         ->url(Account::getUrl());
                 }
-
                 if (Features::hasApiFeatures() && config('filament-jet.user_menu.api_tokens.show')) {
                     /**
                      * @var string|null $icon
@@ -149,34 +147,29 @@ class FilamentJetServiceProvider extends PluginServiceProvider
                         ->sort($sort)
                         ->url(ApiTokens::getUrl());
                 }
-
                 Filament::registerUserMenuItems($userMenuItems);
             });
         }
     }
 
-    public function register()
+    public function register(): void
     {
         parent::register();
 
-        $this->app->singleton(TwoFactorAuthenticationProviderContract::class, function ($app) {
-            return new TwoFactorAuthenticationProvider(
-                $app->make(Google2FA::class),
-                $app->make(Repository::class)
-            );
-        });
+        $this->app->singleton(TwoFactorAuthenticationProviderContract::class, static fn($app): \ArtMin96\FilamentJet\TwoFactorAuthenticationProvider => new TwoFactorAuthenticationProvider(
+            $app->make(Google2FA::class),
+            $app->make(Repository::class)
+        ));
 
-        $this->app->bind(StatefulGuard::class, function () {
-            return Filament::auth();
-        });
+        $this->app->bind(StatefulGuard::class, static fn() => Filament::auth());
     }
 
     /**
      * Configure the Filament Account Blade components.
      */
-    protected function configureComponents(): void
+    private function configureComponents(): void
     {
-        $this->callAfterResolving(BladeCompiler::class, function () {
+        $this->callAfterResolving(BladeCompiler::class, function (): void {
             $this->registerComponent('auth-card');
             $this->registerComponent('action-section');
             $this->registerComponent('form-section');
@@ -192,7 +185,7 @@ class FilamentJetServiceProvider extends PluginServiceProvider
     /**
      * Register the given component.
      */
-    protected function registerComponent(string $component): void
+    private function registerComponent(string $component): void
     {
         Blade::component('filament-jet::components.'.$component, 'filament-jet-'.$component);
     }
@@ -200,7 +193,7 @@ class FilamentJetServiceProvider extends PluginServiceProvider
     /**
      * Configure publishing for the package.
      */
-    protected function configurePublishing(): void
+    private function configurePublishing(): void
     {
         if (! $this->app->runningInConsole()) {
             return;
@@ -217,7 +210,7 @@ class FilamentJetServiceProvider extends PluginServiceProvider
         ], 'filament-jet-team-migrations');
     }
 
-    protected function configureDisks(): void
+    private function configureDisks(): void
     {
         /**
          * @var array<string,array<string,mixed>> $filesystem_disks;
@@ -239,7 +232,7 @@ class FilamentJetServiceProvider extends PluginServiceProvider
     /**
      * Ensure the installed user model is ready for team usage.
      */
-    protected function ensureApplicationIsTeamCompatible(): void
+    private function ensureApplicationIsTeamCompatible(): void
     {
         if (Features::hasTeamFeatures()) {
             FilamentJet::createTeamsUsing(CreateTeam::class);
@@ -256,7 +249,7 @@ class FilamentJetServiceProvider extends PluginServiceProvider
 
                 Filament::registerRenderHook(
                     'user-menu.start',
-                    fn (): string => Blade::render('@livewire(\'switchable-team\')'),
+                    static fn(): string => Blade::render("@livewire('switchable-team')"),
                 );
             }
 
@@ -264,9 +257,8 @@ class FilamentJetServiceProvider extends PluginServiceProvider
                 config('filament-jet.user_menu.team_settings.show') ||
                 config('filament-jet.user_menu.create_team.show')
             ) {
-                Filament::serving(function () {
+                Filament::serving(static function () : void {
                     $userMenuItems = [];
-
                     if (config('filament-jet.user_menu.team_settings.show')) {
                         /**
                          * @var string|null $icon
@@ -284,7 +276,6 @@ class FilamentJetServiceProvider extends PluginServiceProvider
                             ->sort($sort)
                             ->url(TeamSettings::getUrl());
                     }
-
                     if (config('filament-jet.user_menu.create_team.show')) {
                         /**
                          * @var string|null $icon
@@ -302,7 +293,6 @@ class FilamentJetServiceProvider extends PluginServiceProvider
                             ->sort($sort)
                             ->url(CreateTeamPage::getUrl());
                     }
-
                     Filament::registerUserMenuItems($userMenuItems);
                 });
             }

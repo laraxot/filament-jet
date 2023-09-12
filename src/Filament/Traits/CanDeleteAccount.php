@@ -16,13 +16,14 @@ trait CanDeleteAccount
     /**
      * Delete the current user.
      */
-    public function deleteAccount(Request $request, DeletesUsers $deleter): Redirector|RedirectResponse
+    public function deleteAccount(Request $request, DeletesUsers $deletesUsers): Redirector|RedirectResponse
     {
         $user = auth()->user()?->fresh();
         if (! $user instanceof UserContract) {
             throw new Exception('put usercontract in user');
         }
-        $deleter->delete($user);
+        
+        $deletesUsers->delete($user);
 
         Filament::auth()->logout();
 
@@ -30,6 +31,7 @@ trait CanDeleteAccount
             $request->session()->invalidate();
             $request->session()->regenerateToken();
         }
+        
         $filamentData = FilamentData::make();
 
         return redirect($filamentData->path);

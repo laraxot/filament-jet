@@ -2,6 +2,9 @@
 
 namespace ArtMin96\FilamentJet\Http\Controllers;
 
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 use ArtMin96\FilamentJet\Contracts\AddsTeamMembers;
 use ArtMin96\FilamentJet\Contracts\TeamInvitationContract;
 use ArtMin96\FilamentJet\Datas\FilamentData;
@@ -14,17 +17,17 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 
-class TeamInvitationController extends Controller
+final class TeamInvitationController extends Controller
 {
     /**
      * Accept a team invitation.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return Application|RedirectResponse|Redirector
      */
-    public function accept(Request $request, TeamInvitationContract $invitation)
+    public function accept(Request $request, TeamInvitationContract $teamInvitationContract)
     {
         if (! Features::hasTeamFeatures()) {
-            $invitation->delete();
+            $teamInvitationContract->delete();
 
             Notification::make()
                 ->title(__('filament-jet::teams/invitations.messages.feature_disabled'))
@@ -39,22 +42,22 @@ class TeamInvitationController extends Controller
         }
 
         app(AddsTeamMembers::class)->add(
-            $invitation->team->owner,
-            $invitation->team,
-            $invitation->email,
-            $invitation->role
+            $teamInvitationContract->team->owner,
+            $teamInvitationContract->team,
+            $teamInvitationContract->email,
+            $teamInvitationContract->role
         );
 
-        $invitation->delete();
+        $teamInvitationContract->delete();
 
-        $newTeamMember = FilamentJet::findUserByEmailOrFail($invitation->email);
+        $userContract = FilamentJet::findUserByEmailOrFail($teamInvitationContract->email);
 
-        if (! $newTeamMember->switchTeam($invitation->team)) {
+        if (! $userContract->switchTeam($teamInvitationContract->team)) {
             abort(403);
         }
 
         Notification::make()
-            ->title(__('filament-jet::teams/invitations.messages.invited', ['team' => $invitation->team->name]))
+            ->title(__('filament-jet::teams/invitations.messages.invited', ['team' => $teamInvitationContract->team->name]))
             ->success()
             ->send();
         $filamentData = FilamentData::make();
@@ -65,17 +68,17 @@ class TeamInvitationController extends Controller
     /**
      * Cancel the given team invitation.
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      *
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, TeamInvitationContract $invitation)
+    public function destroy(Request $request, TeamInvitationContract $teamInvitationContract)
     {
-        if (! Gate::forUser($request->user())->check('removeTeamMember', $invitation->team)) {
+        if (! Gate::forUser($request->user())->check('removeTeamMember', $teamInvitationContract->team)) {
             throw new AuthorizationException;
         }
 
-        $invitation->delete();
+        $teamInvitationContract->delete();
 
         return back(303);
     }

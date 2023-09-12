@@ -2,6 +2,6 @@
 
 namespace ArtMin96\FilamentJet\Events;
 
-class TwoFactorAuthenticationEnabled extends TwoFactorAuthenticationEvent
+final class TwoFactorAuthenticationEnabled extends TwoFactorAuthenticationEvent
 {
 }

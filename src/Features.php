@@ -2,27 +2,23 @@
 
 namespace ArtMin96\FilamentJet;
 
-class Features
+final class Features
 {
     /**
      * Determine if the given feature is enabled.
-     *
-     * @return bool
      */
-    public static function enabled(string $feature)
+    public static function enabled(string $feature): bool
     {
         return in_array($feature, (array) config('filament-jet.features', []));
     }
 
     /**
      * Determine if the feature is enabled and has a given option enabled.
-     *
-     * @return bool
      */
-    public static function optionEnabled(string $feature, string $option)
+    public static function optionEnabled(string $feature, string $option): bool
     {
         return static::enabled($feature) &&
-            config("filament-jet-options.{$feature}.{$option}") === true;
+            config(sprintf('filament-jet-options.%s.%s', $feature, $option)) === true;
     }
 
     /**
@@ -32,8 +28,8 @@ class Features
      */
     public static function getOption(string $feature, string $option)
     {
-        return static::enabled($feature) && config("filament-jet-options.{$feature}.{$option}")
-            ? config("filament-jet-options.{$feature}.{$option}")
+        return static::enabled($feature) && config(sprintf('filament-jet-options.%s.%s', $feature, $option))
+            ? config(sprintf('filament-jet-options.%s.%s', $feature, $option))
             : null;
     }
 
@@ -55,14 +51,16 @@ class Features
 
     /**
      * Determine if the application is using any features that require "profile" management.
-     *
-     * @return bool
      */
-    public static function hasProfileFeatures()
+    public static function hasProfileFeatures(): bool
     {
-        return static::enabled(static::updateProfileInformation()) ||
-            static::enabled(static::updatePasswords()) ||
-            static::enabled(static::twoFactorAuthentication());
+        if (static::enabled(static::updateProfileInformation())) {
+            return true;
+        }
+        if (static::enabled(static::updatePasswords())) {
+            return true;
+        }
+        return static::enabled(static::twoFactorAuthentication());
     }
 
     /**
@@ -77,13 +75,13 @@ class Features
 
     /**
      * Determine if the application is using any security profile features.
-     *
-     * @return bool
      */
-    public static function hasSecurityFeatures()
+    public static function hasSecurityFeatures(): bool
     {
-        return static::enabled(static::updatePasswords()) ||
-            static::canManageTwoFactorAuthentication();
+        if (static::enabled(static::updatePasswords())) {
+            return true;
+        }
+        return static::canManageTwoFactorAuthentication();
     }
 
     /**
@@ -158,12 +156,10 @@ class Features
 
     /**
      * Get login feature options.
-     *
-     * @return string
      */
-    public static function login(array $options = [])
+    public static function login(array $options = []): string
     {
-        if (! empty($options)) {
+        if ($options !== []) {
             config(['filament-jet-options.login' => $options]);
         }
 
@@ -172,12 +168,10 @@ class Features
 
     /**
      * Enable the registration feature.
-     *
-     * @return string
      */
-    public static function registration(array $options = [])
+    public static function registration(array $options = []): string
     {
-        if (! empty($options)) {
+        if ($options !== []) {
             config(['filament-jet-options.registration' => $options]);
         }
 
@@ -186,12 +180,10 @@ class Features
 
     /**
      * Enable the two factor authentication feature.
-     *
-     * @return string
      */
-    public static function twoFactorAuthentication(array $options = [])
+    public static function twoFactorAuthentication(array $options = []): string
     {
-        if (! empty($options)) {
+        if ($options !== []) {
             config(['filament-jet-options.two-factor-authentication' => $options]);
         }
 
@@ -216,12 +208,10 @@ class Features
 
     /**
      * Enable the password reset feature.
-     *
-     * @return string
      */
-    public static function resetPasswords(array $options = [])
+    public static function resetPasswords(array $options = []): string
     {
-        if (! empty($options)) {
+        if ($options !== []) {
             config(['filament-jet-options.reset-passwords' => $options]);
         }
 
@@ -230,12 +220,10 @@ class Features
 
     /**
      * Enable the email verification feature.
-     *
-     * @return string
      */
-    public static function emailVerification(array $options = [])
+    public static function emailVerification(array $options = []): string
     {
-        if (! empty($options)) {
+        if ($options !== []) {
             config(['filament-jet-options.email-verification' => $options]);
         }
 
@@ -244,22 +232,18 @@ class Features
 
     /**
      * Enable the update profile information feature.
-     *
-     * @return string
      */
-    public static function updateProfileInformation()
+    public static function updateProfileInformation(): string
     {
         return 'update-profile-information';
     }
 
     /**
      * Enable the update password feature.
-     *
-     * @return string
      */
-    public static function updatePasswords(array $options = [])
+    public static function updatePasswords(array $options = []): string
     {
-        if (! empty($options)) {
+        if ($options !== []) {
             config(['filament-jet-options.update-passwords' => $options]);
         }
 
@@ -268,32 +252,26 @@ class Features
 
     /**
      * Enable the profile photo upload feature.
-     *
-     * @return string
      */
-    public static function profilePhotos()
+    public static function profilePhotos(): string
     {
         return 'profile-photos';
     }
 
     /**
      * Enable the API feature.
-     *
-     * @return string
      */
-    public static function api()
+    public static function api(): string
     {
         return 'api';
     }
 
     /**
      * Enable the teams feature.
-     *
-     * @return string
      */
-    public static function teams(array $options = [])
+    public static function teams(array $options = []): string
     {
-        if (! empty($options)) {
+        if ($options !== []) {
             config(['filament-jet-options.teams' => $options]);
         }
 
@@ -302,10 +280,8 @@ class Features
 
     /**
      * Enable the terms of service and privacy policy feature.
-     *
-     * @return string
      */
-    public static function termsAndPrivacyPolicy()
+    public static function termsAndPrivacyPolicy(): string
     {
         return 'terms';
     }
@@ -320,22 +296,18 @@ class Features
 
     /**
      * Enable the account deletion feature.
-     *
-     * @return string
      */
-    public static function accountDeletion()
+    public static function accountDeletion(): string
     {
         return 'account-deletion';
     }
 
     /**
      * Enable the account personal data export feature.
-     *
-     * @return string
      */
-    public static function personalDataExport(array $options = [])
+    public static function personalDataExport(array $options = []): string
     {
-        if (! empty($options)) {
+        if ($options !== []) {
             config(['filament-jet-options.personal-data-export' => $options]);
         }
 

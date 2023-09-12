@@ -2,16 +2,16 @@
 
 namespace ArtMin96\FilamentAccount\Filament\Actions;
 
+use Filament\Forms\Components\TextInput;
 use Filament\Forms;
 use Filament\Pages\Actions\ButtonAction;
 
-class PasswordConfirmationAction extends ButtonAction
+final class PasswordConfirmationAction extends ButtonAction
 {
     public function call(array $data = []): void
     {
         // If the session already has a cookie and it's still valid, we don't want to reset the time on it.
-        if ($this->isPasswordSessionValid()) {
-        } else {
+        if (!$this->isPasswordSessionValid()) {
             session(['auth.password_confirmed_at' => time()]);
         }
 
@@ -30,7 +30,7 @@ class PasswordConfirmationAction extends ButtonAction
                     __('filament-account::account.account_page.password_confirmation_modal.description')
                 )
                 ->form([
-                    Forms\Components\TextInput::make('current_password')
+                    TextInput::make('current_password')
                         ->label(__('filament-account::account.account_page.password_confirmation_modal.current_password'))
                         ->required()
                         ->password()
@@ -39,7 +39,7 @@ class PasswordConfirmationAction extends ButtonAction
         }
     }
 
-    protected function isPasswordSessionValid(): bool
+    private function isPasswordSessionValid(): bool
     {
         return session()->has('auth.password_confirmed_at') && (time() - session('auth.password_confirmed_at', 0)) < config('filament-account.password_confirmation_seconds');
     }

@@ -2,35 +2,31 @@
 
 namespace ArtMin96\FilamentJet;
 
+use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
+use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
+use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use ArtMin96\FilamentJet\Contracts\TwoFactorAuthenticationProvider as TwoFactorAuthenticationProviderContract;
 use Illuminate\Cache\Repository;
 use PragmaRX\Google2FA\Google2FA;
 
-class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationProviderContract
+final class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationProviderContract
 {
-    /**
-     * The underlying library providing two factor authentication helper services.
-     *
-     * @var \PragmaRX\Google2FA\Google2FA
-     */
-    protected $engine;
-
-    /**
-     * The cache repository implementation.
-     *
-     * @var \Illuminate\Contracts\Cache\Repository
-     */
-    protected $cache;
-
     /**
      * Create a new two factor authentication provider instance.
      *
      * @return void
      */
-    public function __construct(Google2FA $engine, Repository $cache)
+    public function __construct(
+        /**
+         * The underlying library providing two factor authentication helper services.
+         */
+        private readonly Google2FA $google2FA,
+        /**
+         * The cache repository implementation.
+         */
+        private readonly Repository $cacheRepository
+    )
     {
-        $this->engine = $engine;
-        $this->cache = $cache;
     }
 
     /**
@@ -38,13 +34,13 @@ class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationProvider
      *
      * @return string
      *
-     * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
-     * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
-     * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+     * @throws IncompatibleWithGoogleAuthenticatorException
+     * @throws InvalidCharactersException
+     * @throws SecretKeyTooShortException
      */
     public function generateSecretKey()
     {
-        return $this->engine->generateSecretKey();
+        return $this->google2FA->generateSecretKey();
     }
 
     /**
@@ -57,27 +53,26 @@ class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationProvider
      */
     public function qrCodeUrl($companyName, $companyEmail, $secret)
     {
-        return $this->engine->getQRCodeUrl($companyName, $companyEmail, $secret);
+        return $this->google2FA->getQRCodeUrl($companyName, $companyEmail, $secret);
     }
 
     /**
      * Verify the given code.
      *
-     * @return bool
      *
-     * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
-     * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
-     * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+     * @throws IncompatibleWithGoogleAuthenticatorException
+     * @throws InvalidCharactersException
+     * @throws SecretKeyTooShortException
      */
-    public function verify($secret, $code)
+    public function verify($secret, $code): bool
     {
         if (is_int($customWindow = config('filament-jet-options.two-factor-authentication.window'))) {
-            $this->engine->setWindow($customWindow);
+            $this->google2FA->setWindow($customWindow);
         }
 
         /** @var int $oldTimestamp */
-        $oldTimestamp = $this->cache->get($key = 'filament-jet.2fa_codes.'.md5($code));
-        $timestamp = $this->engine->verifyKeyNewer(
+        $oldTimestamp = $this->cacheRepository->get($key = 'filament-jet.2fa_codes.'.md5($code));
+        $timestamp = $this->google2FA->verifyKeyNewer(
             $secret,
             $code,
             $oldTimestamp
@@ -85,10 +80,10 @@ class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationProvider
 
         if ($timestamp !== false) {
             if ($timestamp === true) {
-                $timestamp = $this->engine->getTimestamp();
+                $timestamp = $this->google2FA->getTimestamp();
             }
 
-            $this->cache->put($key, $timestamp, ($this->engine->getWindow() ?: 1) * 60);
+            $this->cacheRepository->put($key, $timestamp, ($this->google2FA->getWindow() ?: 1) * 60);
 
             return true;
         }

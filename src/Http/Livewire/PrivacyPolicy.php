@@ -2,17 +2,18 @@
 
 namespace ArtMin96\FilamentJet\Http\Livewire;
 
+use Illuminate\Contracts\View\View;
 use ArtMin96\FilamentJet\FilamentJet;
 use Exception;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-class PrivacyPolicy extends Component
+final class PrivacyPolicy extends Component
 {
     /**
      * Show the terms of service for the application.
      *
-     * @return \Illuminate\Contracts\View\View
+     * @return View
      */
     public function render()
     {

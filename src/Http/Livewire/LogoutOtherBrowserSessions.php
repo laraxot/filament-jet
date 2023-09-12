@@ -8,7 +8,7 @@ use Illuminate\View\View;
 use Jenssegers\Agent\Agent;
 use Livewire\Component;
 
-class LogoutOtherBrowserSessions extends Component
+final class LogoutOtherBrowserSessions extends Component
 {
     public function render(): View
     {
@@ -35,12 +35,11 @@ class LogoutOtherBrowserSessions extends Component
     /**
      * Create a new agent instance from the given session.
      *
-     * @param  mixed  $session
-     * @return \Jenssegers\Agent\Agent
+     * @return Agent
      */
-    protected function createAgent($session)
+    private function createAgent(mixed $session)
     {
-        return tap(new Agent, function ($agent) use ($session) {
+        return tap(new Agent, static function ($agent) use ($session) : void {
             $agent->setUserAgent($session->user_agent);
         });
     }

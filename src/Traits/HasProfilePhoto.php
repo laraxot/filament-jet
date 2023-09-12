@@ -18,14 +18,17 @@ trait HasProfilePhoto
      */
     public function updateProfilePhoto(?string $photo): void
     {
-        tap($this->profile_photo_path, function ($previous) use ($photo) {
+        tap($this->profile_photo_path, function ($previous) use ($photo): void {
             $this->forceFill([
                 'profile_photo_path' => $photo,
             ])->save();
-
-            if ($previous && ! $photo) {
-                Storage::disk($this->profilePhotoDisk())->delete($previous);
+            if (!$previous) {
+                return;
             }
+            if ($photo) {
+                return;
+            }
+            Storage::disk($this->profilePhotoDisk())->delete($previous);
         });
     }
 

@@ -12,14 +12,14 @@ use ArtMin96\FilamentJet\Rules\Role;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
-class UpdateTeamMemberRole
+final class UpdateTeamMemberRole
 {
     /**
      * Update the role for the given team member.
      */
-    public function update(UserContract $user, TeamContract $team, int $teamMemberId, string $role): void
+    public function update(UserContract $userContract, TeamContract $teamContract, int $teamMemberId, string $role): void
     {
-        Gate::forUser($user)->authorize('updateTeamMember', $team);
+        Gate::forUser($userContract)->authorize('updateTeamMember', $teamContract);
 
         Validator::make([
             'role' => $role,
@@ -27,10 +27,10 @@ class UpdateTeamMemberRole
             'role' => ['required', 'string', new Role],
         ])->validate();
 
-        $team->users()->updateExistingPivot($teamMemberId, [
+        $teamContract->users()->updateExistingPivot($teamMemberId, [
             'role' => $role,
         ]);
 
-        TeamMemberUpdated::dispatch($team->fresh(), FilamentJet::findUserByIdOrFail($teamMemberId));
+        TeamMemberUpdated::dispatch($teamContract->fresh(), FilamentJet::findUserByIdOrFail($teamMemberId));
     }
 }

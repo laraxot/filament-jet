@@ -7,10 +7,10 @@ use Filament\Facades\Filament;
 use Illuminate\Http\RedirectResponse;
 use Livewire\Redirector;
 
-class PasswordResetResponse implements Responsable
+final class PasswordResetResponse implements Responsable
 {
     public function toResponse($request): RedirectResponse|Redirector
     {
-        return redirect()->to(strval(Filament::getUrl()));
+        return redirect()->to((string) Filament::getUrl());
     }
 }

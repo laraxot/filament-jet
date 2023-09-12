@@ -2,6 +2,7 @@
 
 namespace ArtMin96\FilamentJet\Actions\Auth;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Events\TwoFactorAuthenticationChallenged;
 use ArtMin96\FilamentJet\FilamentJet;
@@ -14,21 +15,18 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
 use Livewire\Redirector;
 
-class RedirectIfTwoFactorAuthenticatable
+final class RedirectIfTwoFactorAuthenticatable
 {
-    /**
-     * Undocumented variable
-     *
-     * @var \Illuminate\Contracts\Auth\StatefulGuard
-     */
-    protected $guard;
-
     /**
      * Create a new controller instance.
      */
-    public function __construct(StatefulGuard $guard)
+    public function __construct(
+        /**
+         * Undocumented variable
+         */
+        private readonly StatefulGuard $statefulGuard
+    )
     {
-        $this->guard = $guard;
     }
 
     /**
@@ -38,21 +36,21 @@ class RedirectIfTwoFactorAuthenticatable
      */
     public function handle(array $data, Closure $next)
     {
-        $user = $this->validateCredentials($data);
+        $userContract = $this->validateCredentials($data);
 
         if (FilamentJet::confirmsTwoFactorAuthentication()) {
-            if ($user->two_factor_secret &&
-                ! is_null($user->two_factor_confirmed_at) &&
-                in_array(TwoFactorAuthenticatable::class, class_uses_recursive($user))) {
-                return $this->twoFactorChallengeResponse($data, $user);
+            if ($userContract->two_factor_secret &&
+                ! is_null($userContract->two_factor_confirmed_at) &&
+                in_array(TwoFactorAuthenticatable::class, class_uses_recursive($userContract))) {
+                return $this->twoFactorChallengeResponse($data, $userContract);
             }
 
             return $next($data);
         }
 
-        if (optional($user)->two_factor_secret &&
-            in_array(TwoFactorAuthenticatable::class, class_uses_recursive($user))) {
-            return $this->twoFactorChallengeResponse($data, $user);
+        if (optional($userContract)->two_factor_secret &&
+            in_array(TwoFactorAuthenticatable::class, class_uses_recursive($userContract))) {
+            return $this->twoFactorChallengeResponse($data, $userContract);
         }
 
         return $next($data);
@@ -64,16 +62,17 @@ class RedirectIfTwoFactorAuthenticatable
      * @param  array<string, string>  $data
      * @return UserContract
      */
-    protected function validateCredentials(array $data)
+    private function validateCredentials(array $data)
     {
-        $userProvider = $this->guard->getProvider();
+        $userProvider = $this->statefulGuard->getProvider();
         if (! method_exists($userProvider, 'getModel')) {
             throw new Exception('strange things');
         }
+        
         $model = $userProvider->getModel();
 
-        return tap($model::where(FilamentJet::username(), $data[FilamentJet::username()])->first(), function ($user) use ($data) {
-            if (! $user || ! $this->guard->getProvider()->validateCredentials($user, ['password' => $data['password']])) {
+        return tap($model::where(FilamentJet::username(), $data[FilamentJet::username()])->first(), function ($user) use ($data): void {
+            if (! $user || ! $this->statefulGuard->getProvider()->validateCredentials($user, ['password' => $data['password']])) {
                 $this->fireFailedEvent($data, $user);
 
                 $this->throwFailedAuthenticationException();
@@ -84,7 +83,7 @@ class RedirectIfTwoFactorAuthenticatable
     /**
      * Throw a failed authentication validation exception.
      */
-    protected function throwFailedAuthenticationException(): void
+    private function throwFailedAuthenticationException(): never
     {
         throw ValidationException::withMessages([
             FilamentJet::username() => [trans('auth.failed')],
@@ -96,12 +95,13 @@ class RedirectIfTwoFactorAuthenticatable
      *
      * @param  array<string, string>  $data
      */
-    protected function fireFailedEvent(array $data, UserContract $user = null): void
+    private function fireFailedEvent(array $data, UserContract $userContract = null): void
     {
-        if ($user !== null && ! $user instanceof \Illuminate\Contracts\Auth\Authenticatable) {
+        if ($userContract instanceof UserContract && ! $userContract instanceof Authenticatable) {
             throw new Exception('strange things');
         }
-        event(new Failed(config('filament.auth.guard'), $user, [
+        
+        event(new Failed(config('filament.auth.guard'), $userContract, [
             FilamentJet::username() => $data[FilamentJet::username()],
             'password' => $data['password'],
         ]));
@@ -110,15 +110,15 @@ class RedirectIfTwoFactorAuthenticatable
     /**
      * Get the two factor authentication enabled response.
      */
-    protected function twoFactorChallengeResponse(array $data, UserContract $user): Redirector|RedirectResponse
+    private function twoFactorChallengeResponse(array $data, UserContract $userContract): Redirector|RedirectResponse
     {
         session()->put([
-            jet()->getTwoFactorLoginSessionPrefix().'login.id' => $user->getKey(),
+            jet()->getTwoFactorLoginSessionPrefix().'login.id' => $userContract->getKey(),
             jet()->getTwoFactorLoginSessionPrefix().'login.remember' => $data['remember'],
         ]);
 
-        TwoFactorAuthenticationChallenged::dispatch($user);
+        TwoFactorAuthenticationChallenged::dispatch($userContract);
 
-        return redirect()->route('auth.two-factor.login');
+        return to_route('auth.two-factor.login');
     }
 }

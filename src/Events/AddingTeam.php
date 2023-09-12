@@ -4,25 +4,16 @@ namespace ArtMin96\FilamentJet\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 
-class AddingTeam
+final class AddingTeam
 {
     use Dispatchable;
 
     /**
-     * The team owner.
-     *
-     * @var mixed
-     */
-    public $owner;
-
-    /**
      * Create a new event instance.
      *
-     * @param  mixed  $owner
      * @return void
      */
-    public function __construct($owner)
+    public function __construct(public mixed $owner)
     {
-        $this->owner = $owner;
     }
 }

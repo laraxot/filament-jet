@@ -1,5 +1,13 @@
 <?php
 
+use ArtMin96\FilamentJet\Filament\Pages\Auth\Register;
+use ArtMin96\FilamentJet\Http\Livewire\TermsOfService;
+use ArtMin96\FilamentJet\Http\Livewire\PrivacyPolicy;
+use ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\RequestPasswordReset;
+use ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\ResetPassword;
+use App\Models\Membership;
+use App\Models\Team;
+use App\Models\TeamInvitation;
 use ArtMin96\FilamentJet\Features;
 
 return [
@@ -125,9 +133,9 @@ return [
             'pipelines' => [],
         ]),
         Features::registration([
-            'page' => \ArtMin96\FilamentJet\Filament\Pages\Auth\Register::class,
-            'terms_of_service' => \ArtMin96\FilamentJet\Http\Livewire\TermsOfService::class,
-            'privacy_policy' => \ArtMin96\FilamentJet\Http\Livewire\PrivacyPolicy::class,
+            'page' => Register::class,
+            'terms_of_service' => TermsOfService::class,
+            'privacy_policy' => PrivacyPolicy::class,
             'card_width' => 'md',
             'has_brand' => true,
             'rate_limiting' => [
@@ -137,7 +145,7 @@ return [
         ]),
         Features::resetPasswords([
             'request' => [
-                'page' => \ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\RequestPasswordReset::class,
+                'page' => RequestPasswordReset::class,
                 'card_width' => 'md',
                 'has_brand' => true,
                 'rate_limiting' => [
@@ -146,7 +154,7 @@ return [
                 ],
             ],
             'reset' => [
-                'page' => \ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\ResetPassword::class,
+                'page' => ResetPassword::class,
                 'card_width' => 'md',
                 'has_brand' => true,
                 'rate_limiting' => [
@@ -276,8 +284,8 @@ return [
     'passwords' => config('auth.defaults.passwords'),
 
     'models' => [
-        'membership' => App\Models\Membership::class,
-        'team' => App\Models\Team::class,
-        'team_invitation' => App\Models\TeamInvitation::class,
+        'membership' => Membership::class,
+        'team' => Team::class,
+        'team_invitation' => TeamInvitation::class,
     ],
 ];

@@ -30,7 +30,7 @@ use Phpsa\FilamentPasswordReveal\Password;
  * @property UserContract $user
  * @property ComponentContainer $form
  */
-class Login extends CardPage
+final class Login extends CardPage
 {
     use WithRateLimiting;
 
@@ -75,9 +75,7 @@ class Login extends CardPage
 
         $data = $this->form->getState();
 
-        return $this->loginPipeline($data)->then(function ($data) {
-            return app(LoginResponse::class);
-        });
+        return $this->loginPipeline($data)->then(static fn($data) => app(LoginResponse::class));
     }
 
     protected function getCardWidth(): string
@@ -100,9 +98,9 @@ class Login extends CardPage
         return $res;
     }
 
-    protected function loginPipeline(array $data): Pipeline
+    private function loginPipeline(array $data): Pipeline
     {
-        if (FilamentJet::$authenticateThroughCallback) {
+        if (FilamentJet::$authenticateThroughCallback !== null) {
             return (new Pipeline(app()))->send($data)->through(array_filter(
                 call_user_func(FilamentJet::$authenticateThroughCallback, $data)
             ));

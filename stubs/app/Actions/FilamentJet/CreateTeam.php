@@ -12,36 +12,37 @@ use ArtMin96\FilamentJet\FilamentJet;
 use Exception;
 use Illuminate\Support\Facades\Gate;
 
-class CreateTeam implements CreatesTeams
+final class CreateTeam implements CreatesTeams
 {
     /**
      * Validate and create a new team for the given user.
      *
      * @param  array<string, string>  $input
      */
-    public function create(UserContract $user, array $input): TeamContract
+    public function create(UserContract $userContract, array $input): TeamContract
     {
-        Gate::forUser($user)->authorize('create', FilamentJet::newTeamModel());
+        Gate::forUser($userContract)->authorize('create', FilamentJet::newTeamModel());
 
-        AddingTeam::dispatch($user);
+        AddingTeam::dispatch($userContract);
 
-        if (! method_exists($user, 'ownedTeams')) {
+        if (! method_exists($userContract, 'ownedTeams')) {
             throw new Exception('['.__LINE__.']['.class_basename(self::class).']');
         }
 
-        if (! method_exists($user, 'switchTeam')) {
+        if (! method_exists($userContract, 'switchTeam')) {
             throw new Exception('['.__LINE__.']['.class_basename(self::class).']');
         }
 
-        $team = $user->ownedTeams()->create([
+        $model = $userContract->ownedTeams()->create([
             'name' => $input['name'],
             'personal_team' => false,
         ]);
-        if (! $team instanceof TeamContract) {
+        if (! $model instanceof TeamContract) {
             throw new Exception('team not have TeamContract');
         }
-        $user->switchTeam($team);
+        
+        $userContract->switchTeam($model);
 
-        return $team;
+        return $model;
     }
 }

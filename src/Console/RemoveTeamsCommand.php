@@ -5,7 +5,7 @@ namespace ArtMin96\FilamentJet\Console;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
-class RemoveTeamsCommand extends Command
+final class RemoveTeamsCommand extends Command
 {
     /**
      * The name and signature of the console command.

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ArtMin96\FilamentJet\Filament\Pages;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use ArtMin96\FilamentJet\Actions\UpdateTeamMemberRole;
 use ArtMin96\FilamentJet\Actions\ValidateTeamDeletion;
 use ArtMin96\FilamentJet\Contracts\AddsTeamMembers;
@@ -43,7 +45,7 @@ use Suleymanozev\FilamentRadioButtonField\Forms\Components\RadioButton;
  * @property ComponentContainer $addTeamMemberForm
  * @property array              $roles
  */
-class TeamSettings extends Page
+final class TeamSettings extends Page
 {
     use HasCachedAction;
     use RedirectsActions;
@@ -83,13 +85,13 @@ class TeamSettings extends Page
     /**
      * Undocumented function.
      *
-     * @return void|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return void|RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function mount()
     {
         $team = $this->user->currentTeam;
 
-        if (! $team) {
+        if (!$team instanceof TeamContract) {
             Notification::make()
                 ->title(__('filament-jet::teams/messages.current_team_not_exists'))
                 ->warning()
@@ -98,6 +100,7 @@ class TeamSettings extends Page
 
             return redirect($filamentData->path);
         }
+        
         $this->team = $team;
         $this->updateTeamNameForm->fill($this->team->withoutRelations()->toArray());
     }
@@ -108,22 +111,18 @@ class TeamSettings extends Page
     public function getRolesProperty(): array
     {
         return collect(FilamentJet::$roles)
-            ->transform(function ($role) {
-                return with($role->jsonSerialize(), function ($data) {
-                    return (new Role(
-                        $data['key'],
-                        $data['name'],
-                        $data['permissions']
-                    ))->description($data['description']);
-                });
-            })
+            ->transform(static fn($role) => with($role->jsonSerialize(), static fn($data) => (new Role(
+                $data['key'],
+                $data['name'],
+                $data['permissions']
+            ))->description($data['description'])))
             ->values()
             ->all();
     }
 
-    public function updateTeamName(UpdatesTeamNames $updater): void
+    public function updateTeamName(UpdatesTeamNames $updatesTeamNames): void
     {
-        $updater->update($this->user, $this->team, $this->teamState);
+        $updatesTeamNames->update($this->user, $this->team, $this->teamState);
 
         Notification::make()
             ->title(__('filament-jet::teams/name.messages.updated'))
@@ -174,7 +173,7 @@ class TeamSettings extends Page
      */
     public function cancelTeamInvitation(int $invitationId): void
     {
-        if (! empty($invitationId)) {
+        if ($invitationId !== 0) {
             $model = FilamentJet::teamInvitationModel();
 
             $model::whereKey($invitationId)->delete();
@@ -191,28 +190,28 @@ class TeamSettings extends Page
     /**
      * Delete the team.
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
+     * @return RedirectResponse|Response|\Illuminate\Routing\Redirector
      */
-    public function deleteTeam(ValidateTeamDeletion $validator, DeletesTeams $deleter)
+    public function deleteTeam(ValidateTeamDeletion $validateTeamDeletion, DeletesTeams $deletesTeams)
     {
-        $validator->validate($this->user, $this->team);
+        $validateTeamDeletion->validate($this->user, $this->team);
 
-        $deleter->delete($this->team);
+        $deletesTeams->delete($this->team);
 
         Notification::make()
             ->title(__('filament-jet::teams/delete.messages.deleted'))
             ->success()
             ->send();
 
-        return $this->redirectPath($deleter);
+        return $this->redirectPath($deletesTeams);
     }
 
     /**
      * Remove a team member from the team.
      */
-    public function removeTeamMember(int $userId, RemovesTeamMembers $remover): void
+    public function removeTeamMember(int $userId, RemovesTeamMembers $removesTeamMembers): void
     {
-        $remover->remove(
+        $removesTeamMembers->remove(
             $this->user,
             $this->team,
             $user = FilamentJet::findUserByIdOrFail($userId)
@@ -229,13 +228,13 @@ class TeamSettings extends Page
     /**
      * Remove the currently authenticated user from the team.
      *
-     * @return Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return Redirector|RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function leaveTeam(RemovesTeamMembers $remover)
+    public function leaveTeam(RemovesTeamMembers $removesTeamMembers)
     {
         $this->errorBagExcept('team');
 
-        $remover->remove(
+        $removesTeamMembers->remove(
             $this->user,
             $this->team,
             $this->user
@@ -267,9 +266,9 @@ class TeamSettings extends Page
     /**
      * Save the role for the user being managed.
      */
-    public function updateRole(UpdateTeamMemberRole $updater): void
+    public function updateRole(UpdateTeamMemberRole $updateTeamMemberRole): void
     {
-        $updater->update(
+        $updateTeamMemberRole->update(
             $this->user,
             $this->team,
             $this->managingRoleFor->id,
@@ -311,24 +310,22 @@ class TeamSettings extends Page
                                 'email',
                                 Features::sendsTeamInvitations()
                                     ? '' : Rule::exists(table: FilamentJet::userModel(), column: 'email'),
-                                function () {
-                                    return function (string $attribute, $value, Closure $fail) {
-                                        if ($this->team->hasUserWithEmail($value)) {
-                                            $fail(__('filament-jet::teams/add-member.messages.already_belongs_to_team'));
-                                        }
-                                    };
+                                fn(): Closure => function (string $attribute, $value, Closure $fail): void {
+                                    if ($this->team->hasUserWithEmail($value)) {
+                                        $fail(__('filament-jet::teams/add-member.messages.already_belongs_to_team'));
+                                    }
                                 },
                             ])
-                            ->unique(callback: fn (Unique $rule): Unique => $rule->where('team_id', $this->team->id)),
+                            ->unique(callback: fn (Unique $unique): Unique => $unique->where('team_id', $this->team->id)),
                         RadioButton::make('role')
                             ->label(__('filament-jet::teams/add-member.fields.role'))
                             ->options(
-                                collect($this->roles)->mapWithKeys(fn ($role): array => [
+                                collect($this->roles)->mapWithKeys(static fn($role): array => [
                                     $role->key => $role->name,
                                 ])->toArray()
                             )
                             ->descriptions(
-                                collect($this->roles)->mapWithKeys(fn ($role): array => [
+                                collect($this->roles)->mapWithKeys(static fn($role): array => [
                                     $role->key => $role->description,
                                 ])->toArray()
                             )
@@ -363,12 +360,12 @@ class TeamSettings extends Page
                     RadioButton::make('role')
                         ->label(__('filament-jet::teams/members.fields.role'))
                         ->options(
-                            collect($this->roles)->mapWithKeys(fn ($role): array => [
+                            collect($this->roles)->mapWithKeys(static fn($role): array => [
                                 $role->key => $role->name,
                             ])->toArray()
                         )
                         ->descriptions(
-                            collect($this->roles)->mapWithKeys(fn ($role): array => [
+                            collect($this->roles)->mapWithKeys(static fn($role): array => [
                                 $role->key => $role->description,
                             ])->toArray()
                         )

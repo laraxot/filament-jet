@@ -2,6 +2,6 @@
 
 namespace ArtMin96\FilamentJet\Events;
 
-class TeamDeleted extends TeamEvent
+final class TeamDeleted extends TeamEvent
 {
 }

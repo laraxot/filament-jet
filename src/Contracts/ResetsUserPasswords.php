@@ -7,5 +7,5 @@ namespace ArtMin96\FilamentJet\Contracts;
  */
 interface ResetsUserPasswords
 {
-    public function reset(UserContract $user, array $input): void;
+    public function reset(UserContract $userContract, array $input): void;
 }

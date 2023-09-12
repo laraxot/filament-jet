@@ -5,7 +5,7 @@ namespace App\Providers;
 use ArtMin96\FilamentJet\FilamentJet;
 use ArtMin96\FilamentJet\FilamentJetServiceProvider as BaseFilamentJetServiceProvider;
 
-class FilamentJetServiceProvider extends BaseFilamentJetServiceProvider
+final class FilamentJetServiceProvider extends BaseFilamentJetServiceProvider
 {
     /**
      * Bootstrap any application services.
@@ -18,7 +18,7 @@ class FilamentJetServiceProvider extends BaseFilamentJetServiceProvider
     /**
      * Configure the permissions that are available within the application.
      */
-    protected function configurePermissions(): void
+    private function configurePermissions(): void
     {
         FilamentJet::defaultApiTokenPermissions(['read']);
 

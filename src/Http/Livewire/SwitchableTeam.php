@@ -2,6 +2,10 @@
 
 namespace ArtMin96\FilamentJet\Http\Livewire;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 use ArtMin96\FilamentJet\Contracts\TeamContract;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Datas\FilamentData;
@@ -15,7 +19,7 @@ use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class SwitchableTeam extends Component
+final class SwitchableTeam extends Component
 {
     use HasUserProperty;
 
@@ -28,14 +32,14 @@ class SwitchableTeam extends Component
 
         $user = Filament::auth()->user();
 
-        if ($user === null) {
+        if (!$user instanceof Authenticatable) {
             throw new Exception('wip');
-
-            return; //persa sessione
         }
+        
         if (! $user instanceof UserContract) {
             throw new Exception('['.$user::class.'] not implements ArtMin96\FilamentJet\Contracts\HasTeamsContract ');
         }
+        
         $this->user = $user;
         $this->teams = $this->user->allTeams();
 
@@ -44,15 +48,13 @@ class SwitchableTeam extends Component
     /**
      * Update the authenticated user's current team.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return Application|RedirectResponse|Redirector
      */
     public function switchTeam(string $teamId)
     {
         $team = FilamentJet::newTeamModel()->findOrFail($teamId);
 
-        if ($this->user === null) {
-            throw new Exception('wip');
-        }
+        
         if (! $team instanceof TeamContract) {
             throw new Exception('wip');
         }
@@ -77,8 +79,6 @@ class SwitchableTeam extends Component
     public function render(): View
     {
 
-        $view = view('filament-jet::components.switchable-team');
-
-        return $view;
+        return view('filament-jet::components.switchable-team');
     }
 }

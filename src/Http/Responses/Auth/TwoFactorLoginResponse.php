@@ -6,7 +6,7 @@ use ArtMin96\FilamentJet\Http\Responses\Auth\Contracts\TwoFactorLoginResponse as
 use Filament\Facades\Filament;
 use Illuminate\Http\JsonResponse;
 
-class TwoFactorLoginResponse implements TwoFactorLoginResponseContract
+final class TwoFactorLoginResponse implements TwoFactorLoginResponseContract
 {
     public function toResponse($request)
     {

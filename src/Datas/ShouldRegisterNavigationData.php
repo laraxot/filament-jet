@@ -4,7 +4,7 @@ namespace ArtMin96\FilamentJet\Datas;
 
 use Spatie\LaravelData\Data;
 
-class ShouldRegisterNavigationData extends Data
+final class ShouldRegisterNavigationData extends Data
 {
     public bool $account;
 

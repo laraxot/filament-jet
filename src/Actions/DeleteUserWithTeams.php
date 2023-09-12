@@ -11,57 +11,58 @@ use ArtMin96\FilamentJet\Contracts\UserContract;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
-class DeleteUserWithTeams implements DeletesUsers
+final class DeleteUserWithTeams implements DeletesUsers
 {
-    /**
-     * The team deleter implementation.
-     *
-     * @var \ArtMin96\FilamentJet\Contracts\DeletesTeams
-     */
-    protected $deletesTeams;
-
     /**
      * Create a new action instance.
      */
-    public function __construct(DeletesTeams $deletesTeams)
+    public function __construct(
+        /**
+         * The team deleter implementation.
+         */
+        private readonly DeletesTeams $deletesTeams
+    )
     {
-        $this->deletesTeams = $deletesTeams;
     }
 
     /**
      * Delete the given user.
      */
-    public function delete(UserContract $user): void
+    public function delete(UserContract $userContract): void
     {
-        DB::transaction(function () use ($user) {
-            if (! method_exists($user, 'deleteProfilePhoto')) {
+        DB::transaction(function () use ($userContract) {
+            if (! method_exists($userContract, 'deleteProfilePhoto')) {
                 throw new Exception('['.__LINE__.']['.__FILE__.']');
             }
-            if (! method_exists($user, 'delete')) {
+            
+            if (! method_exists($userContract, 'delete')) {
                 throw new Exception('['.__LINE__.']['.__FILE__.']');
             }
-            $this->deleteTeams($user);
-            if (! method_exists($user, 'deleteProfilePhoto')) {
+            
+            $this->deleteTeams($userContract);
+            if (! method_exists($userContract, 'deleteProfilePhoto')) {
                 throw new Exception('method deleteProfilePhoto is missing on user');
             }
-            $user->deleteProfilePhoto();
-            $user->tokens->each->delete();
-            $user->delete();
+            
+            $userContract->deleteProfilePhoto();
+            $userContract->tokens->each->delete();
+            $userContract->delete();
         });
     }
 
     /**
      * Delete the teams and team associations attached to the user.
      */
-    protected function deleteTeams(UserContract $user): void
+    private function deleteTeams(UserContract $userContract): void
     {
-        if (! method_exists($user, 'teams')) {
+        if (! method_exists($userContract, 'teams')) {
             throw new Exception('['.__LINE__.']['.__FILE__.']');
         }
-        $user->teams()->detach();
+        
+        $userContract->teams()->detach();
 
-        $user->ownedTeams->each(function (TeamContract $team) {
-            $this->deletesTeams->delete($team);
+        $userContract->ownedTeams->each(function (TeamContract $teamContract): void {
+            $this->deletesTeams->delete($teamContract);
         });
     }
 }

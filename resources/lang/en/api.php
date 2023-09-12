@@ -19,7 +19,7 @@ return [
 
     'modal' => [
         'title' => 'API Token',
-        'description' => 'Please copy your new API token. For your security, it won\'t be shown again.',
+        'description' => "Please copy your new API token. For your security, it won't be shown again.",
 
         'buttons' => [
             'close' => 'Close',

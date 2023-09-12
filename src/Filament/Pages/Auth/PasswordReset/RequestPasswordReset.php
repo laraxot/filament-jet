@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Password;
  * @property UserContract $user
  * @property ComponentContainer $form
  */
-class RequestPasswordReset extends CardPage
+final class RequestPasswordReset extends CardPage
 {
     use WithRateLimiting;
 
@@ -63,17 +63,15 @@ class RequestPasswordReset extends CardPage
 
         $status = Password::sendResetLink(
             $data,
-            function (UserContract $user, string $token): void {
-                if (! method_exists($user, 'notify')) {
-                    $userClass = $user::class;
+            static function (UserContract $userContract, string $token) : void {
+                if (! method_exists($userContract, 'notify')) {
+                    $userClass = $userContract::class;
 
-                    throw new Exception("Model [{$userClass}] does not have a [notify()] method.");
+                    throw new Exception(sprintf('Model [%s] does not have a [notify()] method.', $userClass));
                 }
-
-                $notification = new ResetPasswordNotification($token);
-                $notification->url = FilamentJet::getResetPasswordUrl($token, $user);
-
-                $user->notify($notification);
+                $resetPassword = new ResetPasswordNotification($token);
+                $resetPassword->url = FilamentJet::getResetPasswordUrl($token, $userContract);
+                $userContract->notify($resetPassword);
             },
         );
 
@@ -94,12 +92,12 @@ class RequestPasswordReset extends CardPage
             ->send();
     }
 
-    public function getTitle(): string
+    protected function getTitle(): string
     {
         return __('filament-jet::auth/password-reset/request-password-reset.title');
     }
 
-    public function getHeading(): string
+    protected function getHeading(): string
     {
         return __('filament-jet::auth/password-reset/request-password-reset.heading');
     }

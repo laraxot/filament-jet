@@ -2,6 +2,7 @@
 
 namespace ArtMin96\FilamentJet\Datas;
 
+use Jenssegers\Agent\Agent;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Collection;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\LaravelData\Data;
 
-class SessionData extends Data
+final class SessionData extends Data
 {
     public string $connection;
 
@@ -45,14 +46,12 @@ class SessionData extends Data
 
         return $this->getUserActivities()
             ->map(
-                function ($session) {
-                    return (object) [
-                        'agent' => $this->createAgent($session),
-                        'ip_address' => $session->ip_address,
-                        'is_current_device' => $session->id === request()->session()->getId(),
-                        'last_active' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
-                    ];
-                }
+                fn($session) => (object) [
+                    'agent' => $this->createAgent($session),
+                    'ip_address' => $session->ip_address,
+                    'is_current_device' => $session->id === request()->session()->getId(),
+                    'last_active' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
+                ]
             );
     }
 
@@ -61,6 +60,7 @@ class SessionData extends Data
         if ($this->driver !== 'database') {
             return;
         }
+        
         DB::connection($this->connection)
             ->table($this->table)
             //->where('user_id', Auth::user()->getAuthIdentifier())
@@ -72,12 +72,11 @@ class SessionData extends Data
     /**
      * Create a new agent instance from the given session.
      *
-     * @param  mixed  $session
-     * @return \Jenssegers\Agent\Agent
+     * @return Agent
      */
-    protected function createAgent($session)
+    private function createAgent(mixed $session)
     {
-        return tap(new \Jenssegers\Agent\Agent, function ($agent) use ($session) {
+        return tap(new Agent, static function ($agent) use ($session) : void {
             $agent->setUserAgent($session->user_agent);
         });
     }

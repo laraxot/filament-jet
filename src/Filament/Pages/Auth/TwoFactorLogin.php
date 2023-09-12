@@ -2,6 +2,7 @@
 
 namespace ArtMin96\FilamentJet\Filament\Pages\Auth;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Contracts\TwoFactorAuthenticationProvider;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Events\RecoveryCodeReplaced;
@@ -25,7 +26,7 @@ use Illuminate\Support\HtmlString;
  * @property ComponentContainer $form
  * @property string $sessionPrefix
  */
-class TwoFactorLogin extends CardPage
+final class TwoFactorLogin extends CardPage
 {
     use WithRateLimiting;
 
@@ -64,9 +65,9 @@ class TwoFactorLogin extends CardPage
         return $code && tap(app(TwoFactorAuthenticationProvider::class)->verify(
             (string) decrypt($this->challengedUser()->two_factor_secret),
             $code
-        ), function ($result) {
+        ), function ($result): void {
             if ($result) {
-                session()->forget("{$this->sessionPrefix}login.id");
+                session()->forget($this->sessionPrefix . 'login.id');
             }
         });
     }
@@ -80,11 +81,9 @@ class TwoFactorLogin extends CardPage
             return null;
         }
 
-        return tap(collect($this->challengedUser()->recoveryCodes())->first(function ($code) use ($recoveryCode) {
-            return hash_equals($code, $recoveryCode) ? $code : null;
-        }), function ($code) {
+        return tap(collect($this->challengedUser()->recoveryCodes())->first(static fn($code) => hash_equals($code, $recoveryCode) ? $code : null), function ($code): void {
             if ($code) {
-                session()->forget("{$this->sessionPrefix}login.id");
+                session()->forget($this->sessionPrefix . 'login.id');
             }
         });
     }
@@ -94,17 +93,19 @@ class TwoFactorLogin extends CardPage
      */
     public function hasChallengedUser(): bool
     {
-        if ($this->challengedUser) {
+        if ($this->challengedUser instanceof UserContract) {
             return true;
         }
+        
         $userProvider = Filament::auth()->getProvider();
         if (! method_exists($userProvider, 'getModel')) {
             throw new Exception('getModel not exists in userProvider');
         }
+        
         $userModel = $userProvider->getModel();
 
-        return session()->has("{$this->sessionPrefix}login.id") &&
-            $userModel::find(session()->get("{$this->sessionPrefix}login.id"));
+        return session()->has($this->sessionPrefix . 'login.id') &&
+            $userModel::find(session()->get($this->sessionPrefix . 'login.id'));
     }
 
     /**
@@ -116,7 +117,7 @@ class TwoFactorLogin extends CardPage
      */
     public function challengedUser()
     {
-        if ($this->challengedUser) {
+        if ($this->challengedUser instanceof UserContract) {
             return $this->challengedUser;
         }
 
@@ -124,10 +125,11 @@ class TwoFactorLogin extends CardPage
         if (! method_exists($userProvider, 'getModel')) {
             throw new Exception('getModel not exists in userProvider');
         }
+        
         $userModel = $userProvider->getModel();
 
-        if (! session()->has("{$this->sessionPrefix}login.id") ||
-            ! $user = $userModel::find(session()->get("{$this->sessionPrefix}login.id"))) {
+        if (! session()->has($this->sessionPrefix . 'login.id') ||
+            ! $user = $userModel::find(session()->get($this->sessionPrefix . 'login.id'))) {
             //return redirect()->to(jetRouteActions()->loginRoute());
             throw new Exception('wip');
         }
@@ -140,7 +142,7 @@ class TwoFactorLogin extends CardPage
      */
     public function remember(): bool
     {
-        $res = session()->pull("{$this->sessionPrefix}login.remember", false);
+        $res = session()->pull($this->sessionPrefix . 'login.remember', false);
         if (! is_bool($res)) {
             throw new Exception('wip');
         }
@@ -170,12 +172,12 @@ class TwoFactorLogin extends CardPage
 
         $data = $this->form->getState();
 
-        $user = $this->challengedUser();
+        $userContract = $this->challengedUser();
 
         if ($code = $this->validRecoveryCode($data['recoveryCode'] ?? '')) {
-            $user->replaceRecoveryCode($code);
+            $userContract->replaceRecoveryCode($code);
 
-            event(new RecoveryCodeReplaced($user, $code));
+            event(new RecoveryCodeReplaced($userContract, $code));
         } elseif (! $this->hasValidCode($data['code'] ?? '')) {
             [$key, $message] = isset($data['recoveryCode'])
                 ? ['recoveryCode', __('filament-jet::auth/two-factor-login.messages.failed.recoveryCode')]
@@ -186,23 +188,23 @@ class TwoFactorLogin extends CardPage
             return null;
         }
 
-        if (! $user instanceof \Illuminate\Contracts\Auth\Authenticatable) {
+        if (! $userContract instanceof Authenticatable) {
             throw new Exception('strange things');
         }
 
-        Filament::auth()->login($user, $this->remember());
+        Filament::auth()->login($userContract, $this->remember());
 
         session()->regenerate();
 
         return app(TwoFactorLoginResponse::class);
     }
 
-    public function getTitle(): string
+    protected function getTitle(): string
     {
         return __('filament-jet::auth/two-factor-login.title');
     }
 
-    public function getHeading(): string
+    protected function getHeading(): string
     {
         return __('filament-jet::auth/two-factor-login.heading');
     }

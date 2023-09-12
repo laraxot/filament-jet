@@ -6,7 +6,7 @@ use ArtMin96\FilamentJet\Features;
 use ArtMin96\FilamentJet\FilamentJet;
 use Illuminate\Support\ServiceProvider;
 
-class FilamentJetServiceProvider extends ServiceProvider
+final class FilamentJetServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
@@ -25,7 +25,7 @@ class FilamentJetServiceProvider extends ServiceProvider
     /**
      * Configure the roles and permissions that are available within the application.
      */
-    protected function configurePermissions(): void
+    private function configurePermissions(): void
     {
         FilamentJet::role('admin', __('filament-jet::jet.permissions.admin.label'), [
             'create',
@@ -44,7 +44,7 @@ class FilamentJetServiceProvider extends ServiceProvider
     /**
      * Configure the sanctum permissions that are available within the application.
      */
-    protected function configureApiPermissions(): void
+    private function configureApiPermissions(): void
     {
         FilamentJet::defaultApiTokenPermissions(['read']);
     }

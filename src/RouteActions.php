@@ -4,7 +4,7 @@ namespace ArtMin96\FilamentJet;
 
 use Exception;
 
-class RouteActions
+final class RouteActions
 {
     public function routePrefix(): string
     {
@@ -12,6 +12,7 @@ class RouteActions
         if (is_string($res)) {
             return $res;
         }
+        
         throw new Exception('config filament-jet.route_group_prefix is not a string ');
     }
 

@@ -5,51 +5,40 @@ namespace ArtMin96\FilamentJet\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Str;
 
-class Password implements Rule
+final class Password implements Rule
 {
     /**
      * The minimum length of the password.
-     *
-     * @var int
      */
-    protected $length = 8;
+    private int $length = 8;
 
     /**
      * Indicates if the password must contain one uppercase character.
-     *
-     * @var bool
      */
-    protected $requireUppercase = false;
+    private bool $requireUppercase = false;
 
     /**
      * Indicates if the password must contain one numeric digit.
-     *
-     * @var bool
      */
-    protected $requireNumeric = false;
+    private bool $requireNumeric = false;
 
     /**
      * Indicates if the password must contain one special character.
-     *
-     * @var bool
      */
-    protected $requireSpecialCharacter = false;
+    private bool $requireSpecialCharacter = false;
 
     /**
      * The message that should be used when validation fails.
-     *
-     * @var string
      */
-    protected $message;
+    private ?string $message = null;
 
     /**
      * Determine if the validation rule passes.
      *
      * @param  string  $attribute
      * @param  mixed  $value
-     * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         $value = is_scalar($value) ? (string) $value : '';
 
@@ -57,15 +46,16 @@ class Password implements Rule
             return false;
         }
 
-        if ($this->requireNumeric && ! preg_match('/[0-9]/', $value)) {
+        if ($this->requireNumeric && ! preg_match('/\d/', $value)) {
             return false;
         }
-
-        if ($this->requireSpecialCharacter && ! preg_match('/[\W_]/', $value)) {
-            return false;
+        if (!$this->requireSpecialCharacter) {
+            return Str::length($value) >= $this->length;
         }
-
-        return Str::length($value) >= $this->length;
+        if (preg_match('/[\W_]/', $value)) {
+            return Str::length($value) >= $this->length;
+        }
+        return false;
     }
 
     /**
@@ -75,65 +65,50 @@ class Password implements Rule
      */
     public function message()
     {
-        if ($this->message) {
+        if ($this->message !== '' && $this->message !== '0') {
             return $this->message;
         }
 
-        switch (true) {
-            case $this->requireUppercase
+        return match (true) {
+            $this->requireUppercase
             && ! $this->requireNumeric
-            && ! $this->requireSpecialCharacter:
-                return __('The :attribute must be at least :length characters and contain at least one uppercase character.', [
-                    'length' => $this->length,
-                ]);
-
-            case $this->requireNumeric
+            && ! $this->requireSpecialCharacter => __('The :attribute must be at least :length characters and contain at least one uppercase character.', [
+                'length' => $this->length,
+            ]),
+            $this->requireNumeric
             && ! $this->requireUppercase
-            && ! $this->requireSpecialCharacter:
-                return __('The :attribute must be at least :length characters and contain at least one number.', [
-                    'length' => $this->length,
-                ]);
-
-            case $this->requireSpecialCharacter
+            && ! $this->requireSpecialCharacter => __('The :attribute must be at least :length characters and contain at least one number.', [
+                'length' => $this->length,
+            ]),
+            $this->requireSpecialCharacter
             && ! $this->requireUppercase
-            && ! $this->requireNumeric:
-                return __('The :attribute must be at least :length characters and contain at least one special character.', [
-                    'length' => $this->length,
-                ]);
-
-            case $this->requireUppercase
+            && ! $this->requireNumeric => __('The :attribute must be at least :length characters and contain at least one special character.', [
+                'length' => $this->length,
+            ]),
+            $this->requireUppercase
             && $this->requireNumeric
-            && ! $this->requireSpecialCharacter:
-                return __('The :attribute must be at least :length characters and contain at least one uppercase character and one number.', [
-                    'length' => $this->length,
-                ]);
-
-            case $this->requireUppercase
+            && ! $this->requireSpecialCharacter => __('The :attribute must be at least :length characters and contain at least one uppercase character and one number.', [
+                'length' => $this->length,
+            ]),
+            $this->requireUppercase
             && $this->requireSpecialCharacter
-            && ! $this->requireNumeric:
-                return __('The :attribute must be at least :length characters and contain at least one uppercase character and one special character.', [
-                    'length' => $this->length,
-                ]);
-
-            case $this->requireUppercase
+            && ! $this->requireNumeric => __('The :attribute must be at least :length characters and contain at least one uppercase character and one special character.', [
+                'length' => $this->length,
+            ]),
+            $this->requireUppercase
             && $this->requireNumeric
-            && $this->requireSpecialCharacter:
-                return __('The :attribute must be at least :length characters and contain at least one uppercase character, one number, and one special character.', [
-                    'length' => $this->length,
-                ]);
-
-            case $this->requireNumeric
+            && $this->requireSpecialCharacter => __('The :attribute must be at least :length characters and contain at least one uppercase character, one number, and one special character.', [
+                'length' => $this->length,
+            ]),
+            $this->requireNumeric
             && $this->requireSpecialCharacter
-            && ! $this->requireUppercase:
-                return __('The :attribute must be at least :length characters and contain at least one special character and one number.', [
-                    'length' => $this->length,
-                ]);
-
-            default:
-                return __('The :attribute must be at least :length characters.', [
-                    'length' => $this->length,
-                ]);
-        }
+            && ! $this->requireUppercase => __('The :attribute must be at least :length characters and contain at least one special character and one number.', [
+                'length' => $this->length,
+            ]),
+            default => __('The :attribute must be at least :length characters.', [
+                'length' => $this->length,
+            ]),
+        };
     }
 
     /**
@@ -141,7 +116,7 @@ class Password implements Rule
      *
      * @return $this
      */
-    public function length(int $length)
+    public function length(int $length): static
     {
         $this->length = $length;
 
@@ -153,7 +128,7 @@ class Password implements Rule
      *
      * @return $this
      */
-    public function requireUppercase()
+    public function requireUppercase(): static
     {
         $this->requireUppercase = true;
 
@@ -165,7 +140,7 @@ class Password implements Rule
      *
      * @return $this
      */
-    public function requireNumeric()
+    public function requireNumeric(): static
     {
         $this->requireNumeric = true;
 
@@ -177,7 +152,7 @@ class Password implements Rule
      *
      * @return $this
      */
-    public function requireSpecialCharacter()
+    public function requireSpecialCharacter(): static
     {
         $this->requireSpecialCharacter = true;
 
@@ -189,7 +164,7 @@ class Password implements Rule
      *
      * @return $this
      */
-    public function withMessage(string $message)
+    public function withMessage(string $message): static
     {
         $this->message = $message;
 

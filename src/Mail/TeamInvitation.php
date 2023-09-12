@@ -8,18 +8,19 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\URL;
 
-class TeamInvitation extends Mailable
+final class TeamInvitation extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
 
-    /**
-     * The team invitation instance.
-     */
-    public TeamInvitationContract $invitation;
+    use SerializesModels;
 
-    public function __construct(TeamInvitationContract $invitation)
+    public function __construct(
+        /**
+         * The team invitation instance.
+         */
+        public TeamInvitationContract $teamInvitationContract
+    )
     {
-        $this->invitation = $invitation;
     }
 
     /**
@@ -28,7 +29,7 @@ class TeamInvitation extends Mailable
     public function build(): static
     {
         return $this->markdown('filament-jet::mail.team-invitation', ['acceptUrl' => URL::signedRoute('team-invitations.accept', [
-            'invitation' => $this->invitation,
+            'invitation' => $this->teamInvitationContract,
         ]),
         ])->subject(__('filament-jet::teams/invitation-mail.subject'));
     }

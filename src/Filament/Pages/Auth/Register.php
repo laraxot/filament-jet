@@ -2,6 +2,10 @@
 
 namespace ArtMin96\FilamentJet\Filament\Pages\Auth;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
+use Illuminate\Contracts\Auth\Authenticatable;
 use ArtMin96\FilamentJet\Actions\CreateNewUser;
 use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Features;
@@ -25,7 +29,7 @@ use Phpsa\FilamentPasswordReveal\Password;
  * @property UserContract $user
  * @property ComponentContainer $form
  */
-class Register extends CardPage
+final class Register extends CardPage
 {
     use WithRateLimiting;
     use RedirectsActions;
@@ -52,9 +56,9 @@ class Register extends CardPage
     /**
      * Undocumented function
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector|null
+     * @return RedirectResponse|Response|Redirector|null
      */
-    public function register(CreateNewUser $creator)
+    public function register(CreateNewUser $createNewUser)
     {
         $rateLimitingOptionEnabled = Features::getOption(Features::registration(), 'rate_limiting.enabled');
 
@@ -76,27 +80,27 @@ class Register extends CardPage
 
         $data = $this->form->getState();
 
-        $user = $creator->create($data);
-        if (! $user instanceof \Illuminate\Contracts\Auth\Authenticatable) {
+        $userContract = $createNewUser->create($data);
+        if (! $userContract instanceof Authenticatable) {
             throw new Exception('user no authenticable');
         }
 
         Filament::auth()->login(
-            user: $user,
+            user: $userContract,
             remember: true
         );
 
         session()->regenerate();
 
-        return $this->redirectPath($creator);
+        return $this->redirectPath($createNewUser);
     }
 
-    public function getTitle(): string
+    protected function getTitle(): string
     {
         return __('filament-jet::auth/register.title');
     }
 
-    public function getHeading(): string
+    protected function getHeading(): string
     {
         return __('filament-jet::auth/register.heading');
     }

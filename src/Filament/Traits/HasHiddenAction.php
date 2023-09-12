@@ -88,26 +88,21 @@ trait HasHiddenAction
         }
 
         if (Features::hasAccountDeletionFeatures()) {
-            $actions = array_merge($actions, [
-                AlwaysAskPasswordConfirmationAction::make('delete_account')
-                    ->label(__('filament-jet::account/delete-account.buttons.confirm'))
-                    ->icon('heroicon-o-trash')
-                    ->color('danger')
-                    ->action('deleteAccount'),
-            ]);
+            $actions = [...$actions, AlwaysAskPasswordConfirmationAction::make('delete_account')
+                ->label(__('filament-jet::account/delete-account.buttons.confirm'))
+                ->icon('heroicon-o-trash')
+                ->color('danger')
+                ->action('deleteAccount')];
         }
 
         if (Features::canExportPersonalData()) {
-            $actions = array_merge($actions, [
-                Action::make('export_personal_data')
-                    ->label(__('filament-jet::account/export-personal-data.buttons.confirm'))
-                    ->icon('heroicon-o-download')
-                    ->action('exportPersonalData'),
-                Action::make('download_personal_data')
-                    ->label(__('filament-jet::account/export-personal-data.buttons.download'))
-                    ->icon('heroicon-o-download')
-                    ->action('downloadPersonalData'),
-            ]);
+            return [...$actions, Action::make('export_personal_data')
+                ->label(__('filament-jet::account/export-personal-data.buttons.confirm'))
+                ->icon('heroicon-o-download')
+                ->action('exportPersonalData'), Action::make('download_personal_data')
+                ->label(__('filament-jet::account/export-personal-data.buttons.download'))
+                ->icon('heroicon-o-download')
+                ->action('downloadPersonalData')];
         }
 
         return $actions;

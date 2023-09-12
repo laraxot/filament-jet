@@ -10,31 +10,31 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification as BaseListener;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class SendEmailVerificationNotification extends BaseListener
+final class SendEmailVerificationNotification extends BaseListener
 {
-    public function handle(Registered $event): void
+    public function handle(Registered $registered): void
     {
-        if (! $event->user instanceof MustVerifyEmail) {
+        if (! $registered->user instanceof MustVerifyEmail) {
             return;
         }
 
-        if ($event->user->hasVerifiedEmail()) {
+        if ($registered->user->hasVerifiedEmail()) {
             return;
         }
 
-        if (! method_exists($event->user, 'notify')) {
-            $userClass = $event->user::class;
+        if (! method_exists($registered->user, 'notify')) {
+            $userClass = $registered->user::class;
 
-            throw new Exception("Model [{$userClass}] does not have a [notify()] method.");
+            throw new Exception(sprintf('Model [%s] does not have a [notify()] method.', $userClass));
         }
 
-        if (! $event->user instanceof UserContract) {
+        if (! $registered->user instanceof UserContract) {
             throw new Exception('strange things');
         }
 
-        $notification = new VerifyEmail;
-        $notification->url = FilamentJet::getVerifyEmailUrl($event->user);
+        $verifyEmail = new VerifyEmail;
+        $verifyEmail->url = FilamentJet::getVerifyEmailUrl($registered->user);
 
-        $event->user->notify($notification);
+        $registered->user->notify($verifyEmail);
     }
 }

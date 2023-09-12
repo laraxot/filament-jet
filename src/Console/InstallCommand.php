@@ -2,6 +2,9 @@
 
 namespace ArtMin96\FilamentJet\Console;
 
+use ArtMin96\FilamentJet\Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
+use ArtMin96\FilamentJet\Http\Controllers\Auth\EmailVerificationController;
+use ArtMin96\FilamentJet\Http\Controllers\TeamInvitationController;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
@@ -10,7 +13,7 @@ use RuntimeException;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 
-class InstallCommand extends Command
+final class InstallCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -34,7 +37,7 @@ class InstallCommand extends Command
      *
      * @return int|null
      */
-    public function handle()
+    public function handle(): void
     {
         // Publish...
         $this->callSilent('vendor:publish', ['--tag' => 'filament-jet-config', '--force' => true]);
@@ -55,8 +58,8 @@ class InstallCommand extends Command
         if ($this->option('verification')) {
             $this->replaceInFile(
                 '// Features::emailVerification([
-        //     \'page\' => \ArtMin96\FilamentJet\Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt::class,
-        //     \'controller\' => \ArtMin96\FilamentJet\Http\Controllers\Auth\EmailVerificationController::class,
+        //     \'page\' => ' . EmailVerificationPrompt::class . '::class,
+        //     \'controller\' => ' . EmailVerificationController::class . '::class,
         //     \'card_width\' => \'md\',
         //     \'has_brand\' => true,
         //     \'rate_limiting\' => [
@@ -65,8 +68,8 @@ class InstallCommand extends Command
         //     ],
         // ]),',
                 'Features::emailVerification([
-            \'page\' => \ArtMin96\FilamentJet\Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt::class,
-            \'controller\' => \ArtMin96\FilamentJet\Http\Controllers\Auth\EmailVerificationController::class,
+            \'page\' => ' . EmailVerificationPrompt::class . '::class,
+            \'controller\' => ' . EmailVerificationController::class . '::class,
             \'card_width\' => \'md\',
             \'has_brand\' => true,
             \'rate_limiting\' => [
@@ -83,15 +86,13 @@ class InstallCommand extends Command
 
     /**
      * Configure the session driver for Jetstream.
-     *
-     * @return void
      */
-    protected function configureSession()
+    private function configureSession(): void
     {
         if (! class_exists('CreateSessionsTable')) {
             try {
                 $this->call('session:table');
-            } catch (Exception $e) {
+            } catch (Exception) {
             }
         }
 
@@ -102,15 +103,13 @@ class InstallCommand extends Command
 
     /**
      * Install the Livewire stack into the application.
-     *
-     * @return void
      */
-    protected function installStack()
+    private function installStack(): void
     {
         // Sanctum...
         (new Process([$this->phpBinary(), 'artisan', 'vendor:publish', '--provider=Laravel\Sanctum\SanctumServiceProvider', '--force'], base_path()))
             ->setTimeout(null)
-            ->run(function ($type, $output) {
+            ->run(function ($type, $output): void {
                 $this->output->write($output);
             });
 
@@ -167,10 +166,8 @@ class InstallCommand extends Command
 
     /**
      * Undocumented function
-     *
-     * @return void
      */
-    protected function installTeamStack()
+    private function installTeamStack(): void
     {
         // ...
 
@@ -179,10 +176,8 @@ class InstallCommand extends Command
 
     /**
      * Ensure the installed user model is ready for team usage.
-     *
-     * @return void
      */
-    protected function ensureApplicationIsTeamCompatible()
+    private function ensureApplicationIsTeamCompatible(): void
     {
         // Publish Team Migrations...
         $this->callSilent('vendor:publish', ['--tag' => 'filament-jet-team-migrations', '--force' => true]);
@@ -193,7 +188,7 @@ class InstallCommand extends Command
         //     \'invitations\' => true,
         //     \'middleware\' => [\'verified\'],
         //     \'invitation\' => [
-        //         \'controller\' => \ArtMin96\FilamentJet\Http\Controllers\TeamInvitationController::class,
+        //         \'controller\' => ' . TeamInvitationController::class . '::class,
         //         \'actions\' => [
         //             \'accept\' => \'accept\',
         //             \'destroy\' => \'destroy\',
@@ -204,7 +199,7 @@ class InstallCommand extends Command
             \'invitations\' => true,
             \'middleware\' => [\'verified\'],
             \'invitation\' => [
-                \'controller\' => \ArtMin96\FilamentJet\Http\Controllers\TeamInvitationController::class,
+                \'controller\' => ' . TeamInvitationController::class . '::class,
                 \'actions\' => [
                     \'accept\' => \'accept\',
                     \'destroy\' => \'destroy\',
@@ -249,10 +244,8 @@ class InstallCommand extends Command
 
     /**
      * Get the route definition(s) that should be installed for Livewire.
-     *
-     * @return string
      */
-    protected function routeDefinition()
+    private function routeDefinition(): string
     {
         return <<<'EOF'
 Route::domain(config("filament.domain"))
@@ -270,12 +263,8 @@ EOF;
 
     /**
      * Install the service provider in the application configuration file.
-     *
-     * @param  string  $after
-     * @param  string  $name
-     * @return void
      */
-    protected function installServiceProviderAfter($after, $name)
+    private function installServiceProviderAfter(string $after, string $name): void
     {
         /**
          * @var string $app
@@ -299,12 +288,9 @@ EOF;
     /**
      * Replace a given string within a given file.
      *
-     * @param  string  $search
-     * @param  string  $replace
      * @param  string  $path
-     * @return void
      */
-    protected function replaceInFile($search, $replace, $path)
+    private function replaceInFile(string $search, string $replace, $path): void
     {
         /**
          * @var string $path_content
@@ -316,10 +302,8 @@ EOF;
 
     /**
      * Get the path to the appropriate PHP binary.
-     *
-     * @return string
      */
-    protected function phpBinary()
+    private function phpBinary(): string
     {
         return (new PhpExecutableFinder)->find(false) ?: 'php';
     }
@@ -328,9 +312,8 @@ EOF;
      * Run the given commands.
      *
      * @param  array  $commands
-     * @return void
      */
-    protected function runCommands($commands)
+    private function runCommands($commands): void
     {
         /** @phpstan-ignore-next-line */
         $process = Process::fromShellCommandline(implode(' && ', $commands), null, null, null, null);
@@ -343,7 +326,7 @@ EOF;
             }
         }
 
-        $process->run(function ($type, $line) {
+        $process->run(function ($type, string $line): void {
             $this->output->write('    '.$line);
         });
     }

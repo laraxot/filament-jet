@@ -4,7 +4,7 @@ return [
 
     'title' => 'Profile Information',
 
-    'description' => 'Update your account\'s profile information and email address',
+    'description' => "Update your account's profile information and email address",
 
     'buttons' => [
         'save' => 'Save',

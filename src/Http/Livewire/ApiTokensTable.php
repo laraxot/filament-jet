@@ -29,7 +29,7 @@ use Livewire\Component;
  *
  * @property Collection $sanctumPermissions
  */
-class ApiTokensTable extends Component implements HasTable
+final class ApiTokensTable extends Component implements HasTable
 {
     use InteractsWithTable;
     // ////use HasSanctumPermissionsProperty;
@@ -48,18 +48,18 @@ class ApiTokensTable extends Component implements HasTable
         return view('filament-jet::livewire.api-tokens-table');
     }
 
-    public function edit(Model $record, array $data): void
+    public function edit(Model $model, array $data): void
     {
-        $record->forceFill([
+        $model->forceFill([
             'abilities' => FilamentJet::validPermissions($data['abilities']),
         ])->save();
 
         Filament::notify('success', __('filament-jet::api.update.notify'));
     }
 
-    public function delete(Model $record): void
+    public function delete(Model $model): void
     {
-        $record->delete();
+        $model->delete();
 
         Filament::notify('success', __('filament-jet::api.delete.notify'));
     }
@@ -86,7 +86,7 @@ class ApiTokensTable extends Component implements HasTable
                 ->searchable()
                 ->sortable()
                 ->formatStateUsing(
-                    fn (?string $state): string => $state ? Carbon::parse($state)->diffForHumans() : __('filament-jet::api.table.never')
+                    static fn(?string $state): string => $state ? Carbon::parse($state)->diffForHumans() : __('filament-jet::api.table.never')
                 ),
         ];
     }
@@ -96,7 +96,7 @@ class ApiTokensTable extends Component implements HasTable
         return [
             BulkAction::make('delete')
                 ->label(__('filament-jet::api.table.bulk_actions.delete'))
-                ->action(fn (Collection $records) => $records->each->delete())
+                ->action(static fn(Collection $records) => $records->each->delete())
                 ->requiresConfirmation()
                 ->deselectRecordsAfterCompletion(),
         ];
@@ -110,7 +110,7 @@ class ApiTokensTable extends Component implements HasTable
                 ->icon('heroicon-o-pencil-alt')
                 ->modalWidth('sm')
                 ->mountUsing(
-                    fn (ComponentContainer $form, Model $record) => $form->fill($record->toArray())
+                    static fn(ComponentContainer $componentContainer, Model $model): ComponentContainer => $componentContainer->fill($model->toArray())
                 )
                 ->form([
                     CheckboxList::make('abilities')
@@ -118,16 +118,12 @@ class ApiTokensTable extends Component implements HasTable
                         ->options($this->sanctumPermissions)
                         ->columns(2)
                         ->required()
-                        ->afterStateHydrated(function ($component, $state) {
+                        ->afterStateHydrated(static function ($component, $state) : void {
                             $permissions = FilamentJet::$permissions;
-
                             $tokenPermissions = collect($permissions)
-                                ->filter(function ($permission) use ($state) {
-                                    return in_array($permission, $state);
-                                })
+                                ->filter(static fn($permission): bool => in_array($permission, $state))
                                 ->values()
                                 ->toArray();
-
                             $component->state($tokenPermissions);
                         }),
                 ]),
