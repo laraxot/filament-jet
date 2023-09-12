@@ -110,7 +110,11 @@ final class ApiTokensTable extends Component implements HasTable
                 ->icon('heroicon-o-pencil-alt')
                 ->modalWidth('sm')
                 ->mountUsing(
+<<<<<<< HEAD
                     static fn(ComponentContainer $componentContainer, Model $model): ComponentContainer => $componentContainer->fill($model->toArray())
+=======
+                    fn (ComponentContainer $componentContainer, Model $model): ComponentContainer => $componentContainer->fill($model->toArray())
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
                 )
                 ->form([
                     CheckboxList::make('abilities')
@@ -118,10 +122,18 @@ final class ApiTokensTable extends Component implements HasTable
                         ->options($this->sanctumPermissions)
                         ->columns(2)
                         ->required()
+<<<<<<< HEAD
                         ->afterStateHydrated(static function ($component, $state) : void {
+=======
+                        ->afterStateHydrated(function ($component, $state): void {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
                             $permissions = FilamentJet::$permissions;
                             $tokenPermissions = collect($permissions)
+<<<<<<< HEAD
                                 ->filter(static fn($permission): bool => in_array($permission, $state))
+=======
+                                ->filter(fn ($permission): bool => in_array($permission, $state))
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
                                 ->values()
                                 ->toArray();
                             $component->state($tokenPermissions);

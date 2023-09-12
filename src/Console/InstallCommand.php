@@ -245,7 +245,11 @@ final class InstallCommand extends Command
     /**
      * Get the route definition(s) that should be installed for Livewire.
      */
+<<<<<<< HEAD
     private function routeDefinition(): string
+=======
+    protected function routeDefinition(): string
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     {
         return <<<'EOF'
 Route::domain(config("filament.domain"))
@@ -263,8 +267,15 @@ EOF;
 
     /**
      * Install the service provider in the application configuration file.
+<<<<<<< HEAD
      */
     private function installServiceProviderAfter(string $after, string $name): void
+=======
+     *
+     * @return void
+     */
+    protected function installServiceProviderAfter(string $after, string $name)
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     {
         /**
          * @var string $app
@@ -303,7 +314,11 @@ EOF;
     /**
      * Get the path to the appropriate PHP binary.
      */
+<<<<<<< HEAD
     private function phpBinary(): string
+=======
+    protected function phpBinary(): string
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     {
         return (new PhpExecutableFinder)->find(false) ?: 'php';
     }

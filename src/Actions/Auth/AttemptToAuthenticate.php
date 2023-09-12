@@ -19,8 +19,12 @@ final class AttemptToAuthenticate
          * The guard implementation.
          */
         protected StatefulGuard $statefulGuard
+<<<<<<< HEAD
     )
     {
+=======
+    ) {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 
     /**
@@ -42,7 +46,11 @@ final class AttemptToAuthenticate
     /**
      * Throw a failed authentication validation exception.
      */
+<<<<<<< HEAD
     private function throwFailedAuthenticationException(): never
+=======
+    protected function throwFailedAuthenticationException(): never
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     {
         throw ValidationException::withMessages([
             FilamentJet::username() => [trans('auth.failed')],

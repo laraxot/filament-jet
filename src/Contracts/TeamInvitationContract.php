@@ -2,8 +2,14 @@
 
 namespace ArtMin96\FilamentJet\Contracts;
 
+<<<<<<< HEAD
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+=======
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
+
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
 /**
  * ArtMin96\FilamentJet\Contracts\TeamInvitationContract
  *

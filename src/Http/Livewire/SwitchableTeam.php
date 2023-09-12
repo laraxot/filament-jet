@@ -29,11 +29,15 @@ final class SwitchableTeam extends Component
 
     public function mount(): void
     {
-
         $user = Filament::auth()->user();
 
+<<<<<<< HEAD
         if (!$user instanceof Authenticatable) {
             throw new Exception('wip');
+=======
+        if ($user === null) {
+            return; //persa sessione
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
         }
         
         if (! $user instanceof UserContract) {
@@ -42,7 +46,6 @@ final class SwitchableTeam extends Component
         
         $this->user = $user;
         $this->teams = $this->user->allTeams();
-
     }
 
     /**
@@ -63,8 +66,6 @@ final class SwitchableTeam extends Component
             abort(403);
         }
 
-        setPermissionsTeamId($teamId);
-
         TeamSwitched::dispatch($team->fresh(), $this->user);
 
         Notification::make()
@@ -78,7 +79,10 @@ final class SwitchableTeam extends Component
 
     public function render(): View
     {
+<<<<<<< HEAD
 
+=======
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
         return view('filament-jet::components.switchable-team');
     }
 }

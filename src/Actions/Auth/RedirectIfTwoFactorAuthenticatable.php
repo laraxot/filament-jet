@@ -10,6 +10,7 @@ use ArtMin96\FilamentJet\Traits\TwoFactorAuthenticatable;
 use Closure;
 use Exception;
 use Illuminate\Auth\Events\Failed;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
@@ -24,9 +25,14 @@ final class RedirectIfTwoFactorAuthenticatable
         /**
          * Undocumented variable
          */
+<<<<<<< HEAD
         private readonly StatefulGuard $statefulGuard
     )
     {
+=======
+        protected StatefulGuard $statefulGuard
+    ) {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 
     /**
@@ -83,7 +89,11 @@ final class RedirectIfTwoFactorAuthenticatable
     /**
      * Throw a failed authentication validation exception.
      */
+<<<<<<< HEAD
     private function throwFailedAuthenticationException(): never
+=======
+    protected function throwFailedAuthenticationException(): never
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     {
         throw ValidationException::withMessages([
             FilamentJet::username() => [trans('auth.failed')],
@@ -95,12 +105,19 @@ final class RedirectIfTwoFactorAuthenticatable
      *
      * @param  array<string, string>  $data
      */
+<<<<<<< HEAD
     private function fireFailedEvent(array $data, UserContract $userContract = null): void
+=======
+    protected function fireFailedEvent(array $data, UserContract $userContract = null): void
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     {
         if ($userContract instanceof UserContract && ! $userContract instanceof Authenticatable) {
             throw new Exception('strange things');
         }
+<<<<<<< HEAD
         
+=======
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
         event(new Failed(config('filament.auth.guard'), $userContract, [
             FilamentJet::username() => $data[FilamentJet::username()],
             'password' => $data['password'],
@@ -110,7 +127,11 @@ final class RedirectIfTwoFactorAuthenticatable
     /**
      * Get the two factor authentication enabled response.
      */
+<<<<<<< HEAD
     private function twoFactorChallengeResponse(array $data, UserContract $userContract): Redirector|RedirectResponse
+=======
+    protected function twoFactorChallengeResponse(array $data, UserContract $userContract): Redirector|RedirectResponse
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     {
         session()->put([
             jet()->getTwoFactorLoginSessionPrefix().'login.id' => $userContract->getKey(),

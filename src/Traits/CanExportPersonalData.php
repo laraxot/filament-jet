@@ -21,7 +21,11 @@ trait CanExportPersonalData
         $personalDataSelection->add('user.json', ['name' => $this->name, 'email' => $this->email]);
 
         if (Features::managesProfilePhotos()) {
+<<<<<<< HEAD
             $personalDataSelection->addFile(storage_path(sprintf('app/%s/%s', $this->profilePhotoDisk(), $this->profile_photo_path)));
+=======
+            $personalDataSelection->addFile(storage_path("app/{$this->profilePhotoDisk()}/{$this->profile_photo_path}"));
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
         }
 
         $additionalFile = Features::getOption(Features::personalDataExport(), 'add');

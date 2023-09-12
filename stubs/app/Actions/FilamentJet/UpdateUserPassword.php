@@ -22,7 +22,10 @@ final class UpdateUserPassword implements UpdatesUserPasswords
         if (! method_exists($userContract, 'forceFill')) {
             throw new Exception('forceFill method not exists in user');
         }
+<<<<<<< HEAD
         
+=======
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
         $userContract->forceFill([
             'password' => Hash::make($input['password']),
         ])->save();

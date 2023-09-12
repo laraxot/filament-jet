@@ -42,7 +42,7 @@ final class Password implements Rule
     {
         $value = is_scalar($value) ? (string) $value : '';
 
-        if ($this->requireUppercase && Str::lower($value) === $value) {
+        if ($this->requireUppercase && $value === Str::lower($value)) {
             return false;
         }
 
@@ -52,10 +52,15 @@ final class Password implements Rule
         if (!$this->requireSpecialCharacter) {
             return Str::length($value) >= $this->length;
         }
+<<<<<<< HEAD
         if (preg_match('/[\W_]/', $value)) {
             return Str::length($value) >= $this->length;
         }
         return false;
+=======
+
+        return $this->length <= Str::length($value);
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 
     /**

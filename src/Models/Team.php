@@ -46,12 +46,6 @@ use Illuminate\Support\Collection;
  */
 abstract class Team extends Model implements TeamContract
 {
-    protected $fillable = [
-        'user_id',
-        'name',
-        'personal_team',
-    ];
-
     /**
      * Get the owner of the team.
      */
@@ -65,7 +59,11 @@ abstract class Team extends Model implements TeamContract
      */
     public function allUsers(): Collection
     {
+<<<<<<< HEAD
         if (!$this->owner instanceof UserContract) {
+=======
+        if ($this->owner === null) {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             return $this->users;
         }
 

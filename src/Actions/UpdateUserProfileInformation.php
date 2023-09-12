@@ -8,6 +8,7 @@ use ArtMin96\FilamentJet\Contracts\UserContract;
 use ArtMin96\FilamentJet\Features;
 use ArtMin96\FilamentJet\FilamentJet;
 use Exception;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 final class UpdateUserProfileInformation implements UpdatesUserProfileInformation
@@ -23,7 +24,10 @@ final class UpdateUserProfileInformation implements UpdatesUserProfileInformatio
             if (! method_exists($userContract, 'updateProfilePhoto')) {
                 throw new Exception('method updateProfilePhoto not exists in user');
             }
+<<<<<<< HEAD
             
+=======
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             $userContract->updateProfilePhoto($input['profile_photo_path']);
         }
 
@@ -43,7 +47,11 @@ final class UpdateUserProfileInformation implements UpdatesUserProfileInformatio
      *
      * @param  array<string, string>  $input
      */
+<<<<<<< HEAD
     private function updateVerifiedUser(UserContract $userContract, array $input): void
+=======
+    protected function updateVerifiedUser(UserContract $userContract, array $input): void
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     {
         $userContract->forceFill([
             'name' => $input['name'],

@@ -20,6 +20,10 @@ use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\HtmlString;
 use Phpsa\FilamentPasswordReveal\Password;
 
@@ -31,8 +35,8 @@ use Phpsa\FilamentPasswordReveal\Password;
  */
 final class Register extends CardPage
 {
-    use WithRateLimiting;
     use RedirectsActions;
+    use WithRateLimiting;
 
     protected static string $view = 'filament-jet::filament.pages.auth.register';
 

@@ -13,8 +13,11 @@ use ArtMin96\FilamentJet\FilamentJet;
 use Exception;
 use Filament\Notifications\Notification;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Gate;
 
 final class TeamInvitationController extends Controller

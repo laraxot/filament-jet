@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace ArtMin96\FilamentJet\Contracts;
 
+<<<<<<< HEAD
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+=======
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
 use ArtMin96\FilamentJet\Role;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * ArtMin96\FilamentJet\Contracts\HasTeamsContract.

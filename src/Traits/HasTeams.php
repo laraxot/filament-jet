@@ -9,6 +9,7 @@ use ArtMin96\FilamentJet\Contracts\TeamContract;
 use ArtMin96\FilamentJet\FilamentJet;
 use ArtMin96\FilamentJet\Models\Team;
 use ArtMin96\FilamentJet\OwnerRole;
+use ArtMin96\FilamentJet\Role;
 use Exception;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -29,7 +30,11 @@ trait HasTeams
      */
     public function isCurrentTeam(TeamContract $teamContract): bool
     {
+<<<<<<< HEAD
         if (!$teamContract instanceof TeamContract || $this->currentTeam === null) {
+=======
+        if (! $teamContract instanceof TeamContract || $this->currentTeam === null) {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             return false;
         }
 
@@ -59,10 +64,16 @@ trait HasTeams
      */
     public function switchTeam(?TeamContract $teamContract): bool
     {
+<<<<<<< HEAD
         if (!$teamContract instanceof TeamContract) {
             return false;
         }
         
+=======
+        if (! $teamContract instanceof TeamContract) {
+            return false;
+        }
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
         if (! $this->belongsToTeam($teamContract)) {
             return false;
         }
@@ -107,7 +118,7 @@ trait HasTeams
         $pivotTable = $pivot->getTable();
         $pivotDbName = $pivot->getConnection()->getDatabaseName();
         $pivotTableFull = $pivotDbName.'.'.$pivotTable;
-        //$this->setConnection('mysql');
+
         return $this->belongsToMany(FilamentJet::teamModel(), $pivotTableFull, null, 'team_id')
             ->using($pivotClass)
             ->withPivot('role')
@@ -152,10 +163,15 @@ trait HasTeams
         if (is_null($teamContract)) {
             return false;
         }
+<<<<<<< HEAD
         if ($this->ownsTeam($teamContract)) {
             return true;
         }
         return (bool) $this->teams->contains(static fn($t): bool => $t->getKey() === $teamContract->getKey());
+=======
+
+        return $this->ownsTeam($teamContract) || $this->teams->contains(fn ($t): bool => $t->getKey() === $teamContract->getKey());
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 
     /**
@@ -191,10 +207,14 @@ trait HasTeams
             return true;
         }
 
+<<<<<<< HEAD
         return $this->belongsToTeam($teamContract) && optional(FilamentJet::findRole($teamContract->users->where(
+=======
+        return $this->belongsToTeam($teamContract) && $role === optional(FilamentJet::findRole($teamContract->users->where(
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             'id',
             $this->id
-        )->first()?->membership?->role))->key === $role;
+        )->first()?->membership?->role))->key;
     }
 
     /**

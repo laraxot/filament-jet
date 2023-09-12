@@ -7,6 +7,9 @@ use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
 use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use ArtMin96\FilamentJet\Contracts\TwoFactorAuthenticationProvider as TwoFactorAuthenticationProviderContract;
 use Illuminate\Cache\Repository;
+use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
+use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
+use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use PragmaRX\Google2FA\Google2FA;
 
 final class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationProviderContract
@@ -20,6 +23,7 @@ final class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationPr
         /**
          * The underlying library providing two factor authentication helper services.
          */
+<<<<<<< HEAD
         private readonly Google2FA $google2FA,
         /**
          * The cache repository implementation.
@@ -27,6 +31,14 @@ final class TwoFactorAuthenticationProvider implements TwoFactorAuthenticationPr
         private readonly Repository $cacheRepository
     )
     {
+=======
+        protected Google2FA $google2FA,
+        /**
+         * The cache repository implementation.
+         */
+        protected Repository $cacheRepository
+    ) {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 
     /**

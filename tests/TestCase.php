@@ -15,11 +15,19 @@ final class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
+<<<<<<< HEAD
             static fn(string $modelName): string => 'ArtMin96\\FilamentJet\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
     protected function getEnvironmentSetUp($app)
+=======
+            fn (string $modelName): string => 'ArtMin96\\FilamentJet\\Database\\Factories\\'.class_basename($modelName).'Factory'
+        );
+    }
+
+    public function getEnvironmentSetUp($app): void
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     {
         config()->set('database.default', 'testing');
 
@@ -29,7 +37,7 @@ final class TestCase extends Orchestra
         */
     }
 
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [
             LivewireServiceProvider::class,

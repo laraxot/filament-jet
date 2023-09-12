@@ -75,7 +75,11 @@ final class Login extends CardPage
 
         $data = $this->form->getState();
 
+<<<<<<< HEAD
         return $this->loginPipeline($data)->then(static fn($data) => app(LoginResponse::class));
+=======
+        return $this->loginPipeline($data)->then(fn ($data) => app(LoginResponse::class));
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 
     protected function getCardWidth(): string

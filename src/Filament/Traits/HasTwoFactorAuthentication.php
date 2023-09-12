@@ -11,6 +11,7 @@ use ArtMin96\FilamentJet\Features;
 use Exception;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Undocumented trait

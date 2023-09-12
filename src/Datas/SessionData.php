@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Jenssegers\Agent\Agent;
 use Spatie\LaravelData\Data;
 
 final class SessionData extends Data
@@ -46,7 +47,11 @@ final class SessionData extends Data
 
         return $this->getUserActivities()
             ->map(
+<<<<<<< HEAD
                 fn($session) => (object) [
+=======
+                fn ($session) => (object) [
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
                     'agent' => $this->createAgent($session),
                     'ip_address' => $session->ip_address,
                     'is_current_device' => $session->id === request()->session()->getId(),
@@ -74,9 +79,15 @@ final class SessionData extends Data
      *
      * @return Agent
      */
+<<<<<<< HEAD
     private function createAgent(mixed $session)
     {
         return tap(new Agent, static function ($agent) use ($session) : void {
+=======
+    protected function createAgent(mixed $session)
+    {
+        return tap(new Agent, function ($agent) use ($session): void {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             $agent->setUserAgent($session->user_agent);
         });
     }

@@ -7,6 +7,7 @@ use ArtMin96\FilamentJet\Jobs\CreatePersonalDataExportJob;
 use Exception;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
+use Spatie\PersonalDataExport\ExportsPersonalData;
 use Throwable;
 
 /**

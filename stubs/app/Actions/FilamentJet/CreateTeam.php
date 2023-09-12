@@ -40,7 +40,10 @@ final class CreateTeam implements CreatesTeams
         if (! $model instanceof TeamContract) {
             throw new Exception('team not have TeamContract');
         }
+<<<<<<< HEAD
         
+=======
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
         $userContract->switchTeam($model);
 
         return $model;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArtMin96\FilamentJet\Filament\Pages;
 
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +21,6 @@ use ArtMin96\FilamentJet\Filament\Traits\HasTwoFactorAuthentication;
 use ArtMin96\FilamentJet\FilamentJet;
 use ArtMin96\FilamentJet\Http\Livewire\Traits\Properties\HasUserProperty;
 use ArtMin96\FilamentJet\Traits\ProcessesExport;
-use Exception;
 use Filament\Facades\Filament;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Actions\Action;
@@ -34,22 +35,22 @@ use Phpsa\FilamentPasswordReveal\Password;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
- * Undocumented class
+ * Undocumented class.
  *
- * @property UserContract $user
+ * @property UserContract       $user
  * @property ComponentContainer $form
  * @property ComponentContainer $updateProfileInformationForm
  * @property ComponentContainer $updatePasswordForm
- * @property ?Batch $exportBatch
+ * @property ?Batch             $exportBatch
  */
 final class Account extends Page
 {
-    use HasHiddenAction;
-    use HasCachedAction;
-    use HasUserProperty;
-    use HasTwoFactorAuthentication;
-    use CanLogoutOtherBrowserSessions;
     use CanDeleteAccount;
+    use CanLogoutOtherBrowserSessions;
+    use HasCachedAction;
+    use HasHiddenAction;
+    use HasTwoFactorAuthentication;
+    use HasUserProperty;
     use ProcessesExport;
 
     protected static string $view = 'filament-jet::filament.pages.account';
@@ -62,7 +63,7 @@ final class Account extends Page
 
     public ?string $passwordConfirmation = null;
 
-    protected static function shouldRegisterNavigation(): bool
+    public static function shouldRegisterNavigation(): bool
     {
         $filamentJetData = FilamentJetData::make();
 
@@ -72,11 +73,18 @@ final class Account extends Page
     public function mount(): void
     {
         $this->updateProfileInformationForm->fill($this->user->withoutRelations()->toArray());
+<<<<<<< HEAD
         if (!Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm')) {
             return;
         }
         if (!is_null($this->user->two_factor_confirmed_at)) {
             return;
+=======
+
+        if (Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm')
+            && is_null($this->user->two_factor_confirmed_at)) {
+            app(DisableTwoFactorAuthentication::class)($this->user);
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
         }
         app(DisableTwoFactorAuthentication::class)($this->user);
     }
@@ -117,8 +125,13 @@ final class Account extends Page
             ->send();
 
         session()->forget('password_hash_'.config('filament.auth.guard'));
+<<<<<<< HEAD
         if (! $this->user instanceof Authenticatable) {
             throw new Exception('strange things');
+=======
+        if (! $this->user instanceof \Illuminate\Contracts\Auth\Authenticatable) {
+            throw new \Exception('strange things');
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
         }
         
         Filament::auth()->login($this->user);
@@ -152,8 +165,13 @@ final class Account extends Page
 
     private function updateProfileFormSchema(): array
     {
+<<<<<<< HEAD
         if (! $this->user instanceof Model) {
             throw new Exception('strange things');
+=======
+        if (! $this->user instanceof \Illuminate\Database\Eloquent\Model) {
+            throw new \Exception('strange things');
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
         }
 
         return array_filter([
@@ -179,7 +197,11 @@ final class Account extends Page
                             ->icon(config('filament-jet.profile.login_field.hint_action.icon'))
                         : null
                 )
+<<<<<<< HEAD
                 ->email(static fn(): bool => FilamentJet::username() === 'email')
+=======
+                ->email(fn (): bool => 'email' === FilamentJet::username())
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
                 ->unique(
                     table: FilamentJet::userModel(),
                     column: FilamentJet::username(),

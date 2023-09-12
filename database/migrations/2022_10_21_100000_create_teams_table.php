@@ -8,7 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+<<<<<<< HEAD
         Schema::create('teams', static function (Blueprint $blueprint) : void {
+=======
+        Schema::create('teams', function (Blueprint $blueprint): void {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             $blueprint->id();
             $blueprint->foreignId('user_id')->index();
             $blueprint->string('name');

@@ -24,6 +24,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rules\Password;
+use Modules\User\Models\Membership;
+use Modules\User\Models\Team;
+use Modules\User\Models\TeamInvitation;
+use Modules\User\Models\User;
 
 final class FilamentJet
 {
@@ -155,7 +159,11 @@ final class FilamentJet
             ->values()
             ->all();
 
+<<<<<<< HEAD
         return tap(new Role($key, $name, $permissions), static function ($role) use ($key) : void {
+=======
+        return tap(new Role($key, $name, $permissions), function ($role) use ($key): void {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             self::$roles[$key] = $role;
         });
     }
@@ -610,7 +618,11 @@ final class FilamentJet
 
     public static function setPasswordRules(array $rules): void
     {
+<<<<<<< HEAD
         self::$passwordRules = $rules !== [] ? $rules : (array) Password::default();
+=======
+        self::$passwordRules = $rules ?: (array) Password::default();
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 
     public static function getPasswordRules(): array
@@ -639,6 +651,10 @@ final class FilamentJet
         return Arr::first([
             resource_path('markdown/'.$localName),
             resource_path('markdown/'.$name),
+<<<<<<< HEAD
         ], static fn($path): bool => file_exists($path));
+=======
+        ], fn ($path): bool => file_exists($path));
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 }

@@ -21,7 +21,11 @@ final class InvitingTeamMember
         public TeamContract $teamContract,
         public mixed $email,
         public mixed $role
+<<<<<<< HEAD
     )
     {
+=======
+    ) {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 }

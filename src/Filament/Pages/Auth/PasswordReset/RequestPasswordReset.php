@@ -63,14 +63,25 @@ final class RequestPasswordReset extends CardPage
 
         $status = Password::sendResetLink(
             $data,
+<<<<<<< HEAD
             static function (UserContract $userContract, string $token) : void {
+=======
+            function (UserContract $userContract, string $token): void {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
                 if (! method_exists($userContract, 'notify')) {
                     $userClass = $userContract::class;
 
                     throw new Exception(sprintf('Model [%s] does not have a [notify()] method.', $userClass));
                 }
+<<<<<<< HEAD
                 $resetPassword = new ResetPasswordNotification($token);
                 $resetPassword->url = FilamentJet::getResetPasswordUrl($token, $userContract);
+=======
+
+                $resetPassword = new ResetPasswordNotification($token);
+                $resetPassword->url = FilamentJet::getResetPasswordUrl($token, $userContract);
+
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
                 $userContract->notify($resetPassword);
             },
         );

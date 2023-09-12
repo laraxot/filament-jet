@@ -12,15 +12,22 @@ final class TeamInvitation extends Mailable
 {
     use Queueable;
 
+<<<<<<< HEAD
     use SerializesModels;
 
+=======
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     public function __construct(
         /**
          * The team invitation instance.
          */
         public TeamInvitationContract $teamInvitationContract
+<<<<<<< HEAD
     )
     {
+=======
+    ) {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 
     /**

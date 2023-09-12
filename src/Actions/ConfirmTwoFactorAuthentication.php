@@ -18,9 +18,14 @@ final class ConfirmTwoFactorAuthentication
         /**
          * The two factor authentication provider.
          */
+<<<<<<< HEAD
         private readonly TwoFactorAuthenticationProvider $twoFactorAuthenticationProvider
     )
     {
+=======
+        protected TwoFactorAuthenticationProvider $twoFactorAuthenticationProvider
+    ) {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
     }
 
     /**

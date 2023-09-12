@@ -16,6 +16,7 @@ use Filament\Facades\Filament;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 
@@ -81,7 +82,11 @@ final class TwoFactorLogin extends CardPage
             return null;
         }
 
+<<<<<<< HEAD
         return tap(collect($this->challengedUser()->recoveryCodes())->first(static fn($code) => hash_equals($code, $recoveryCode) ? $code : null), function ($code): void {
+=======
+        return tap(collect($this->challengedUser()->recoveryCodes())->first(fn ($code) => hash_equals($code, $recoveryCode) ? $code : null), function ($code): void {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             if ($code) {
                 session()->forget($this->sessionPrefix . 'login.id');
             }

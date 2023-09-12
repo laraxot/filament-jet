@@ -1,14 +1,22 @@
 <?php
 
+<<<<<<< HEAD
 use ArtMin96\FilamentJet\Filament\Pages\Auth\Register;
 use ArtMin96\FilamentJet\Http\Livewire\TermsOfService;
 use ArtMin96\FilamentJet\Http\Livewire\PrivacyPolicy;
 use ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\RequestPasswordReset;
 use ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\ResetPassword;
+=======
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
 use App\Models\Membership;
 use App\Models\Team;
 use App\Models\TeamInvitation;
 use ArtMin96\FilamentJet\Features;
+use ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\RequestPasswordReset;
+use ArtMin96\FilamentJet\Filament\Pages\Auth\PasswordReset\ResetPassword;
+use ArtMin96\FilamentJet\Filament\Pages\Auth\Register;
+use ArtMin96\FilamentJet\Http\Livewire\PrivacyPolicy;
+use ArtMin96\FilamentJet\Http\Livewire\TermsOfService;
 
 return [
 

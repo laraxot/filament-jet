@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Model;
 use ArtMin96\FilamentJet\Features;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Modules\User\Models\Team;
 use Modules\User\Models\User;
@@ -41,7 +42,11 @@ final class UserFactory extends Factory
      */
     public function unverified(): static
     {
+<<<<<<< HEAD
         return $this->state(static fn(array $attributes): array => [
+=======
+        return $this->state(fn (array $attributes): array => [
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             'email_verified_at' => null,
         ]);
     }
@@ -59,7 +64,11 @@ final class UserFactory extends Factory
 
         return $this->has(
             Team::factory()
+<<<<<<< HEAD
                 ->state(static fn(array $attributes, User $user): array => ['name' => $user->name."'s Team", 'user_id' => $user->id, 'personal_team' => true]),
+=======
+                ->state(fn (array $attributes, User $user): array => ['name' => $user->name.'\'s Team', 'user_id' => $user->id, 'personal_team' => true]),
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             'ownedTeams'
         );
     }

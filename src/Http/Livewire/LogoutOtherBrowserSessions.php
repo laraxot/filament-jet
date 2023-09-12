@@ -37,9 +37,15 @@ final class LogoutOtherBrowserSessions extends Component
      *
      * @return Agent
      */
+<<<<<<< HEAD
     private function createAgent(mixed $session)
     {
         return tap(new Agent, static function ($agent) use ($session) : void {
+=======
+    protected function createAgent(mixed $session)
+    {
+        return tap(new Agent, function ($agent) use ($session): void {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             $agent->setUserAgent($session->user_agent);
         });
     }

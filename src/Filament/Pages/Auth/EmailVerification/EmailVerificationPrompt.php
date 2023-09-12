@@ -14,6 +14,7 @@ use Exception;
 use Filament\Facades\Filament;
 use Filament\Forms\ComponentContainer;
 use Filament\Notifications\Notification;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 /**
@@ -68,7 +69,11 @@ final class EmailVerificationPrompt extends CardPage
         }
 
         $user = Filament::auth()->user();
+<<<<<<< HEAD
         if (!$user instanceof Authenticatable) {
+=======
+        if (! $user instanceof Authenticatable) {
+>>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
             throw new Exception('strange things');
         }
 
