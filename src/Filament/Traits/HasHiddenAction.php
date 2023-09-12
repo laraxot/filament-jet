@@ -96,11 +96,7 @@ trait HasHiddenAction
         }
 
         if (Features::canExportPersonalData()) {
-<<<<<<< HEAD
-            return [...$actions, Action::make('export_personal_data')
-=======
             $actions = [...$actions, Action::make('export_personal_data')
->>>>>>> d2abb10143a78f54643890ce9d627c88f47f59a0
                 ->label(__('filament-jet::account/export-personal-data.buttons.confirm'))
                 ->icon('heroicon-o-download')
                 ->action('exportPersonalData'), Action::make('download_personal_data')
